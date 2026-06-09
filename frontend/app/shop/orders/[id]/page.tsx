@@ -168,12 +168,12 @@ export default function OrderDetailPage({ params }: Props) {
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center gap-4">
                         <img
-                          src={item.image || '/images/placeholder.png'}
-                          alt={item.name}
+                          src={item.product?.images?.[0]?.url || '/images/placeholder.png'}
+                          alt={item.product?.name || 'Product'}
                           className="h-14 w-14 rounded-lg object-cover shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{item.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{item.product?.name || 'Unknown Product'}</p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
                         </div>
                         <p className="font-semibold text-gray-900 dark:text-gray-100 shrink-0">
