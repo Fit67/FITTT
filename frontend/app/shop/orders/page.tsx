@@ -58,8 +58,8 @@ export default function OrdersPage() {
                       {order.items.slice(0, 3).map((item, j) => (
                         <img
                           key={j}
-                          src={item.image || '/images/placeholder.png'}
-                          alt={item.name}
+                          src={item.product?.images?.[0]?.url || '/images/placeholder.png'}
+                          alt={item.product?.name || 'Product'}
                           className="h-12 w-12 rounded-lg object-cover border-2 border-white dark:border-gray-800"
                         />
                       ))}
