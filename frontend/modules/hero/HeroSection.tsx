@@ -137,7 +137,7 @@ function SplitHero() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{t('deliveryTime')}</p>
-                <p className="text-sm font-bold text-gray-900 dark:text-white">within 3 days</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{t('within3Days') as string}</p>
               </div>
             </motion.div>
           </div>

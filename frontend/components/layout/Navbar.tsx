@@ -270,6 +270,26 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              
+              <div className="flex items-center justify-between px-3 py-3 border-t border-gray-100 dark:border-gray-800 mt-1">
+                <span className="text-sm text-gray-700 dark:text-gray-300">Theme</span>
+                <button
+                  onClick={() => { setMenuOpen(false); setTheme(theme === 'dark' ? 'light' : 'dark') }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                >
+                  {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+                </button>
+              </div>
+              
+              <div className="flex items-center justify-between px-3 py-3 border-t border-gray-100 dark:border-gray-800">
+                <span className="text-sm text-gray-700 dark:text-gray-300">Language</span>
+                <button
+                  onClick={() => { setMenuOpen(false); setLang(lang === 'en' ? 'ar' : 'en') }}
+                  className="flex h-8 items-center justify-center rounded-full bg-gray-100 px-3 text-xs font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                >
+                  {lang === 'en' ? 'عربي' : 'English'}
+                </button>
+              </div>
               {!isAuthenticated ? (
                 <div className="flex gap-2 pt-3 border-t border-gray-100 dark:border-gray-800 mt-2">
                   <Link href="/auth/login" className="flex-1" onClick={() => setMenuOpen(false)}>

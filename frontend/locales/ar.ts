@@ -41,6 +41,7 @@ export const ar = {
   shopNow: "تسوق الآن",
   todaysDeals: "عروض اليوم",
   deliveryTime: "وقت التوصيل",
+  within3Days: "خلال ٣ أيام",
   happyCustomers: "رياضيين سعداء",
   freeShipping: "شحن مجاني فوق 2000 جنة",
   qualityGuarantee: "مكملات أصلية 100%",

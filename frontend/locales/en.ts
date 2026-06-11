@@ -39,8 +39,9 @@ export const en = {
   shopNow: "Shop Now",
   todaysDeals: "Today's Deals",
   deliveryTime: "Delivery Time",
+  within3Days: "within 3 days",
   happyCustomers: "Happy Athletes",
-  freeShipping: "Free shipping over $50",
+  freeShipping: "Free shipping over 2000EGP",
   qualityGuarantee: "100% genuine supplements",
   ratedBy: "4.8 rated by 12k+ athletes",
   // Footer
