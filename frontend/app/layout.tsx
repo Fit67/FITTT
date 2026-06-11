@@ -3,6 +3,7 @@ import { ThemeProvider } from 'next-themes'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { ToastContainer } from '@/components/ui/Toast'
 import { SearchModal } from '@/modules/search/SearchModal'
+import { NavigationProgress } from '@/components/ui/NavigationProgress'
 import { storeConfig } from '@/config/store'
 import { getGoogleFontsUrl } from '@/themes'
 import './globals.css'
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 }
 
 import { LanguageProvider } from '@/components/providers/LanguageProvider'
+import { Suspense } from 'react'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const fontsUrl = getGoogleFontsUrl(storeConfig.theme)
@@ -36,13 +38,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href={fontsUrl} rel="stylesheet" />
-        {/* We add Cairo font statically for Arabic */}
         <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body bg-surface text-gray-900 dark:text-gray-100 antialiased">
         <LanguageProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <QueryProvider>
+              {/* Gold progress bar — shows instantly on link click */}
+              <Suspense fallback={null}>
+                <NavigationProgress />
+              </Suspense>
               {children}
               <ToastContainer />
               <SearchModal />
