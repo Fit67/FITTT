@@ -6,8 +6,8 @@ import type { StoreConfig } from '@/types'
 // ============================================================
 
 export const storeConfig: StoreConfig = {
-  name: 'Zeno Market',
-  tagline: 'Everything you need, delivered fast.',
+  name: 'DoctorFit',
+  tagline: 'Premium fitness products, delivered fast.',
   logo: '/images/logo.svg',
   favicon: '/favicon.ico',
 
@@ -24,8 +24,8 @@ export const storeConfig: StoreConfig = {
   // ─── Theme ─────────────────────────────────────────────────
   // Corresponds to a file in /themes/
   theme: 'default',
-  primaryColor: '#d97706',   // gold / amber-600
-  accentColor: '#facc15',    // yellow-400
+  primaryColor: '#d97706',   // login orange / amber-600
+  accentColor: '#f59e0b',    // login orange / amber-500
 
   // ─── Hero Section ──────────────────────────────────────────
   // Options: 'fullscreen' | 'split' | 'minimal' | 'video' | 'carousel'
@@ -50,15 +50,15 @@ export const storeConfig: StoreConfig = {
 
   // ─── Social ────────────────────────────────────────────────
   social: {
-    instagram: 'https://instagram.com/zenomarket',
-    facebook: 'https://facebook.com/zenomarket',
-    tiktok: 'https://tiktok.com/@zenomarket',
+    instagram: 'https://instagram.com/doctorfit',
+    facebook: 'https://facebook.com/doctorfit',
+    tiktok: 'https://tiktok.com/@doctorfit',
     whatsapp: 'https://chat.whatsapp.com/invite-link', // WhatsApp Group link
   },
 
   // ─── Contact ───────────────────────────────────────────────
   contact: {
-    email: 'hello@zenomarket.com',
+    email: 'hello@doctorfit.com',
     phone: '+1 (555) 123-4567',
     address: '123 Market Street',
     city: 'New York',
@@ -68,9 +68,9 @@ export const storeConfig: StoreConfig = {
 
   // ─── SEO ───────────────────────────────────────────────────
   seo: {
-    title: 'Zeno Market — Fresh Groceries Delivered',
-    description: 'Order fresh groceries, essentials, and more with fast delivery to your door.',
-    keywords: ['grocery', 'delivery', 'fresh', 'supermarket', 'online shopping'],
+    title: 'DoctorFit - Premium Fitness Products',
+    description: 'Shop premium supplements and fitness essentials with fast delivery to your door.',
+    keywords: ['fitness', 'supplements', 'gym', 'protein', 'online shopping'],
     ogImage: '/images/og-image.jpg',
   },
 }

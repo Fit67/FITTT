@@ -25,7 +25,7 @@ async function seed() {
   // ─── Admin user ─────────────────────────────────────────────
   const admin = await User.create({
     name:       'Admin User',
-    email:      'admin@zenomarket.com',
+    email:      'admin@doctorfit.com',
     password:   'Admin123!',
     role:       'admin',
     isVerified: true,
@@ -193,7 +193,7 @@ async function seed() {
   console.log('✅  Banners created')
 
   console.log('\n🎉  Seeding complete!')
-  console.log('   Admin: admin@zenomarket.com / Admin123!')
+  console.log('   Admin: admin@doctorfit.com / Admin123!')
   process.exit(0)
 }
 

@@ -3,7 +3,7 @@
 export const defaultTheme = {
   id: 'default',
   name: 'Default',
-  description: 'Clean, modern theme with green primary palette.',
+  description: 'Clean, modern light theme with dark blue/orange dark mode.',
 
   // ─── Color Palettes (RGB values for Tailwind opacity modifiers) ─
   colors: {
@@ -59,12 +59,12 @@ export const defaultTheme = {
 
   // ─── Dark Mode overrides ────────────────────────────────────
   dark: {
-    surface:        '5 5 5',
-    surfaceRaised:  '15 15 15',
-    surfaceOverlay: '25 25 25',
+    surface:        '11 15 25',
+    surfaceRaised:  '19 26 42',
+    surfaceOverlay: '26 34 53',
     gradientMesh:
       'radial-gradient(at 50% 0%, hsla(45, 90%, 15%, 1) 0px, transparent 60%), ' +
       'radial-gradient(at 0% 0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%), ' +
-      'radial-gradient(at 100% 0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%)',
+      'linear-gradient(180deg, #0B0F19 0%, #131A2A 100%)',
   },
 }

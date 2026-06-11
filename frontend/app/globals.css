@@ -65,7 +65,8 @@
 
   --gradient-mesh:
     radial-gradient(at 40% 20%, hsla(45, 60%, 15%, 1) 0px, transparent 50%),
-    radial-gradient(at 80%  0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%);
+    radial-gradient(at 80%  0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%),
+    linear-gradient(180deg, #0B0F19 0%, #131A2A 100%);
 }
 
 /* ============================================================
@@ -145,7 +146,7 @@
 
   /* Glass card */
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/50 dark:bg-gray-900/70 dark:border-gray-700/50;
+    @apply bg-white/70 backdrop-blur-md border border-white/50 dark:bg-[#131A2A]/80 dark:border-white/10;
   }
 
   /* Gradient mesh background */
@@ -155,7 +156,7 @@
 
   /* Product grid */
   .product-grid {
-    @apply grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5;
+    @apply grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5;
   }
 
   /* Admin sidebar link */
@@ -188,6 +189,26 @@
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
+}
+
+.premium-grid {
+  background-image:
+    linear-gradient(to right, rgba(217,119,6,.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217,119,6,.08) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 35%, #000 60%, transparent 100%);
+}
+
+.premium-scanline {
+  background:
+    linear-gradient(to bottom, transparent, rgba(245,158,11,.18), transparent),
+    repeating-linear-gradient(to bottom, rgba(255,255,255,.08) 0 1px, transparent 1px 8px);
+  animation: premium-scan 4.8s ease-in-out infinite;
+}
+
+@keyframes premium-scan {
+  0%, 100% { transform: translateY(-32%); opacity: .45; }
+  50% { transform: translateY(32%); opacity: .85; }
 }
 
 /* Page transition wrapper */

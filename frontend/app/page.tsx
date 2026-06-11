@@ -6,6 +6,7 @@ import { HeroSection }          from '@/modules/hero/HeroSection'
 import { CategoriesGrid }       from '@/modules/categories/CategoriesGrid'
 import { FeaturedProducts }     from '@/modules/product-card/FeaturedProducts'
 import { PromoBanners }         from '@/modules/banners/PromoBanners'
+import { PremiumExperience }    from '@/modules/banners/PromoBanners'
 import { DeliveryStripeBanner } from '@/modules/banners/DeliveryStripeBanner'
 import { ThemeApplier }         from '@/components/providers/ThemeApplier'
 import { storeConfig }          from '@/config/store'
@@ -23,6 +24,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <DeliveryStripeBanner />
+        <PremiumExperience />
         <Suspense fallback={null}>
           <CategoriesGrid />
         </Suspense>

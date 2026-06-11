@@ -3,8 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
-import { Truck, Shield, Star } from 'lucide-react'
+import { Activity, ArrowRight, Dumbbell, Gauge, ShieldCheck, Sparkles, Truck, Shield, Star, Zap } from 'lucide-react'
 
 // All imports at the top — no bottom-of-file imports
 import { useFeaturedProducts, useCategories, useBanners, useProducts } from '@/hooks/useQueries'
@@ -39,6 +38,124 @@ function SectionHeader({
   )
 }
 
+export function PremiumExperience() {
+  const { t, dir } = useTranslation()
+
+  const metrics = [
+    { icon: ShieldCheck, value: '100%', label: t('premiumMetricOne') },
+    { icon: Zap, value: '24h', label: t('premiumMetricTwo') },
+    { icon: Activity, value: '1:1', label: t('premiumMetricThree') },
+  ]
+
+  return (
+    <section className="relative overflow-hidden border-y border-primary-500/15 bg-white py-14 dark:bg-[#0B0F19] sm:py-18 md:py-24">
+      <div className="pointer-events-none absolute inset-0 premium-grid opacity-70 dark:opacity-100" />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/70 to-transparent"
+        animate={{ x: ['-35%', '35%', '-35%'] }}
+        transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <div className="container-page relative grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-xl"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary-500/25 bg-primary-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-primary-700 dark:text-primary-300">
+            <Sparkles size={14} />
+            {t('premiumLabel')}
+          </span>
+          <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-gray-950 dark:text-white sm:text-4xl md:text-5xl">
+            {t('premiumTitle')}
+          </h2>
+          <p className="mt-5 text-base leading-8 text-gray-600 dark:text-gray-300 sm:text-lg">
+            {t('premiumText')}
+          </p>
+
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {metrics.map(({ icon: Icon, value, label }, index) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08, duration: 0.45 }}
+                className="rounded-card border border-gray-200 bg-white/80 p-4 shadow-card backdrop-blur dark:border-white/10 dark:bg-white/[0.04]"
+              >
+                <Icon className="text-primary-600 dark:text-primary-400" size={20} />
+                <p className="mt-3 font-display text-2xl font-bold text-gray-950 dark:text-white">{value}</p>
+                <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">{label}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <Link href="/shop/products" className="mt-8 inline-flex w-full sm:w-auto">
+            <button className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-button bg-primary-600 px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(217,119,6,.25)] transition-all hover:bg-primary-700 sm:w-auto">
+              {t('premiumCta')}
+              <ArrowRight size={16} className={dir === 'rtl' ? 'rotate-180' : ''} />
+            </button>
+          </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96, y: 28 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto aspect-[1.08] w-full max-w-[620px] overflow-hidden rounded-[24px] border border-gray-200 bg-[#101827] shadow-[0_24px_90px_rgba(0,0,0,.22)] dark:border-white/10 dark:bg-[#090D16] sm:rounded-[28px]"
+        >
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(217,119,6,.32),transparent_38%),radial-gradient(circle_at_78%_18%,rgba(245,158,11,.2),transparent_28%)]" />
+          <div className="absolute inset-0 premium-scanline" />
+
+          <motion.div
+            className="absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary-500/35"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+          />
+          <motion.div
+            className="absolute left-1/2 top-1/2 h-[48%] w-[48%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/25"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+          />
+
+          <div className="absolute inset-0 flex items-center justify-center">
+            <motion.div
+              animate={{ y: [-8, 8, -8] }}
+              transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative grid h-[42%] w-[42%] place-items-center rounded-[28px] border border-primary-400/40 bg-white/[0.08] shadow-[0_0_50px_rgba(245,158,11,.2)] backdrop-blur"
+            >
+              <Dumbbell size={58} className="text-primary-300 sm:h-20 sm:w-20" />
+              <div className="absolute -bottom-3 left-1/2 h-1.5 w-28 -translate-x-1/2 rounded-full bg-primary-500/70 blur-sm" />
+            </motion.div>
+          </div>
+
+          {[
+            { icon: Gauge, label: 'PERFORMANCE', className: 'left-4 top-5 sm:left-7 sm:top-8' },
+            { icon: Activity, label: 'RECOVERY', className: 'right-4 top-[34%] sm:right-8' },
+            { icon: ShieldCheck, label: 'VERIFIED', className: 'bottom-5 left-5 sm:bottom-8 sm:left-8' },
+          ].map(({ icon: Icon, label, className }, index) => (
+            <motion.div
+              key={label}
+              animate={{ y: index % 2 ? [6, -6, 6] : [-6, 6, -6] }}
+              transition={{ duration: 4 + index * 0.45, repeat: Infinity, ease: 'easeInOut' }}
+              className={cn('absolute rounded-2xl border border-white/10 bg-white/[0.08] px-3 py-2 text-white shadow-2xl backdrop-blur-md sm:px-4 sm:py-3', className)}
+            >
+              <div className="flex items-center gap-2">
+                <Icon size={16} className="text-primary-300" />
+                <span className="text-[10px] font-bold tracking-[0.18em] sm:text-xs">{label}</span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Featured Products ─────────────────────────────────────────────
 export function FeaturedProducts() {
   const { t } = useTranslation()
@@ -59,7 +176,7 @@ export function FeaturedProducts() {
         title={label}
         href="/shop/products"
       />
-      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="mt-8 grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
         {isLoading
           ? Array.from({ length: 10 }).map((_, i) => <ProductCardSkeleton key={i} />)
           : products?.map((product, i) => (
@@ -81,8 +198,8 @@ export function CategoriesGrid() {
       <SectionHeader label={t('browse')} title={t('shopByCategory')} href="/shop/products" />
       <div className={cn(
         'mt-8 grid gap-4',
-        cols === 6 ? 'grid-cols-3 sm:grid-cols-4 lg:grid-cols-6'
-        : cols === 5 ? 'grid-cols-3 sm:grid-cols-4 lg:grid-cols-5'
+        cols === 6 ? 'grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-6'
+        : cols === 5 ? 'grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5'
         : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
       )}>
         {isLoading

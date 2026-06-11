@@ -32,7 +32,7 @@ function SplitHero() {
   const { t } = useTranslation()
 
   return (
-    <section className="relative min-h-[90vh] overflow-hidden bg-surface dark:bg-[#0A0A0B] pt-16 transition-colors duration-500">
+    <section className="relative min-h-[86vh] overflow-hidden bg-surface pt-16 transition-colors duration-500 dark:bg-[#0B0F19]">
       {/* Premium Animated Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
       
@@ -48,7 +48,7 @@ function SplitHero() {
         style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '40px 40px', backgroundPosition: '0 0' }}
       />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 md:grid-cols-2 md:gap-8 md:px-6">
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 py-14 sm:py-18 md:grid-cols-2 md:gap-8 md:px-6 md:py-20">
 
         {/* Text */}
         <motion.div
@@ -69,7 +69,7 @@ function SplitHero() {
 
           <motion.h1
             variants={stagger.item}
-            className="font-display text-5xl font-bold leading-[1.1] text-gray-900 dark:text-white md:text-6xl lg:text-7xl"
+            className="font-display text-4xl font-bold leading-[1.08] text-gray-900 dark:text-white sm:text-5xl md:text-6xl lg:text-7xl"
           >
             {t('heroHeadline').split(' ').map((word, i) => (
               <span key={i} className={cn(
@@ -88,14 +88,14 @@ function SplitHero() {
             {t('heroSubtext')}
           </motion.p>
 
-          <motion.div variants={stagger.item} className="flex flex-wrap gap-3 pt-2">
-            <Link href="/shop/products">
-              <Button size="lg" icon={<ShoppingBag size={18} />}>
+          <motion.div variants={stagger.item} className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+            <Link href="/shop/products" className="w-full sm:w-auto">
+              <Button size="lg" icon={<ShoppingBag size={18} />} className="w-full sm:w-auto">
                 {t('shopNow')}
               </Button>
             </Link>
-            <Link href="/shop/products?onSale=true">
-              <Button size="lg" variant="outline" iconRight={<ArrowRight size={16} />}>
+            <Link href="/shop/products?onSale=true" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" iconRight={<ArrowRight size={16} />} className="w-full sm:w-auto">
                 {t('todaysDeals')}
               </Button>
             </Link>
@@ -129,7 +129,7 @@ function SplitHero() {
           <motion.div 
             animate={{ y: [-15, 15, -15], rotateZ: [-1, 1, -1] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative h-[480px] w-full"
+            className="relative h-[300px] w-full sm:h-[380px] lg:h-[480px]"
           >
             <div className="absolute inset-0 rounded-2xl overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-3xl border border-white/60 dark:border-primary-500/20 shadow-2xl">
               {/* Decorative circles */}
@@ -149,7 +149,7 @@ function SplitHero() {
             <motion.div
               animate={{ y: [-4, 4, -4] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -left-8 top-1/4 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/40 dark:border-gray-800 shadow-2xl p-4 flex items-center gap-3"
+              className="absolute left-3 top-1/4 flex items-center gap-3 rounded-xl border border-white/40 bg-white/85 p-3 shadow-2xl backdrop-blur-xl dark:border-gray-800 dark:bg-gray-900/80 sm:-left-8 sm:p-4"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/40">
                 <Truck size={18} className="text-primary-600 dark:text-primary-400" />

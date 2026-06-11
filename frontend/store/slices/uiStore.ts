@@ -50,7 +50,7 @@ export const useWishlistStore = create<WishlistStore>()(
       
       setItems: (items) => set({ items }),
     }),
-    { name: 'zeno-wishlist', storage: createJSONStorage(() => localStorage) },
+    { name: 'doctorfit-wishlist', storage: createJSONStorage(() => localStorage) },
   ),
 )
 
@@ -132,6 +132,6 @@ export const useRecentlyViewedStore = create<RecentlyViewedStore>()(
 
       clear: () => set({ products: [] }),
     }),
-    { name: 'zeno-recently-viewed', storage: createJSONStorage(() => localStorage) },
+    { name: 'doctorfit-recently-viewed', storage: createJSONStorage(() => localStorage) },
   ),
 )

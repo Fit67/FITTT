@@ -134,7 +134,7 @@ export const useCartStore = create<CartStore>()(
       },
     })),
     {
-      name:    'zeno-cart',
+      name:    'doctorfit-cart',
       storage: createJSONStorage(() => localStorage),
       partialize: state => ({ items: state.items, coupon: state.coupon }),
       onRehydrateStorage: () => state => {

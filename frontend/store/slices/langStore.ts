@@ -17,7 +17,7 @@ export const useLangStore = create<LangState>()(
       setLang: (lang) => set({ lang, dir: lang === 'ar' ? 'rtl' : 'ltr' }),
     }),
     {
-      name: 'zeno-lang',
+      name: 'doctorfit-lang',
       storage: createJSONStorage(() => localStorage),
     }
   )
