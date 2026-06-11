@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Product, ToastOptions, ModalState } from '@/types'
+import apiClient from '@/lib/api-client'
 
 // ─── Wishlist Store ────────────────────────────────────────────
 interface WishlistStore {
@@ -10,6 +11,7 @@ interface WishlistStore {
   toggle:     (product: Product) => boolean   // true = added, false = removed
   hasItem:    (productId: string) => boolean
   clear:      () => void
+  setItems:   (items: Product[]) => void
 }
 
 export const useWishlistStore = create<WishlistStore>()(
@@ -33,12 +35,20 @@ export const useWishlistStore = create<WishlistStore>()(
         } else {
           get().addItem(product)
         }
+        
+        // Optimistically sync with backend if user is logged in
+        if (sessionStorage.getItem('accessToken')) {
+          apiClient.post('/auth/wishlist/toggle', { productId: product._id }).catch(console.error)
+        }
+        
         return !has   // true = now in wishlist, false = removed
       },
 
       hasItem: (productId) => get().items.some(i => i._id === productId),
 
       clear: () => set({ items: [] }),
+      
+      setItems: (items) => set({ items }),
     }),
     { name: 'zeno-wishlist', storage: createJSONStorage(() => localStorage) },
   ),
