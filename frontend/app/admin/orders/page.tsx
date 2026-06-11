@@ -228,6 +228,7 @@ export default function AdminOrdersPage() {
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">Shipping Address</p>
               <p className="text-sm text-gray-700 dark:text-gray-300">
                 {selected.shippingAddress.fullName}<br />
+                {selected.shippingAddress.phone}<br />
                 {selected.shippingAddress.street}<br />
                 {selected.shippingAddress.city}, {selected.shippingAddress.state} {selected.shippingAddress.zipCode}<br />
                 {selected.shippingAddress.country}
@@ -256,7 +257,6 @@ export default function AdminOrdersPage() {
               <div className="flex justify-between text-gray-600 dark:text-gray-400"><span>Subtotal</span><span>{formatPrice(selected.subtotal)}</span></div>
               {selected.discount > 0 && <div className="flex justify-between text-emerald-600"><span>Discount</span><span>−{formatPrice(selected.discount)}</span></div>}
               <div className="flex justify-between text-gray-600 dark:text-gray-400"><span>Delivery</span><span>{formatPrice(selected.deliveryFee)}</span></div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400"><span>Tax</span><span>{formatPrice(selected.tax)}</span></div>
               <div className="h-px bg-gray-200 dark:bg-gray-700" />
               <div className="flex justify-between font-bold text-gray-900 dark:text-gray-100"><span>Total</span><span>{formatPrice(selected.total)}</span></div>
             </div>

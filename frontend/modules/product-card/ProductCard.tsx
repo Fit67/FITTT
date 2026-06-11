@@ -60,8 +60,8 @@ export function ProductCard({
       whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
       className={cn(
         'group relative flex flex-col rounded-card overflow-hidden',
-        // Premium glassmorphism
-        'bg-white/70 dark:bg-gray-900/60 backdrop-blur-xl',
+        // Premium glassmorphism without heavy blur
+        'bg-white/70 dark:bg-gray-900/80',
         'border border-white/40 dark:border-gray-800/60 shadow-sm',
         // Hover glows and transitions
         'transition-all duration-500 ease-out',
@@ -101,7 +101,9 @@ export function ProductCard({
             <Badge variant="error" size="sm">−{discountPct}%</Badge>
           )}
           {outOfStock && (
-            <Badge variant="neutral" size="sm">Out of Stock</Badge>
+            <Badge variant="neutral" size="sm">
+              {storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock'}
+            </Badge>
           )}
           {/* Business-type labels */}
           {businessType === 'restaurant' && product.metadata?.prepTime && (

@@ -40,9 +40,9 @@ export const storeConfig: StoreConfig = {
   // ─── Delivery ──────────────────────────────────────────────
   delivery: {
     minOrderAmount: 10,
-    freeDeliveryThreshold: 50,
-    standardDeliveryFee: 4.99,
-    expressDeliveryFee: 9.99,
+    freeDeliveryThreshold: 2000,
+    standardDeliveryFee: 80,
+    expressDeliveryFee: 120,
     estimatedTime: { min: 30, max: 60, unit: 'min' },
     zones: ['Downtown', 'Uptown', 'Suburbs', 'North District'],
     cashOnDelivery: true,

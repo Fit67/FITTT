@@ -166,10 +166,6 @@ export default function CartPage() {
                     <span>Delivery</span>
                     <span>{deliveryFee === 0 ? '🎉 Free' : formatPrice(deliveryFee)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Tax (8%)</span>
-                    <span>{formatPrice(tax)}</span>
-                  </div>
                   <div className="h-px bg-gray-100 dark:bg-gray-800" />
                   <div className="flex justify-between font-bold text-base text-gray-900 dark:text-gray-100">
                     <span>Total</span>

@@ -140,7 +140,7 @@ export default function ProductPage({ params }: Props) {
                 <div className="absolute left-4 top-4 flex flex-col gap-2">
                   {discountPct > 0  && <Badge variant="error">−{discountPct}%</Badge>}
                   {product.isNew     && <Badge variant="primary">New</Badge>}
-                  {outOfStock        && <Badge variant="neutral">Out of Stock</Badge>}
+                  {outOfStock        && <Badge variant="neutral">{storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock'}</Badge>}
                 </div>
 
                 {images.length > 1 && (
@@ -303,7 +303,7 @@ export default function ProductPage({ params }: Props) {
                   icon={<ShoppingCart size={18} />}
                   onClick={handleAddToCart}
                 >
-                  {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+                  {outOfStock ? (storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock') : 'Add to Cart'}
                 </Button>
 
                 {storeConfig.enableWishlist && (

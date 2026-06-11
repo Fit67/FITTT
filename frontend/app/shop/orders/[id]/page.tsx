@@ -197,9 +197,6 @@ export default function OrderDetailPage({ params }: Props) {
                       <span>Delivery</span>
                       <span>{order.deliveryFee === 0 ? 'Free' : formatPrice(order.deliveryFee)}</span>
                     </div>
-                    <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                      <span>Tax</span><span>{formatPrice(order.tax)}</span>
-                    </div>
                     <div className="flex justify-between font-bold text-base text-gray-900 dark:text-gray-100 pt-1 border-t border-gray-100 dark:border-gray-800">
                       <span>Total</span><span>{formatPrice(order.total)}</span>
                     </div>

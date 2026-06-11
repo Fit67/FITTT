@@ -12,18 +12,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const variants = {
     initial: { 
       opacity: 0, 
-      x: isRightSide ? 50 : -50, 
-      filter: 'blur(8px)' 
+      x: isRightSide ? 50 : -50 
     },
     animate: { 
       opacity: 1, 
-      x: 0, 
-      filter: 'blur(0px)' 
+      x: 0 
     },
     exit: { 
       opacity: 0, 
-      x: isRightSide ? -50 : 50, 
-      filter: 'blur(8px)' 
+      x: isRightSide ? -50 : 50 
     }
   }
 

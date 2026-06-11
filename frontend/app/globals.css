@@ -83,10 +83,16 @@
 
   body {
     background-color: rgb(var(--color-surface));
-    background-image: var(--gradient-mesh);
-    background-attachment: fixed;
     min-height: 100vh;
     line-height: 1.6;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    background-image: var(--gradient-mesh);
   }
 
   /* Custom scrollbar */
@@ -144,9 +150,8 @@
     @apply font-display text-3xl font-bold text-gray-900 dark:text-white md:text-4xl;
   }
 
-  /* Glass card */
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/50 dark:bg-[#131A2A]/80 dark:border-white/10;
+    @apply bg-white/70 border border-white/50 dark:bg-[#131A2A]/80 dark:border-white/10;
   }
 
   /* Gradient mesh background */
