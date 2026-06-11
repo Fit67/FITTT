@@ -76,11 +76,13 @@ export default function ProductPage({ params }: Props) {
   const effectivePrice = selectedVariant ? selectedVariant.price : product.price
 
   function handleAddToCart() {
+    if (!product) return
     addItem(product, selectedVariant ?? undefined, qty)
     toast.success('Added to cart!', `${qty}× ${product.name}`)
   }
 
   function handleWishlist() {
+    if (!product) return
     const added = toggle(product)
     toast[added ? 'success' : 'info'](
       added ? 'Saved to wishlist' : 'Removed from wishlist',
