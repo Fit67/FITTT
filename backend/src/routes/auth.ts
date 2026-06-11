@@ -21,5 +21,6 @@ router.post  ('/change-password',    ctrl.changePassword)
 router.post  ('/addresses',          ctrl.addAddress)
 router.patch ('/addresses/:id',      ctrl.updateAddress)
 router.delete('/addresses/:id',      ctrl.deleteAddress)
+router.post  ('/wishlist/toggle',    ctrl.toggleWishlist)
 
 export default router

@@ -61,6 +61,10 @@ export const useAuthStore = create<AuthStore>()(
           await apiClient.post('/auth/logout')
         } finally {
           sessionStorage.removeItem('accessToken')
+          // Clear user-specific persisted state so it doesn't leak to other accounts
+          localStorage.removeItem('zeno-wishlist')
+          localStorage.removeItem('zeno-cart')
+          localStorage.removeItem('zeno-recently-viewed')
           set({ user: null, accessToken: null, isAuthenticated: false })
           if (typeof window !== 'undefined') {
             window.location.href = '/'

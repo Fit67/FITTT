@@ -37,7 +37,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const { email, password } = req.body as { email: string; password: string }
 
-    const user = await User.findOne({ email, isActive: true }).select('+password')
+    const user = await User.findOne({ email, isActive: true }).select('+password').populate('wishlist')
     if (!user || !(await user.comparePassword(password))) {
       return next(new AppError('Invalid email or password', 401))
     }
@@ -57,7 +57,7 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     if (!token) return next(new AppError('No refresh token', 401))
 
     const decoded = verifyRefreshToken(token)
-    const user    = await User.findById(decoded.sub)
+    const user    = await User.findById(decoded.sub).populate('wishlist')
     if (!user || !user.isActive) return next(new AppError('User not found or inactive', 401))
 
     const accessToken     = signAccessToken(user._id.toString(), user.role)
@@ -77,7 +77,7 @@ export async function logout(_req: Request, res: Response) {
 // ─── Get current user ──────────────────────────────────────────
 export async function getMe(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await User.findById(requireUser(req).id)
+    const user = await User.findById(requireUser(req).id).populate('wishlist')
     if (!user) return next(new AppError('User not found', 404))
     res.json({ success: true, data: user })
   } catch (err) { next(err) }
@@ -198,5 +198,24 @@ export async function deleteAddress(req: Request, res: Response, next: NextFunct
     user.addresses.splice(0, user.addresses.length, ...filtered)
     await user.save()
     res.json({ success: true, data: user })
+  } catch (err) { next(err) }
+}
+
+// ─── Wishlist ──────────────────────────────────────────────────
+export async function toggleWishlist(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { productId } = req.body as { productId: string }
+    const user = await User.findById(requireUser(req).id)
+    if (!user) return next(new AppError('User not found', 404))
+
+    const index = user.wishlist.findIndex(id => id.toString() === productId)
+    if (index === -1) {
+      user.wishlist.push(productId as any)
+    } else {
+      user.wishlist.splice(index, 1)
+    }
+    await user.save()
+    await user.populate('wishlist')
+    res.json({ success: true, data: user.wishlist })
   } catch (err) { next(err) }
 }
