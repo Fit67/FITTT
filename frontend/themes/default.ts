@@ -21,9 +21,9 @@ export const defaultTheme = {
     },
     accent:      '250 204 21',  // yellow-400
     accentLight: '253 224 71', // yellow-300
-    surface:        '5 5 5',
-    surfaceRaised:  '15 15 15',
-    surfaceOverlay: '25 25 25',
+    surface:        '255 255 255',
+    surfaceRaised:  '249 250 251',
+    surfaceOverlay: '243 244 246',
   },
 
   // ─── Typography ─────────────────────────────────────────────
@@ -45,17 +45,17 @@ export const defaultTheme = {
 
   // ─── Shadows ────────────────────────────────────────────────
   shadows: {
-    card:      '0 1px 4px 0 rgba(0,0,0,.5), 0 4px 16px 0 rgba(0,0,0,.5)',
-    cardHover: '0 8px 32px 0 rgba(217,119,6,.15)',
-    modal:     '0 20px 80px -10px rgba(0,0,0,.8)',
+    card:      '0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06)',
+    cardHover: '0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05)',
+    modal:     '0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04)',
     input:     '0 0 0 3px rgba(217,119,6,.2)',
   },
 
   // ─── Gradient Mesh ──────────────────────────────────────────
   gradientMesh:
-    'radial-gradient(at 50% 0%, hsla(45, 90%, 15%, 1) 0px, transparent 60%), ' +
-    'radial-gradient(at 0% 0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%), ' +
-    'radial-gradient(at 100% 0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%)',
+    'radial-gradient(at 50% 0%, hsla(45, 90%, 95%, 1) 0px, transparent 60%), ' +
+    'radial-gradient(at 0% 0%, hsla(35, 90%, 98%, 1) 0px, transparent 50%), ' +
+    'radial-gradient(at 100% 0%, hsla(35, 90%, 98%, 1) 0px, transparent 50%)',
 
   // ─── Dark Mode overrides ────────────────────────────────────
   dark: {

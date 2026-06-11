@@ -32,7 +32,7 @@ function SplitHero() {
   const { t } = useTranslation()
 
   return (
-    <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-b from-primary-900/40 via-surface to-surface pt-16">
+    <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-b from-primary-900/5 dark:from-primary-900/40 via-surface to-surface pt-16">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 md:grid-cols-2 md:gap-8 md:px-6">
 
         {/* Text */}
@@ -112,7 +112,7 @@ function SplitHero() {
         >
           {/* Floating product cards */}
           <div className="relative h-[480px] w-full">
-            <div className="absolute inset-0 rounded-3xl overflow-hidden bg-gradient-to-br from-primary-800/40 to-surface border border-primary-500/20">
+            <div className="absolute inset-0 rounded-3xl overflow-hidden bg-gradient-to-br from-primary-800/10 dark:from-primary-800/40 to-surface border border-primary-500/20">
               {/* Decorative circles */}
               <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary-200/60 dark:bg-primary-800/20 blur-3xl" />
               <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-accent-light/60 dark:bg-orange-900/20 blur-3xl" />

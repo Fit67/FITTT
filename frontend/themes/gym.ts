@@ -18,9 +18,9 @@ export const gymTheme = {
     },
     accent:      '239 68  68',    // red-500 — power
     accentLight: '254 202 202',
-    surface:        '9   9   11',   // near-black (zinc-950)
-    surfaceRaised:  '24  24  27',   // zinc-900
-    surfaceOverlay: '39  39  42',   // zinc-800
+    surface:        '255 255 255',  // white
+    surfaceRaised:  '249 250 251',  // gray-50
+    surfaceOverlay: '243 244 246',  // gray-100
   },
 
   fonts: {
@@ -45,8 +45,8 @@ export const gymTheme = {
   },
 
   gradientMesh:
-    'radial-gradient(at 30% 30%, hsla(43,80%,15%,1)  0px, transparent 50%), ' +
-    'radial-gradient(at 80% 10%, hsla(0, 60%,12%,1)  0px, transparent 50%)',
+    'radial-gradient(at 30% 30%, hsla(43,80%,95%,1)  0px, transparent 50%), ' +
+    'radial-gradient(at 80% 10%, hsla(0, 60%,98%,1)  0px, transparent 50%)',
 
   // Gym theme is dark by default — same values for both modes
   dark: {
