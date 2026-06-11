@@ -58,12 +58,12 @@ export const storeConfig: StoreConfig = {
 
   // ─── Contact ───────────────────────────────────────────────
   contact: {
-    email: 'hello@doctorfit.com',
-    phone: '+1 (555) 123-4567',
-    address: '123 Market Street',
-    city: 'New York',
-    country: 'United States',
-    workingHours: 'Mon–Sat: 8am – 10pm',
+    email: 'doctorfit@gmail.com',
+    phone: '+20 103 040 9766',
+    address: '5th Settlement',
+    city: 'CAIRO',
+    country: 'EGYPT',
+    workingHours: '24/7',
   },
 
   // ─── SEO ───────────────────────────────────────────────────
