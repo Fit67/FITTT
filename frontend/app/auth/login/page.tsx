@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft } from 'lucide-react'
 import { useAuthStore } from '@/store/slices/authStore'
 import { useToast } from '@/components/ui/Toast'
 import { Button } from '@/components/ui/Button'
@@ -25,10 +25,10 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 const stagger = {
-  container: { animate: { transition: { staggerChildren: 0.08 } } },
+  container: { animate: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } } },
   item: {
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    initial: { opacity: 0, y: 30, scale: 0.95 },
+    animate: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } },
   },
 }
 
@@ -58,101 +58,78 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* ── Left Panel (decorative) ────────────────────────── */}
-      <div className="hidden lg:flex lg:flex-1 relative overflow-hidden bg-primary-600">
-        <div className="absolute inset-0 bg-noise opacity-[0.04]" />
-        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary-500/40 blur-3xl" />
-        <div className="absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-primary-800/60 blur-3xl" />
-        <div className="relative z-10 flex flex-col justify-between p-12">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
-              <span className="font-display font-bold text-white text-lg">
-                {storeConfig.name.charAt(0)}
-              </span>
-            </div>
-            <span className="font-display text-xl font-bold text-white">
-              {storeConfig.name}
-            </span>
-          </Link>
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      {/* ── Left Panel (Form) ─────────────────────────────── */}
+      <div className="flex flex-1 items-center justify-center px-6 py-12 bg-white dark:bg-[#0B0F19] relative order-2 lg:order-1">
+        {/* Back Button */}
+        <Link href="/" className="absolute top-6 left-6 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white transition-colors z-20" aria-label="Back to home">
+          <ArrowLeft size={20} />
+        </Link>
 
-          <div>
-            <blockquote className="font-display text-3xl font-semibold text-white leading-tight max-w-sm">
-              "{t('authSlogan')}"
-            </blockquote>
-            <p className="mt-4 text-primary-200 text-sm max-w-xs">
-              {t('authSubSlogan')} {storeConfig.name}.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-      {/* ── Right Panel (form) ─────────────────────────────── */}
-      <div className="flex flex-1 items-center justify-center px-4 py-12 bg-surface dark:bg-gray-950">
         <motion.div
           variants={stagger.container}
           initial="initial"
           animate="animate"
-          className="w-full max-w-md"
+          className="w-full max-w-[380px] relative z-10"
         >
-          {/* Mobile logo */}
-          <motion.div variants={stagger.item} className="mb-8 flex items-center gap-3 lg:hidden">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600">
-                <span className="font-display font-bold text-white">{storeConfig.name.charAt(0)}</span>
-              </div>
-              <span className="font-display text-lg font-bold text-gray-900 dark:text-white">{storeConfig.name}</span>
-            </Link>
+          {/* Mobile Logo */}
+          <motion.div variants={stagger.item} className="mb-10 flex justify-center lg:hidden">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-lg">
+              <span className="font-display font-bold text-white text-xl">{storeConfig.name.charAt(0)}</span>
+            </div>
           </motion.div>
 
-          <motion.div variants={stagger.item}>
-            <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white">{t('welcomeBack')}</h1>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">{t('signInToAccount')}</p>
+          <motion.div variants={stagger.item} className="mb-10 text-center lg:text-left">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">{t('welcomeBack')}</h1>
+            <p className="text-gray-500 dark:text-gray-400">{t('signInToAccount')}</p>
           </motion.div>
 
           <motion.form
             variants={stagger.item}
             onSubmit={handleSubmit(onSubmit)}
-            className="mt-8 space-y-5"
+            className="space-y-6"
           >
-            <Input
-              label={t('emailAddress')}
-              type="email"
-              placeholder="you@email.com"
-              autoComplete="email"
-              leading={<Mail size={16} />}
-              error={errors.email?.message}
-              {...register('email')}
-            />
+            <div className="space-y-5">
+              <Input
+                label={t('emailAddress')}
+                type="email"
+                placeholder="you@email.com"
+                autoComplete="email"
+                leading={<Mail size={18} />}
+                error={errors.email?.message}
+                className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]"
+                {...register('email')}
+              />
 
-            <Input
-              label={t('password')}
-              type={showPw ? 'text' : 'password'}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              leading={<Lock size={16} />}
-              trailing={
-                <button
-                  type="button"
-                  onClick={() => setShowPw(v => !v)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                >
-                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              }
-              error={errors.password?.message}
-              {...register('password')}
-            />
+              <Input
+                label={t('password')}
+                type={showPw ? 'text' : 'password'}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                leading={<Lock size={18} />}
+                trailing={
+                  <button
+                    type="button"
+                    onClick={() => setShowPw(v => !v)}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  >
+                    {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                }
+                error={errors.password?.message}
+                className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]"
+                {...register('password')}
+              />
+            </div>
 
             <div className="flex items-center justify-between">
               <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <input type="checkbox" className="h-4 w-4 rounded accent-primary-600" {...register('rememberMe')} />
+                <input type="checkbox" className="h-4 w-4 rounded accent-primary-600 border-gray-300 dark:border-gray-700 bg-transparent" {...register('rememberMe')} />
                 {t('rememberMe')}
               </label>
               <Link
                 href="/auth/forgot-password"
-                className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline"
+                className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500"
               >
                 {t('forgotPassword')}
               </Link>
@@ -163,25 +140,39 @@ export default function LoginPage() {
               fullWidth
               size="lg"
               loading={isSubmitting}
-              iconRight={<ArrowRight size={16} />}
+              className="mt-2 h-12 text-base font-semibold shadow-[0_0_20px_rgba(var(--color-primary-500),0.3)] hover:shadow-[0_0_30px_rgba(var(--color-primary-500),0.5)]"
             >
               {t('signIn')}
             </Button>
           </motion.form>
-
-          <motion.div variants={stagger.item} className="mt-6">
-            <Divider label="or" />
-            <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-              {t('dontHaveAccount')}{' '}
-              <Link
-                href="/auth/register"
-                className="font-semibold text-primary-600 dark:text-primary-400 hover:underline"
-              >
-                {t('signUpFree')}
-              </Link>
-            </p>
-          </motion.div>
         </motion.div>
+      </div>
+
+      {/* ── Right Panel (Decorative Split) ────────────────────────── */}
+      <div className="hidden lg:flex lg:flex-1 relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-accent-light dark:from-primary-900 dark:via-primary-800 dark:to-gray-900 order-1 lg:order-2 items-center justify-center">
+        {/* Animated Particles/Orbs */}
+        <motion.div 
+          animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="absolute inset-0 opacity-40 mix-blend-overlay bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent)] bg-[length:200%_200%]" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-white/10 blur-[100px]" 
+        />
+
+        <div className="relative z-10 text-center text-white px-12 max-w-lg">
+           <h2 className="text-5xl font-bold font-display mb-6 tracking-tight">New Here?</h2>
+           <p className="text-lg text-primary-50 dark:text-primary-100 mb-10 leading-relaxed">
+             Join the future of retail. Sign up and start experiencing premium shopping today.
+           </p>
+           <Link href="/auth/register">
+             <Button size="lg" className="h-12 px-10 text-base font-semibold bg-white/10 text-white border-2 border-white/40 hover:bg-white hover:text-primary-600 backdrop-blur-md">
+               Sign Up
+             </Button>
+           </Link>
+        </div>
       </div>
     </div>
   )

@@ -32,8 +32,23 @@ function SplitHero() {
   const { t } = useTranslation()
 
   return (
-    <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-b from-primary-900/5 dark:from-primary-900/40 via-surface to-surface pt-16">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 md:grid-cols-2 md:gap-8 md:px-6">
+    <section className="relative min-h-[90vh] overflow-hidden bg-surface dark:bg-[#0A0A0B] pt-16 transition-colors duration-500">
+      {/* Premium Animated Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+      
+      {/* Glowing Mesh Orbs */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary-500/20 dark:bg-primary-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-primary-400/10 dark:bg-primary-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+      {/* Deep Space Starfield (Subtle floating dots) */}
+      <motion.div 
+        animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.05, 1], rotate: [0, 1, 0] }} 
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0 pointer-events-none mix-blend-screen dark:opacity-100 opacity-50" 
+        style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '40px 40px', backgroundPosition: '0 0' }}
+      />
+
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 md:grid-cols-2 md:gap-8 md:px-6">
 
         {/* Text */}
         <motion.div
@@ -110,9 +125,13 @@ function SplitHero() {
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
           className="relative"
         >
-          {/* Floating product cards */}
-          <div className="relative h-[480px] w-full">
-            <div className="absolute inset-0 rounded-3xl overflow-hidden bg-gradient-to-br from-primary-800/10 dark:from-primary-800/40 to-surface border border-primary-500/20">
+          {/* Floating product cards - Zero-G Animation */}
+          <motion.div 
+            animate={{ y: [-15, 15, -15], rotateZ: [-1, 1, -1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            className="relative h-[480px] w-full"
+          >
+            <div className="absolute inset-0 rounded-2xl overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-3xl border border-white/60 dark:border-primary-500/20 shadow-2xl">
               {/* Decorative circles */}
               <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary-200/60 dark:bg-primary-800/20 blur-3xl" />
               <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-accent-light/60 dark:bg-orange-900/20 blur-3xl" />
@@ -130,7 +149,7 @@ function SplitHero() {
             <motion.div
               animate={{ y: [-4, 4, -4] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -left-8 top-1/4 rounded-2xl bg-white dark:bg-surface-raised shadow-card p-4 flex items-center gap-3"
+              className="absolute -left-8 top-1/4 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/40 dark:border-gray-800 shadow-2xl p-4 flex items-center gap-3"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/40">
                 <Truck size={18} className="text-primary-600 dark:text-primary-400" />
@@ -140,7 +159,7 @@ function SplitHero() {
                 <p className="text-sm font-bold text-gray-900 dark:text-white">{t('within3Days') as string}</p>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

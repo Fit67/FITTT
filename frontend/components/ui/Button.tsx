@@ -20,12 +20,12 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-primary-600 text-white shadow-sm hover:bg-primary-700 active:bg-primary-800 ' +
-    'dark:bg-primary-500 dark:hover:bg-primary-600 focus-visible:ring-primary-400',
+    'bg-primary-600 text-white shadow-sm shadow-primary-500/20 hover:shadow-primary-500/40 hover:bg-primary-700 active:bg-primary-800 ' +
+    'dark:bg-primary-500 dark:hover:bg-primary-400 focus-visible:ring-primary-400 transition-all duration-300',
   secondary:
-    'bg-surface-raised text-gray-900 border border-gray-200 shadow-sm hover:bg-surface-overlay ' +
-    'dark:bg-surface-raised dark:text-gray-100 dark:border-gray-700 dark:hover:bg-surface-overlay ' +
-    'focus-visible:ring-gray-400',
+    'bg-white/80 backdrop-blur-sm text-gray-900 border border-gray-200 shadow-sm hover:shadow-md hover:bg-white ' +
+    'dark:bg-gray-900/50 dark:backdrop-blur-md dark:text-gray-100 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:border-gray-700 ' +
+    'focus-visible:ring-gray-400 transition-all duration-300',
   outline:
     'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 active:bg-primary-100 ' +
     'dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-950 ' +

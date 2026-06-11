@@ -57,13 +57,16 @@ export function ProductCard({
 
   return (
     <motion.article
-      whileHover={{ y: -3 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
       className={cn(
         'group relative flex flex-col rounded-card overflow-hidden',
-        'bg-surface border border-gray-100 shadow-card',
-        'hover:shadow-card-hover transition-shadow duration-300',
-        'dark:bg-surface-raised dark:border-gray-800',
+        // Premium glassmorphism
+        'bg-white/70 dark:bg-gray-900/60 backdrop-blur-xl',
+        'border border-white/40 dark:border-gray-800/60 shadow-sm',
+        // Hover glows and transitions
+        'transition-all duration-500 ease-out',
+        'hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgba(var(--color-primary-500),0.1)]',
+        'hover:border-primary-500/30 dark:hover:border-primary-500/40',
         variant === 'compact' && 'text-sm',
         variant === 'featured' && 'md:col-span-2 md:flex-row',
         className,
@@ -83,8 +86,8 @@ export function ProductCard({
           loading={priority ? 'eager' : 'lazy'}
           onLoad={() => setImgLoaded(true)}
           className={cn(
-            'h-full w-full object-cover transition-transform duration-500',
-            'group-hover:scale-105',
+            'h-full w-full object-cover transition-transform duration-700 ease-out',
+            'group-hover:scale-110',
             !imgLoaded && 'opacity-0',
           )}
         />
@@ -204,11 +207,11 @@ export function ProductCard({
             whileTap={outOfStock ? undefined : { scale: 0.94 }}
             className={cn(
               'flex h-9 w-9 shrink-0 items-center justify-center rounded-button',
-              'shadow-sm transition-colors duration-150',
+              'shadow-sm transition-all duration-300',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               inCart
-                ? 'bg-primary-600 text-white hover:bg-primary-700'
-                : 'bg-primary-50 text-primary-600 hover:bg-primary-100 dark:bg-primary-900/40 dark:text-primary-400 dark:hover:bg-primary-900/60',
+                ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-primary-500/25 hover:shadow-primary-500/40'
+                : 'bg-primary-50 text-primary-600 hover:bg-primary-500 hover:text-white dark:bg-primary-900/40 dark:text-primary-400 dark:hover:bg-primary-500 dark:hover:text-white',
             )}
             aria-label="Add to cart"
           >
