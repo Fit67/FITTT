@@ -57,7 +57,17 @@ app.use('/api/', globalLimiter)
 
 // ─── CORS ──────────────────────────────────────────────────────
 app.use(cors({
-  origin:      process.env.FRONTEND_URL ?? 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+    
+    const allowedOrigin = process.env.FRONTEND_URL ?? 'http://localhost:3000'
+    if (origin === allowedOrigin || origin.endsWith('.vercel.app') || origin.startsWith('http://localhost:')) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods:     ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 }))
