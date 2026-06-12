@@ -37,7 +37,6 @@ export const ar = {
   // Hero Section
   heroHeadline: "وقود أدائك الرياضي",
   heroSubtext: "مكملات غذائية وأدوات رياضية عالية الجودة للمحترفين.",
-  heroWhatsSelling: "الأكثر مبيعاً",
   nowDelivering: "شحن سريع لجميع الطلبات",
   shopNow: "تسوق الآن",
   todaysDeals: "عروض اليوم",
