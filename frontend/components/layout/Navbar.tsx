@@ -229,7 +229,7 @@ export function Navbar() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.97 }}
                     transition={{ duration: 0.16 }}
-                    className="absolute right-0 top-full mt-2 w-52 border border-gray-100 bg-white/98 backdrop-blur-xl shadow-xl dark:border-[#1e1e1e] dark:bg-[#0a0a0a]/98 overflow-hidden"
+                    className="absolute right-0 top-full mt-2 w-52 border border-gray-100 bg-white backdrop-blur-xl shadow-xl dark:border-[#1e1e1e] dark:bg-[#0a0a0a] overflow-hidden"
                     style={{ transformOrigin: 'top right' }}
                   >
                     {isAuthenticated ? (

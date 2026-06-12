@@ -20,18 +20,22 @@ const stagger = {
 }
 
 // ─── Products data (from design direction) ─────────────────────
-const TOP_SELLERS = [
-  { num: '01', name: 'Whey Pro Gold 2.2kg',   price: '480 ج.م.' },
-  { num: '02', name: 'Rage X Pre-Workout',     price: '220 ج.م.' },
-  { num: '03', name: 'BCAA Matrix Cherry',     price: '255 ج.م.' },
-  { num: '04', name: 'Omega-3 90 Caps',        price: '150 ج.م.' },
-]
+export function getTopSellers(t: any) {
+  return [
+    { num: '01', name: t('productWhey'),   price: '480 ج.م.' },
+    { num: '02', name: t('productRage'),     price: '220 ج.م.' },
+    { num: '03', name: t('productBcaa'),     price: '255 ج.م.' },
+    { num: '04', name: t('productOmega'),        price: '150 ج.م.' },
+  ];
+}
 
-const METRICS = [
-  { val: '12k+', label: 'Athletes served' },
-  { val: '4.9',  label: 'Average rating'  },
-  { val: '24h',  label: 'Cairo delivery'  },
-]
+export function getMetrics(t: any) {
+  return [
+    { val: '12k+', label: t('heroAthletesServed') },
+    { val: '4.9',  label: t('heroAverageRating')  },
+    { val: '24h',  label: t('heroCairoDelivery')  },
+  ];
+}
 
 export function HeroSection() {
   return <EditorialHero />
@@ -80,7 +84,7 @@ function EditorialHero() {
             <motion.div variants={stagger.item} className="flex items-center gap-2.5 mb-8">
               <div className="h-px w-6 bg-gray-300 dark:bg-[#555]" />
               <span className="text-[11px] font-light uppercase tracking-[0.14em] text-gray-400 dark:text-[#555]">
-                01 / 03 &nbsp; Performance nutrition
+                {t('heroEyebrow')}
               </span>
             </motion.div>
 
@@ -89,9 +93,9 @@ function EditorialHero() {
               variants={stagger.item}
               className="font-display text-[clamp(44px,6vw,68px)] font-normal leading-[1.0] text-gray-900 dark:text-[#e8e0d4] tracking-[-0.02em] mb-0"
             >
-              Fuel the<br />
-              <em className="italic text-primary-600 dark:text-[#c8822a]">work</em>
-              <span className="block ml-8 md:ml-10">that matters.</span>
+              {t('heroHeadlineFuel')}<br />
+              <em className="italic text-primary-600 dark:text-[#c8822a]">{t('heroHeadlineWork')}</em>
+              <span className="block ml-8 md:ml-10">{t('heroHeadlineMatters')}</span>
             </motion.h1>
           </div>
 
@@ -100,18 +104,18 @@ function EditorialHero() {
             variants={stagger.item}
             className="text-[13px] font-light text-gray-500 dark:text-[#666] leading-[1.8] max-w-[280px] border-l-2 border-primary-500 dark:border-[#c8822a] pl-4 mt-8"
           >
-            Premium supplements for athletes who train seriously. No fillers. No compromises. Delivered to Cairo in 24h.
+            {t('heroSubtext2')}
           </motion.p>
 
           {/* CTAs */}
           <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-5 mt-8">
             <Link href="/shop/products">
               <button className="text-[11px] font-medium uppercase tracking-[0.12em] bg-primary-600 dark:bg-[#c8822a] text-white px-6 py-3 hover:opacity-90 transition-opacity">
-                Shop now
+                {t('shopNow')}
               </button>
             </Link>
             <Link href="/shop/products?onSale=true" className="flex items-center gap-2 text-[11px] font-light uppercase tracking-[0.12em] text-gray-500 dark:text-[#666] hover:text-gray-900 dark:hover:text-[#e8e0d4] transition-colors">
-              See today's deals
+              {t('todaysDeals')}
               <span className="text-primary-600 dark:text-[#c8822a]">→</span>
             </Link>
           </motion.div>
@@ -119,8 +123,8 @@ function EditorialHero() {
           {/* Trust line */}
           <motion.div variants={stagger.item} className="flex flex-wrap gap-6 mt-8 pt-8 border-t border-gray-100 dark:border-[#1e1e1e]">
             {[
-              { icon: Truck,   label: 'Free shipping over 2,000 ج.م.' },
-              { icon: Shield,  label: 'Verified authentic supplements' },
+              { icon: Truck,   label: t('freeShipping') },
+              { icon: Shield,  label: t('qualityGuarantee') },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-[12px] text-gray-400 dark:text-[#555]">
                 <Icon size={14} className="text-primary-500 dark:text-[#c8822a] shrink-0" />
@@ -139,7 +143,7 @@ function EditorialHero() {
         >
           {/* Tag */}
           <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-primary-600 dark:text-[#c8822a] mb-6">
-            ↑ Featured this week
+            {t('heroFeaturedThisWeek')}
           </div>
 
           {/* Product stack */}
@@ -171,7 +175,7 @@ function EditorialHero() {
               </Link>
             ))}
 
-            {!isLoading && products.length === 0 && TOP_SELLERS.map((item, i) => (
+            {!isLoading && products.length === 0 && getTopSellers(t).map((item, i) => (
               <motion.div
                 key={item.num}
                 initial={{ opacity: 0, x: 12 }}
@@ -192,7 +196,7 @@ function EditorialHero() {
 
           {/* Metrics row */}
           <div className="flex items-end justify-between pt-7 border-t border-gray-100 dark:border-[#1e1e1e] mt-6">
-            {METRICS.map(({ val, label }) => (
+            {getMetrics(t).map(({ val, label }) => (
               <div key={label} className="flex flex-col gap-1">
                 <span className="font-display text-[28px] italic text-gray-900 dark:text-[#e8e0d4] leading-none">
                   {val}
@@ -210,16 +214,16 @@ function EditorialHero() {
       <div className="border-t border-b border-gray-100 dark:border-[#1e1e1e] py-[10px] overflow-hidden">
         <div className="ticker-track">
           {[
-            'Free shipping over 2,000 ج.م.',
-            'Verified authentic supplements',
-            'انضم لجروب الواتساب لأحدث العروض',
-            'Easy 30-day returns',
-            '1:1 athlete support',
-            'Free shipping over 2,000 ج.م.',
-            'Verified authentic supplements',
-            'انضم لجروب الواتساب لأحدث العروض',
-            'Easy 30-day returns',
-            '1:1 athlete support',
+            t('freeShipping'),
+            t('qualityGuarantee'),
+            t('heroWhatsApp'),
+            t('easyReturns'),
+            t('hero1on1'),
+            t('freeShipping'),
+            t('qualityGuarantee'),
+            t('heroWhatsApp'),
+            t('easyReturns'),
+            t('hero1on1'),
           ].map((item, i) => (
             <span
               key={i}
