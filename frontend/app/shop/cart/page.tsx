@@ -110,12 +110,7 @@ export default function CartPage() {
                         src={getProductImage(item.product.images ?? [])}
                         alt={item.product.name}
                         className="h-20 w-20 rounded-lg object-cover sm:h-24 sm:w-24 transition-transform duration-300 hover:scale-105"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          if (!target.src.includes('placeholder.png')) {
-                            target.src = '/images/placeholder.png';
-                          }
-                        }}
+                        onError={(e) => { ;(e.target as HTMLImageElement).src = '/images/placeholder.png' }}
                       />
                     </Link>
 

@@ -90,14 +90,6 @@ export function ProductCard({
           alt={product.name}
           loading={priority ? 'eager' : 'lazy'}
           onLoad={() => setImgLoaded(true)}
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            if (!target.src.includes('placeholder.png')) {
-              target.src = '/images/placeholder.png';
-            } else {
-              setImgLoaded(true); // If even placeholder fails, stop skeleton
-            }
-          }}
           className={cn(
             'h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]',
             imgLoaded ? 'opacity-100' : 'opacity-0',
@@ -242,12 +234,6 @@ function HorizontalCard({ product }: { product: Product }) {
           src={image}
           alt={product.name}
           className="h-16 w-16 object-cover transition-transform duration-300 hover:scale-105"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            if (!target.src.includes('placeholder.png')) {
-              target.src = '/images/placeholder.png';
-            }
-          }}
         />
       </Link>
       <div className="flex flex-1 flex-col justify-between">

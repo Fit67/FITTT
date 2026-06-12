@@ -201,10 +201,8 @@ export default function ProductPage({ params }: Props) {
                     transition={{ duration: 0.25 }}
                     className="h-full w-full object-cover"
                     onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (!target.src.includes('placeholder.png')) {
-                        target.src = '/images/placeholder.png';
-                      }
+                      // BUG FIXED: broken image src crashing the render
+                      ;(e.target as HTMLImageElement).src = '/images/placeholder.png'
                     }}
                   />
                 </AnimatePresence>
@@ -250,12 +248,7 @@ export default function ProductPage({ params }: Props) {
                         src={img.url}
                         alt={img.alt ?? ''}
                         className="h-full w-full object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          if (!target.src.includes('placeholder.png')) {
-                            target.src = '/images/placeholder.png';
-                          }
-                        }}
+                        onError={(e) => { ;(e.target as HTMLImageElement).src = '/images/placeholder.png' }}
                       />
                     </button>
                   ))}
