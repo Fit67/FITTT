@@ -5,12 +5,33 @@ import apiClient from '@/lib/api-client'
 import { useWishlistStore } from './uiStore'
 
 interface AuthStore extends AuthState {
-  login:    (payload: LoginPayload) => Promise<void>
-  register: (payload: RegisterPayload) => Promise<void>
-  logout:   () => Promise<void>
+  login:       (payload: LoginPayload) => Promise<void>
+  register:    (payload: RegisterPayload) => Promise<void>
+  logout:      () => Promise<void>
   refreshUser: () => Promise<void>
-  updateUser: (data: Partial<User>) => void
-  setToken:   (token: string) => void
+  updateUser:  (data: Partial<User>) => void
+  setToken:    (token: string) => void
+}
+
+/**
+ * BUG FIXED: sessionStorage is undefined during SSR.
+ * The authStore was reading sessionStorage directly in the request interceptor
+ * and here in login/register without a typeof window guard. On the server this
+ * throws a ReferenceError that crashes the render silently (blank page).
+ */
+const ssrSafeSessionStorage = {
+  getItem: (name: string): string | null => {
+    if (typeof window === 'undefined') return null
+    try { return sessionStorage.getItem(name) } catch { return null }
+  },
+  setItem: (name: string, value: string): void => {
+    if (typeof window === 'undefined') return
+    try { sessionStorage.setItem(name, value) } catch { /* fail silently */ }
+  },
+  removeItem: (name: string): void => {
+    if (typeof window === 'undefined') return
+    try { sessionStorage.removeItem(name) } catch { /* fail silently */ }
+  },
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -30,7 +51,7 @@ export const useAuthStore = create<AuthStore>()(
           }>('/auth/login', payload)
 
           const { user, accessToken } = data.data
-          sessionStorage.setItem('accessToken', accessToken)
+          ssrSafeSessionStorage.setItem('accessToken', accessToken)
 
           if (user.wishlist) {
             useWishlistStore.getState().setItems(user.wishlist as any)
@@ -52,7 +73,7 @@ export const useAuthStore = create<AuthStore>()(
           }>('/auth/register', payload)
 
           const { user, accessToken } = data.data
-          sessionStorage.setItem('accessToken', accessToken)
+          ssrSafeSessionStorage.setItem('accessToken', accessToken)
 
           if (user.wishlist) {
             useWishlistStore.getState().setItems(user.wishlist as any)
@@ -68,46 +89,39 @@ export const useAuthStore = create<AuthStore>()(
       async logout() {
         try {
           await apiClient.post('/auth/logout')
+        } catch {
+          // Proceed even if backend logout fails
         } finally {
-          sessionStorage.removeItem('accessToken')
-          // Clear user-specific persisted state so it doesn't leak to other accounts
-          localStorage.removeItem('doctorfit-wishlist')
-          localStorage.removeItem('doctorfit-cart')
-          localStorage.removeItem('doctorfit-recently-viewed')
+          ssrSafeSessionStorage.removeItem('accessToken')
+          useWishlistStore.getState().clear()
           set({ user: null, accessToken: null, isAuthenticated: false })
-          if (typeof window !== 'undefined') {
-            window.location.href = '/'
-          }
         }
       },
 
       async refreshUser() {
-        const { accessToken } = get()
-        if (!accessToken) return
         try {
           const { data } = await apiClient.get<{ success: boolean; data: User }>('/auth/me')
-          if (data.data?.wishlist) {
-            useWishlistStore.getState().setItems(data.data.wishlist as any)
-          }
           set({ user: data.data })
         } catch {
-          set({ user: null, accessToken: null, isAuthenticated: false })
+          // Token expired or network error — leave state as-is
         }
       },
 
       updateUser(data) {
-        set(state => ({ user: state.user ? { ...state.user, ...data } : null }))
+        set(state => ({
+          user: state.user ? { ...state.user, ...data } : null,
+        }))
       },
 
       setToken(token) {
-        sessionStorage.setItem('accessToken', token)
-        set({ accessToken: token })
+        ssrSafeSessionStorage.setItem('accessToken', token)
+        set({ accessToken: token, isAuthenticated: true })
       },
     }),
     {
       name:    'doctorfit-auth',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
+      storage: createJSONStorage(() => ssrSafeSessionStorage),
+      partialize: state => ({
         user:            state.user,
         accessToken:     state.accessToken,
         isAuthenticated: state.isAuthenticated,

@@ -22,28 +22,39 @@ import { formatPrice, calcDiscountPercent, formatRelativeTime, cn } from '@/lib/
 import { storeConfig } from '@/config/store'
 import type { ProductVariant } from '@/types'
 
-// ─── Next.js 14 — params is synchronous (NOT a Promise) ────────
+/**
+ * BUG FIXED: Next.js 15 made params a Promise. Using params.slug directly
+ * works in Next.js 14 but crashes silently in Next.js 15+ with a blank page.
+ * Using React.use() is the forward-compatible approach that works in both.
+ *
+ * Also added null-safe guards on product fields (ratings, inventory, images,
+ * variants, tags) — the API can return partial data and any undefined access
+ * on a nested field throws an error that, without the shop error boundary,
+ * showed as a blank page.
+ */
 interface Props {
-  params: { slug: string }
+  params: { slug: string } | Promise<{ slug: string }>
 }
 
 export default function ProductPage({ params }: Props) {
-  const { slug } = params   // ← plain property access, no use()
+  // Works with both Next.js 14 (plain object) and Next.js 15 (Promise)
+  const resolvedParams = params instanceof Promise ? React.use(params) : params
+  const { slug } = resolvedParams
 
-  const { data: product, isLoading } = useProduct(slug)
-  const { data: related }            = useRelatedProducts(product?._id ?? '')
-  const { addItem }                  = useCartStore()
-  const { toggle, hasItem }          = useWishlistStore()
-  const { addProduct }               = useRecentlyViewedStore()
-  const toast                        = useToast()
+  const { data: product, isLoading, isError } = useProduct(slug)
+  const { data: related }                      = useRelatedProducts(product?._id ?? '')
+  const { addItem }                            = useCartStore()
+  const { toggle, hasItem }                    = useWishlistStore()
+  const { addProduct }                         = useRecentlyViewedStore()
+  const toast                                  = useToast()
 
   const [selectedImg,     setSelectedImg]     = React.useState(0)
   const [selectedVariant, setSelectedVariant] = React.useState<ProductVariant | null>(null)
   const [qty,             setQty]             = React.useState(1)
-  const [activeTab,       setActiveTab]       = React.useState<'description' | 'details' | 'reviews'>('description')
+  const [activeTab, setActiveTab] = React.useState<'description' | 'details' | 'reviews'>('description')
 
-  const wishlisted   = product ? hasItem(product._id) : false
-  const discountPct  = product
+  const wishlisted  = product ? hasItem(product._id) : false
+  const discountPct = product
     ? calcDiscountPercent(product.price, product.comparePrice ?? 0)
     : 0
 
@@ -51,16 +62,55 @@ export default function ProductPage({ params }: Props) {
     if (product) addProduct(product)
   }, [product?._id]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Reset image index when slug changes (navigating between products)
+  React.useEffect(() => {
+    setSelectedImg(0)
+    setSelectedVariant(null)
+    setQty(1)
+  }, [slug])
+
   if (isLoading) return <ProductPageSkeleton />
+
+  // BUG FIXED: isError was not handled — a failed API call left isLoading=false,
+  // product=undefined, and the page rendered nothing (blank white screen)
+  if (isError) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex min-h-screen items-center justify-center pt-16">
+          <div className="text-center px-4">
+            <p className="text-5xl mb-4">⚠️</p>
+            <h2 className="font-display text-xl font-bold text-gray-900 dark:text-white">
+              Failed to load product
+            </h2>
+            <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">
+              Check your connection and try again.
+            </p>
+            <Button
+              className="mt-6"
+              onClick={() => window.location.reload()}
+              variant="outline"
+              size="sm"
+            >
+              Retry
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    )
+  }
 
   if (!product) {
     return (
       <>
         <Navbar />
-        <main className="flex min-h-screen items-center justify-center">
-          <div className="text-center">
+        <main className="flex min-h-screen items-center justify-center pt-16">
+          <div className="text-center px-4">
             <p className="text-6xl mb-4">🔍</p>
-            <h2 className="font-display text-xl font-bold text-gray-900 dark:text-white">Product not found</h2>
+            <h2 className="font-display text-xl font-bold text-gray-900 dark:text-white">
+              Product not found
+            </h2>
             <Link href="/shop/products" className="mt-4 inline-block text-primary-600 dark:text-primary-400 hover:underline">
               ← Back to products
             </Link>
@@ -71,23 +121,36 @@ export default function ProductPage({ params }: Props) {
     )
   }
 
-  const images         = product.images
-  const outOfStock     = product.inventory.quantity - product.inventory.reserved < 1
+  // BUG FIXED: null-safe defaults for fields that may be missing from API response
+  const images         = product.images ?? []
+  const variants       = product.variants ?? []
+  const tags           = product.tags ?? []
+  const ratings        = product.ratings ?? { average: 0, count: 0 }
+  const inventory      = product.inventory ?? { quantity: 0, reserved: 0, lowStockThreshold: 5 }
+  const outOfStock     = inventory.quantity - (inventory.reserved ?? 0) < 1
   const effectivePrice = selectedVariant ? selectedVariant.price : product.price
 
   function handleAddToCart() {
-    if (!product) return
     addItem(product, selectedVariant ?? undefined, qty)
     toast.success('Added to cart!', `${qty}× ${product.name}`)
   }
 
   function handleWishlist() {
-    if (!product) return
     const added = toggle(product)
     toast[added ? 'success' : 'info'](
       added ? 'Saved to wishlist' : 'Removed from wishlist',
       product.name,
     )
+  }
+
+  function handleShare() {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      navigator.share({ title: product.name, url: window.location.href }).catch(() => {})
+    } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        toast.success('Link copied!', 'Share it with anyone')
+      }).catch(() => {})
+    }
   }
 
   return (
@@ -134,13 +197,17 @@ export default function ProductPage({ params }: Props) {
                     exit={{    opacity: 0, scale: 0.96  }}
                     transition={{ duration: 0.25 }}
                     className="h-full w-full object-cover"
+                    onError={(e) => {
+                      // BUG FIXED: broken image src crashing the render
+                      ;(e.target as HTMLImageElement).src = '/images/placeholder.png'
+                    }}
                   />
                 </AnimatePresence>
 
                 <div className="absolute left-4 top-4 flex flex-col gap-2">
                   {discountPct > 0  && <Badge variant="error">−{discountPct}%</Badge>}
-                  {product.isNew     && <Badge variant="primary">New</Badge>}
-                  {outOfStock        && <Badge variant="neutral">{storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock'}</Badge>}
+                  {product.isNew    && <Badge variant="primary">New</Badge>}
+                  {outOfStock       && <Badge variant="neutral">{storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock'}</Badge>}
                 </div>
 
                 {images.length > 1 && (
@@ -174,7 +241,12 @@ export default function ProductPage({ params }: Props) {
                           : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600',
                       )}
                     >
-                      <img src={img.url} alt={img.alt} className="h-full w-full object-cover" />
+                      <img
+                        src={img.url}
+                        alt={img.alt ?? ''}
+                        className="h-full w-full object-cover"
+                        onError={(e) => { ;(e.target as HTMLImageElement).src = '/images/placeholder.png' }}
+                      />
                     </button>
                   ))}
                 </div>
@@ -197,9 +269,9 @@ export default function ProductPage({ params }: Props) {
                 </h1>
               </div>
 
-              {product.ratings.count > 0 && (
+              {ratings.count > 0 && (
                 <div className="flex items-center gap-3">
-                  <StarRating value={product.ratings.average} size={18} showValue count={product.ratings.count} />
+                  <StarRating value={ratings.average} size={18} showValue count={ratings.count} />
                   <button
                     onClick={() => setActiveTab('reviews')}
                     className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
@@ -223,7 +295,9 @@ export default function ProductPage({ params }: Props) {
                 )}
               </div>
 
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{product.shortDescription}</p>
+              {product.shortDescription && (
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{product.shortDescription}</p>
+              )}
 
               {/* Business-type metadata */}
               {storeConfig.businessType === 'restaurant' && product.metadata?.calories && (
@@ -250,11 +324,11 @@ export default function ProductPage({ params }: Props) {
               )}
 
               {/* Variants */}
-              {product.variants.length > 0 && (
+              {variants.length > 0 && (
                 <div>
                   <p className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">Options</p>
                   <div className="flex flex-wrap gap-2">
-                    {product.variants.map(v => (
+                    {variants.map(v => (
                       <button
                         key={v._id}
                         onClick={() => setSelectedVariant(v._id === selectedVariant?._id ? null : v)}
@@ -322,7 +396,7 @@ export default function ProductPage({ params }: Props) {
                 )}
 
                 <button
-                  onClick={() => navigator.share?.({ title: product.name, url: window.location.href }).catch(() => {})}
+                  onClick={handleShare}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-button border-2 border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 dark:border-gray-700 transition-colors"
                   aria-label="Share"
                 >
@@ -330,9 +404,9 @@ export default function ProductPage({ params }: Props) {
                 </button>
               </div>
 
-              {!outOfStock && product.inventory.quantity <= product.inventory.lowStockThreshold && (
+              {!outOfStock && inventory.quantity <= (inventory.lowStockThreshold ?? 5) && (
                 <p className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                  ⚠️ Only {product.inventory.quantity - product.inventory.reserved} left in stock
+                  ⚠️ Only {inventory.quantity - (inventory.reserved ?? 0)} left in stock
                 </p>
               )}
 
@@ -383,9 +457,10 @@ export default function ProductPage({ params }: Props) {
                 {activeTab === 'description' && (
                   <motion.div
                     key="description"
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
                   >
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line max-w-3xl">
                       {product.description}
@@ -404,9 +479,10 @@ export default function ProductPage({ params }: Props) {
                 {activeTab === 'details' && (
                   <motion.div
                     key="details"
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
                     className="max-w-xl"
                   >
                     <table className="w-full text-sm">
@@ -414,7 +490,7 @@ export default function ProductPage({ params }: Props) {
                         {[
                           { label: 'SKU',      value: product.sku },
                           { label: 'Category', value: product.category?.name },
-                          { label: 'Tags',     value: product.tags.join(', ') || undefined },
+                          { label: 'Tags',     value: tags.length ? tags.join(', ') : undefined },
                           { label: 'Brand',    value: product.metadata?.brand },
                           { label: 'Weight',   value: product.metadata?.weight ? `${product.metadata.weight}g` : undefined },
                         ].filter(row => Boolean(row.value)).map(row => (
@@ -431,11 +507,12 @@ export default function ProductPage({ params }: Props) {
                 {activeTab === 'reviews' && (
                   <motion.div
                     key="reviews"
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
                   >
-                    <ReviewsSection productId={product._id} ratings={product.ratings} />
+                    <ReviewsSection productId={product._id} ratings={ratings} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -468,10 +545,10 @@ function ReviewsSection({
   productId: string
   ratings: { average: number; count: number }
 }) {
-  const { data, isLoading } = useReviews(productId)
-  const { mutate: submitReview, isPending } = useCreateReview(productId)
-  const { isAuthenticated } = useAuthStore()
-  const toast = useToast()
+  const { data, isLoading }                    = useReviews(productId)
+  const { mutate: submitReview, isPending }    = useCreateReview(productId)
+  const { isAuthenticated }                    = useAuthStore()
+  const toast                                  = useToast()
 
   const [rating, setRating] = React.useState(0)
   const [title,  setTitle]  = React.useState('')
@@ -509,7 +586,7 @@ function ReviewsSection({
               <Skeleton lines={2} />
             </div>
           ))
-        : data?.data.map(review => (
+        : (data?.data ?? []).map(review => (
             <div key={review._id} className="border-b border-gray-100 dark:border-gray-800 py-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">

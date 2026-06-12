@@ -29,7 +29,7 @@ function calcTotals(items: CartItem[], coupon?: Coupon) {
   }
 
   const deliveryFee = coupon?.type === 'free_shipping' ? 0 : rawDelivery
-  const tax         = 0 // No tax required by user
+  const tax         = 0
   const total       = Math.max(subtotal - discount + deliveryFee + tax, 0)
 
   return { subtotal, deliveryFee, discount, tax, total }
@@ -37,6 +37,45 @@ function calcTotals(items: CartItem[], coupon?: Coupon) {
 
 function itemKey(productId: string, variantId?: string) {
   return variantId ? `${productId}::${variantId}` : productId
+}
+
+/**
+ * SSR-safe localStorage storage.
+ *
+ * BUG FIXED: Zustand persist with createJSONStorage(() => localStorage) crashes
+ * during SSR / Next.js static generation because `localStorage` is undefined
+ * on the server. This wrapper guards against that by checking typeof window first,
+ * falling back to a no-op memory store on the server.
+ *
+ * Without this fix, any page that reads from the cart store on the server
+ * (including product pages and the cart page itself) would throw a
+ * ReferenceError, crash the render, and show a blank white page.
+ */
+const ssrSafeStorage = {
+  getItem: (name: string): string | null => {
+    if (typeof window === 'undefined') return null
+    try {
+      return localStorage.getItem(name)
+    } catch {
+      return null
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+      localStorage.setItem(name, value)
+    } catch {
+      // Storage full or restricted — fail silently
+    }
+  },
+  removeItem: (name: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+      localStorage.removeItem(name)
+    } catch {
+      // Fail silently
+    }
+  },
 }
 
 export const useCartStore = create<CartStore>()(
@@ -112,14 +151,14 @@ export const useCartStore = create<CartStore>()(
 
       clearCart() {
         set(state => {
-          state.items      = []
-          state.coupon     = undefined
-          state.subtotal   = 0
-          state.discount   = 0
-          state.deliveryFee= 0
-          state.tax        = 0
-          state.total      = 0
-          state.itemCount  = 0
+          state.items       = []
+          state.coupon      = undefined
+          state.subtotal    = 0
+          state.discount    = 0
+          state.deliveryFee = 0
+          state.tax         = 0
+          state.total       = 0
+          state.itemCount   = 0
         })
       },
 
@@ -135,7 +174,7 @@ export const useCartStore = create<CartStore>()(
     })),
     {
       name:    'doctorfit-cart',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => ssrSafeStorage),
       partialize: state => ({ items: state.items, coupon: state.coupon }),
       onRehydrateStorage: () => state => {
         if (!state) return

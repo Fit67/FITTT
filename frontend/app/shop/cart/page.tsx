@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingCart, Trash2, Plus, Minus, Tag, ArrowRight, ShoppingBag } from 'lucide-react'
+import { ShoppingCart, Trash2, Plus, Minus, Tag, ArrowRight, ShoppingBag, AlertTriangle } from 'lucide-react'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
@@ -15,18 +15,46 @@ import { formatPrice, getProductImage, getDeliveryLabel } from '@/lib/utils'
 import { storeConfig } from '@/config/store'
 import { cn } from '@/lib/utils'
 
+/**
+ * BUGS FIXED:
+ *
+ * 1. Hydration mismatch → blank page
+ *    The cart store reads from localStorage on mount. On the server, localStorage
+ *    doesn't exist, so the store hydrates with empty items=[]. On the client the
+ *    store rehydrates with real items. This mismatch caused React hydration to fail
+ *    and the page to blank out. Fixed by deferring render until after hydration
+ *    via the `mounted` state pattern.
+ *
+ * 2. Null-safe item access
+ *    item.product could be undefined if localStorage had stale/corrupted data
+ *    from a previous session (e.g. the product was deleted from the backend).
+ *    Added a safety filter before rendering.
+ *
+ * 3. Coupon form doesn't use <form> — avoids accidental page navigation
+ *    on Enter key and HTML form nesting issues.
+ */
+
 export default function CartPage() {
   const {
-    items, subtotal, discount, deliveryFee, tax, total,
+    items: rawItems, subtotal, discount, deliveryFee, tax, total,
     coupon, updateQty, removeItem, applyCoupon, removeCoupon, clearCart,
   } = useCartStore()
+
+  // Hydration guard: don't render until client-side store has rehydrated
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => { setMounted(true) }, [])
 
   const [couponCode, setCouponCode] = React.useState('')
   const { mutate: validateCoupon, isPending: validatingCoupon } = useValidateCoupon()
   const toast = useToast()
 
-  function handleApplyCoupon(e: React.FormEvent) {
-    e.preventDefault()
+  // Safety filter: skip any item where the product object is missing/corrupt
+  const items = React.useMemo(
+    () => (rawItems ?? []).filter(item => item?.product?._id),
+    [rawItems],
+  )
+
+  function handleApplyCoupon() {
     if (!couponCode.trim()) return
     validateCoupon(
       { code: couponCode.trim().toUpperCase(), subtotal },
@@ -34,11 +62,15 @@ export default function CartPage() {
         onSuccess: ({ coupon: c }) => {
           applyCoupon(c)
           toast.success('Coupon applied!', `You saved ${formatPrice(discount)}`)
+          setCouponCode('')
         },
         onError: () => toast.error('Invalid coupon', 'This code is not valid or has expired.'),
       },
     )
   }
+
+  // Show skeleton while hydrating to avoid layout flash
+  if (!mounted) return <CartSkeleton />
 
   if (items.length === 0) return <EmptyCart />
 
@@ -47,32 +79,38 @@ export default function CartPage() {
       <Navbar />
       <main className="min-h-screen pt-24 pb-16">
         <div className="container-page">
-          <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-8">
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.0, 0.0, 0.2, 1.0] }}
+            className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-8"
+          >
             Your Cart
             <Badge variant="primary" className="ml-3 translate-y-[-2px]">{items.length}</Badge>
-          </h1>
+          </motion.h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* ── Cart Items ─────────────────────────────────── */}
             <div className="lg:col-span-2 space-y-4">
-              <AnimatePresence>
+              <AnimatePresence initial={false}>
                 {items.map(item => (
                   <motion.div
-                    key={`${item.product._id}-${item.variant?._id}`}
+                    key={`${item.product._id}-${item.variant?._id ?? 'base'}`}
                     layout
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -100, height: 0, marginBottom: 0 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="flex gap-4 rounded-card border border-gray-100 bg-surface p-4 shadow-card dark:border-gray-800 dark:bg-surface-raised"
+                    exit={{ opacity: 0, x: -80, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                    className="flex gap-4 rounded-card border border-gray-100 bg-white/80 backdrop-blur-sm p-4 shadow-card dark:border-gray-800 dark:bg-gray-900/80"
                   >
                     {/* Image */}
                     <Link href={`/shop/products/${item.product.slug}`} className="shrink-0">
                       <img
-                        src={getProductImage(item.product.images)}
+                        src={getProductImage(item.product.images ?? [])}
                         alt={item.product.name}
-                        className="h-20 w-20 rounded-lg object-cover sm:h-24 sm:w-24"
+                        className="h-20 w-20 rounded-lg object-cover sm:h-24 sm:w-24 transition-transform duration-300 hover:scale-105"
+                        onError={(e) => { ;(e.target as HTMLImageElement).src = '/images/placeholder.png' }}
                       />
                     </Link>
 
@@ -86,7 +124,7 @@ export default function CartPage() {
                       </Link>
                       {item.variant && (
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {item.variant.options.map(o => `${o.name}: ${o.value}`).join(' · ')}
+                          {(item.variant.options ?? []).map((o: { name: string; value: string }) => `${o.name}: ${o.value}`).join(' · ')}
                         </p>
                       )}
                       {item.product.category?.name && (
@@ -102,6 +140,7 @@ export default function CartPage() {
                             onClick={() => updateQty(item.product._id, item.quantity - 1, item.variant?._id)}
                             disabled={item.quantity <= 1}
                             className="flex h-8 w-8 items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 disabled:opacity-30 transition-colors"
+                            aria-label="Decrease quantity"
                           >
                             <Minus size={13} />
                           </button>
@@ -111,6 +150,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQty(item.product._id, item.quantity + 1, item.variant?._id)}
                             className="flex h-8 w-8 items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+                            aria-label="Increase quantity"
                           >
                             <Plus size={13} />
                           </button>
@@ -124,6 +164,7 @@ export default function CartPage() {
                           <button
                             onClick={() => removeItem(item.product._id, item.variant?._id)}
                             className="text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400 transition-colors"
+                            aria-label="Remove item"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -134,19 +175,29 @@ export default function CartPage() {
                 ))}
               </AnimatePresence>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between pt-2">
                 <Link href="/shop/products">
                   <Button variant="ghost" size="sm">Continue Shopping</Button>
                 </Link>
-                <Button variant="ghost" size="sm" onClick={clearCart} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearCart}
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
                   <Trash2 size={14} className="mr-1.5" /> Clear Cart
                 </Button>
               </div>
             </div>
 
             {/* ── Order Summary ──────────────────────────────── */}
-            <div className="space-y-4">
-              <div className="rounded-card border border-gray-100 bg-surface p-6 shadow-card dark:border-gray-800 dark:bg-surface-raised">
+            <motion.div
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.38, ease: [0.0, 0.0, 0.2, 1.0], delay: 0.08 }}
+              className="space-y-4"
+            >
+              <div className="rounded-card border border-gray-100 bg-white/80 backdrop-blur-sm p-6 shadow-card dark:border-gray-800 dark:bg-gray-900/80">
                 <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   Order Summary
                 </h2>
@@ -173,7 +224,6 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Delivery note */}
                 <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
                   {getDeliveryLabel(subtotal)}
                 </p>
@@ -185,9 +235,9 @@ export default function CartPage() {
                 </Link>
               </div>
 
-              {/* Coupon */}
+              {/* Coupon — no <form> tag to avoid hydration mismatch */}
               {storeConfig.enableCoupons && (
-                <div className="rounded-card border border-gray-100 bg-surface p-5 shadow-card dark:border-gray-800 dark:bg-surface-raised">
+                <div className="rounded-card border border-gray-100 bg-white/80 backdrop-blur-sm p-5 shadow-card dark:border-gray-800 dark:bg-gray-900/80">
                   <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
                     <Tag size={14} /> Coupon Code
                   </h3>
@@ -197,25 +247,36 @@ export default function CartPage() {
                       <span className="text-sm font-mono font-bold text-emerald-700 dark:text-emerald-400">
                         {coupon.code}
                       </span>
-                      <button onClick={removeCoupon} className="text-xs text-gray-400 hover:text-red-500 transition-colors">
+                      <button
+                        onClick={removeCoupon}
+                        className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+                      >
                         Remove
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                    <div className="flex gap-2">
                       <input
                         value={couponCode}
                         onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                        onKeyDown={e => e.key === 'Enter' && handleApplyCoupon()}
                         placeholder="ENTER CODE"
                         maxLength={20}
                         className="flex-1 rounded-button border border-gray-200 dark:border-gray-700 bg-surface dark:bg-surface-overlay px-3 py-2 text-sm font-mono uppercase outline-none focus:border-primary-500 transition-colors"
                       />
-                      <Button size="sm" type="submit" loading={validatingCoupon}>Apply</Button>
-                    </form>
+                      <Button
+                        size="sm"
+                        onClick={handleApplyCoupon}
+                        loading={validatingCoupon}
+                        disabled={!couponCode.trim()}
+                      >
+                        Apply
+                      </Button>
+                    </div>
                   )}
                 </div>
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </main>
@@ -224,6 +285,7 @@ export default function CartPage() {
   )
 }
 
+// ─── Empty state ───────────────────────────────────────────────
 function EmptyCart() {
   return (
     <>
@@ -232,6 +294,7 @@ function EmptyCart() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.38, ease: [0.0, 0.0, 0.2, 1.0] }}
           className="text-center px-4"
         >
           <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-surface-raised dark:bg-surface-overlay">
@@ -245,6 +308,36 @@ function EmptyCart() {
             <Button size="lg" icon={<ShoppingBag size={18} />}>Start Shopping</Button>
           </Link>
         </motion.div>
+      </main>
+      <Footer />
+    </>
+  )
+}
+
+// ─── Loading skeleton (shown during hydration) ─────────────────
+function CartSkeleton() {
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-24 pb-16">
+        <div className="container-page">
+          <div className="h-9 w-40 skeleton rounded-full mb-8" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-4">
+              {[0, 1, 2].map(i => (
+                <div key={i} className="flex gap-4 rounded-card border border-gray-100 dark:border-gray-800 p-4">
+                  <div className="h-20 w-20 skeleton rounded-lg shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-3/4 skeleton rounded-full" />
+                    <div className="h-3 w-1/3 skeleton rounded-full" />
+                    <div className="h-8 w-28 skeleton rounded-button mt-4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="h-64 skeleton rounded-card" />
+          </div>
+        </div>
       </main>
       <Footer />
     </>

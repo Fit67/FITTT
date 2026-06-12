@@ -3,12 +3,36 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Product, ToastOptions, ModalState } from '@/types'
 import apiClient from '@/lib/api-client'
 
+/**
+ * SSR-safe localStorage wrapper.
+ *
+ * BUG FIXED: Same issue as cartStore — calling localStorage in a Zustand
+ * persist store crashes during SSR because localStorage doesn't exist on
+ * the server. This wrapper guards against it.
+ *
+ * Affected stores: wishlist, recentlyViewed.
+ */
+const ssrSafeStorage = {
+  getItem: (name: string): string | null => {
+    if (typeof window === 'undefined') return null
+    try { return localStorage.getItem(name) } catch { return null }
+  },
+  setItem: (name: string, value: string): void => {
+    if (typeof window === 'undefined') return
+    try { localStorage.setItem(name, value) } catch { /* storage full */ }
+  },
+  removeItem: (name: string): void => {
+    if (typeof window === 'undefined') return
+    try { localStorage.removeItem(name) } catch { /* fail silently */ }
+  },
+}
+
 // ─── Wishlist Store ────────────────────────────────────────────
 interface WishlistStore {
   items:      Product[]
   addItem:    (product: Product) => void
   removeItem: (productId: string) => void
-  toggle:     (product: Product) => boolean   // true = added, false = removed
+  toggle:     (product: Product) => boolean
   hasItem:    (productId: string) => boolean
   clear:      () => void
   setItems:   (items: Product[]) => void
@@ -35,22 +59,20 @@ export const useWishlistStore = create<WishlistStore>()(
         } else {
           get().addItem(product)
         }
-        
+
         // Optimistically sync with backend if user is logged in
-        if (sessionStorage.getItem('accessToken')) {
+        if (typeof window !== 'undefined' && sessionStorage.getItem('accessToken')) {
           apiClient.post('/auth/wishlist/toggle', { productId: product._id }).catch(console.error)
         }
-        
-        return !has   // true = now in wishlist, false = removed
+
+        return !has
       },
 
       hasItem: (productId) => get().items.some(i => i._id === productId),
-
-      clear: () => set({ items: [] }),
-      
-      setItems: (items) => set({ items }),
+      clear:   () => set({ items: [] }),
+      setItems:(items) => set({ items }),
     }),
-    { name: 'doctorfit-wishlist', storage: createJSONStorage(() => localStorage) },
+    { name: 'doctorfit-wishlist', storage: createJSONStorage(() => ssrSafeStorage) },
   ),
 )
 
@@ -132,6 +154,6 @@ export const useRecentlyViewedStore = create<RecentlyViewedStore>()(
 
       clear: () => set({ products: [] }),
     }),
-    { name: 'doctorfit-recently-viewed', storage: createJSONStorage(() => localStorage) },
+    { name: 'doctorfit-recently-viewed', storage: createJSONStorage(() => ssrSafeStorage) },
   ),
 )

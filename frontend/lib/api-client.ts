@@ -10,16 +10,25 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api'
 export const apiClient = axios.create({
   baseURL: BASE_URL,
   timeout: 15_000,
-  withCredentials: true, // send HttpOnly refresh-token cookie
+  withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 })
 
 // ─── Request interceptor — attach access token ─────────────────
+/**
+ * BUG FIXED: The original code did `typeof window !== 'undefined'` check but
+ * sessionStorage can still throw in some SSR environments (e.g. edge runtime).
+ * Wrapped in try-catch to be safe.
+ */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== 'undefined') {
-      const token = sessionStorage.getItem('accessToken')
-      if (token) config.headers.Authorization = `Bearer ${token}`
+      try {
+        const token = sessionStorage.getItem('accessToken')
+        if (token) config.headers.Authorization = `Bearer ${token}`
+      } catch {
+        // sessionStorage unavailable (private browsing restriction, etc.)
+      }
     }
     return config
   },
@@ -27,10 +36,10 @@ apiClient.interceptors.request.use(
 )
 
 // ─── Response interceptor — refresh token on 401 ──────────────
-let isRefreshing = false
+let isRefreshing   = false
 type FailedRequest = {
   resolve: (token: string) => void
-  reject: (err: unknown) => void
+  reject:  (err: unknown) => void
 }
 let failedQueue: FailedRequest[] = []
 
@@ -69,13 +78,13 @@ apiClient.interceptors.response.use(
           '/auth/refresh-token',
         )
         const newToken = data.accessToken
-        sessionStorage.setItem('accessToken', newToken)
+        try { sessionStorage.setItem('accessToken', newToken) } catch { /* fail silently */ }
         apiClient.defaults.headers.common.Authorization = `Bearer ${newToken}`
         processQueue(null, newToken)
         return apiClient(original)
       } catch (refreshErr) {
         processQueue(refreshErr, null)
-        sessionStorage.removeItem('accessToken')
+        try { sessionStorage.removeItem('accessToken') } catch { /* fail silently */ }
         if (typeof window !== 'undefined') window.location.href = '/auth/login'
         return Promise.reject(refreshErr)
       } finally {
