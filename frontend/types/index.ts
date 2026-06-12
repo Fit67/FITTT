@@ -158,6 +158,7 @@ export interface Product {
   ratings: ProductRatings
   status: ProductStatus
   isFeatured: boolean
+  isTopSeller: boolean
   isNew: boolean
   metadata: ProductMetadata
   createdAt: string
