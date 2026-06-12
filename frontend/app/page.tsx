@@ -2,12 +2,7 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Navbar }               from '@/components/layout/Navbar'
 import { Footer }               from '@/components/layout/Footer'
-import { HeroSection }          from '@/modules/hero/HeroSection'
-import { CategoriesGrid }       from '@/modules/categories/CategoriesGrid'
-import { FeaturedProducts }     from '@/modules/product-card/FeaturedProducts'
-import { PromoBanners }         from '@/modules/banners/PromoBanners'
-import { PremiumExperience }    from '@/modules/banners/PromoBanners'
-import { DeliveryStripeBanner } from '@/modules/banners/DeliveryStripeBanner'
+import { HomeClient }           from '@/modules/home/HomeClient'
 import { ThemeApplier }         from '@/components/providers/ThemeApplier'
 import { storeConfig }          from '@/config/store'
 
@@ -21,20 +16,7 @@ export default function HomePage() {
     <>
       <ThemeApplier />
       <Navbar />
-      <main>
-        <HeroSection />
-        <DeliveryStripeBanner />
-        <PremiumExperience />
-        <Suspense fallback={null}>
-          <CategoriesGrid />
-        </Suspense>
-        <Suspense fallback={null}>
-          <FeaturedProducts />
-        </Suspense>
-        <Suspense fallback={null}>
-          <PromoBanners />
-        </Suspense>
-      </main>
+      <HomeClient />
       <Footer />
     </>
   )
