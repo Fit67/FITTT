@@ -2,7 +2,7 @@ import mongoose, { Schema, type Document } from 'mongoose'
 
 export type OrderStatus = 'pending'|'confirmed'|'processing'|'shipped'|'out_for_delivery'|'delivered'|'cancelled'|'refunded'
 export type PaymentStatus = 'pending'|'paid'|'failed'|'refunded'
-export type PaymentMethod = 'stripe'|'cash_on_delivery'|'wallet'
+export type PaymentMethod = 'stripe'|'cash_on_delivery'|'wallet'|'instapay'
 
 export interface IOrder extends Document {
   orderNumber:         string
@@ -24,6 +24,8 @@ export interface IOrder extends Document {
   paymentStatus: PaymentStatus
   paymentMethod: PaymentMethod
   stripePaymentIntentId?: string
+  paymentProofImage?: string
+  paymentProofFileName?: string
   subtotal:    number
   discount:    number
   deliveryFee: number
@@ -70,8 +72,10 @@ const OrderSchema = new Schema<IOrder>(
       default: 'pending',
     },
     paymentStatus: { type: String, enum: ['pending','paid','failed','refunded'], default: 'pending' },
-    paymentMethod: { type: String, enum: ['stripe','cash_on_delivery','wallet'], required: true },
+    paymentMethod: { type: String, enum: ['stripe','cash_on_delivery','wallet','instapay'], required: true },
     stripePaymentIntentId: String,
+    paymentProofImage: String,
+    paymentProofFileName: String,
 
     subtotal:    { type: Number, required: true, min: 0 },
     discount:    { type: Number, default: 0,     min: 0 },

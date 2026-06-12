@@ -5,7 +5,71 @@ import { Category } from '../models/index'
 import { AppError } from '../middleware/errorHandler'
 import { uploadImageBuffer } from '../utils/cloudinary'
 
-const toBool = (val: any) => val === 'true' || val === true
+type MutableProductData = Record<string, any>
+
+function toBool(value: unknown) {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') return value === 'true'
+  return Boolean(value)
+}
+
+function cleanNumberFields(data: MutableProductData, fields: string[]) {
+  for (const field of fields) {
+    if (data[field] === '' || data[field] === undefined || data[field] === null) {
+      delete data[field]
+    } else {
+      data[field] = Number(data[field])
+    }
+  }
+}
+
+function normalizeImages(images: unknown, productName?: string) {
+  if (!images) return undefined
+  const raw = Array.isArray(images) ? images : [images]
+  const normalized = raw
+    .map((image, index) => {
+      if (typeof image === 'string') {
+        return { url: image, alt: productName ?? '', isPrimary: index === 0 }
+      }
+      if (image && typeof image === 'object' && 'url' in image) {
+        return { isPrimary: index === 0, alt: productName ?? '', ...image }
+      }
+      return null
+    })
+    .filter(Boolean)
+  return normalized.length ? normalized : undefined
+}
+
+function normalizeProductPayload(body: MutableProductData) {
+  const productData: MutableProductData = { ...body }
+
+  cleanNumberFields(productData, ['price', 'comparePrice', 'cost'])
+
+  if (productData.isFeatured !== undefined) productData.isFeatured = toBool(productData.isFeatured)
+  if (productData.isTopSeller !== undefined) productData.isTopSeller = toBool(productData.isTopSeller)
+  if (productData.newArrival !== undefined) productData.newArrival = toBool(productData.newArrival)
+  if (productData.isNew !== undefined) {
+    productData.newArrival = toBool(productData.isNew)
+    delete productData.isNew
+  }
+
+  if (productData.tags && typeof productData.tags === 'string') {
+    productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
+  }
+
+  if (productData.inventory && typeof productData.inventory === 'string') {
+    try { productData.inventory = JSON.parse(productData.inventory) } catch { delete productData.inventory }
+  } else if (productData.quantity !== undefined && productData.quantity !== '') {
+    const quantity = Number(productData.quantity)
+    productData.inventory = { quantity, inStock: quantity > 0 }
+  }
+  delete productData.quantity
+
+  const images = normalizeImages(productData.images, productData.name)
+  if (images) productData.images = images
+
+  return productData
+}
 
 // ─── GET /products ─────────────────────────────────────────────
 export async function getProducts(req: Request, res: Response, next: NextFunction) {
@@ -65,14 +129,15 @@ export async function getProducts(req: Request, res: Response, next: NextFunctio
     const sort = sortMap[sortBy] ?? sortMap.popular
 
     const skip  = (Number(page) - 1) * Number(limit)
-    const total = await Product.countDocuments(filter)
-
-    const products = await Product.find(filter)
-      .populate('category', 'name slug')
-      .sort(sort)
-      .skip(skip)
-      .limit(Number(limit))
-      .lean()
+    const [total, products] = await Promise.all([
+      Product.countDocuments(filter),
+      Product.find(filter)
+        .populate('category', 'name slug')
+        .sort(sort)
+        .skip(skip)
+        .limit(Number(limit))
+        .lean(),
+    ])
 
     res.json({
       success: true,
@@ -181,23 +246,15 @@ export async function getRelatedProducts(req: Request, res: Response, next: Next
 // ─── Admin: Create product ─────────────────────────────────────
 export async function createProduct(req: Request, res: Response, next: NextFunction) {
   try {
-    console.log('[createProduct] req.body:', req.body)
-    console.log('[createProduct] req.file:', req.file ? 'File attached' : 'No file')
-    
-    const productData = { ...req.body }
-    if (productData.isFeatured !== undefined) productData.isFeatured = toBool(productData.isFeatured)
-    if (productData.isTopSeller !== undefined) productData.isTopSeller = toBool(productData.isTopSeller)
-    if (productData.newArrival !== undefined) productData.newArrival = toBool(productData.newArrival)
-
-    if (productData.inventory && typeof productData.inventory === 'string') {
-      try { productData.inventory = JSON.parse(productData.inventory) } catch (e) {}
-    } else if (productData.quantity) {
-      productData.inventory = { quantity: Number(productData.quantity), inStock: Number(productData.quantity) > 0 }
-    }
+    const productData = normalizeProductPayload(req.body)
 
     if (req.file) {
-      const uploadResult = await uploadImageBuffer(req.file.buffer)
-      productData.images = [{ url: uploadResult.secure_url, alt: productData.name, isPrimary: true }]
+      const uploadResult = await uploadImageBuffer(req.file.buffer, 'products', req.file.mimetype)
+      productData.images = [{
+        url: uploadResult.secure_url,
+        alt: productData.name ?? '',
+        isPrimary: true,
+      }]
     }
 
     const product = await Product.create(productData)
@@ -208,23 +265,15 @@ export async function createProduct(req: Request, res: Response, next: NextFunct
 // ─── Admin: Update product ─────────────────────────────────────
 export async function updateProduct(req: Request, res: Response, next: NextFunction) {
   try {
-    console.log('[updateProduct] req.body:', req.body)
-    console.log('[updateProduct] req.file:', req.file ? 'File attached' : 'No file')
-
-    const productData = { ...req.body }
-    if (productData.isFeatured !== undefined) productData.isFeatured = toBool(productData.isFeatured)
-    if (productData.isTopSeller !== undefined) productData.isTopSeller = toBool(productData.isTopSeller)
-    if (productData.newArrival !== undefined) productData.newArrival = toBool(productData.newArrival)
-
-    if (productData.inventory && typeof productData.inventory === 'string') {
-      try { productData.inventory = JSON.parse(productData.inventory) } catch (e) {}
-    } else if (productData.quantity !== undefined) {
-      productData.inventory = { quantity: Number(productData.quantity), inStock: Number(productData.quantity) > 0 }
-    }
+    const productData = normalizeProductPayload(req.body)
 
     if (req.file) {
-      const uploadResult = await uploadImageBuffer(req.file.buffer)
-      productData.images = [{ url: uploadResult.secure_url, alt: productData.name, isPrimary: true }]
+      const uploadResult = await uploadImageBuffer(req.file.buffer, 'products', req.file.mimetype)
+      productData.images = [{
+        url: uploadResult.secure_url,
+        alt: productData.name ?? '',
+        isPrimary: true,
+      }]
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, productData, {

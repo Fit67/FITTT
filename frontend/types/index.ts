@@ -281,7 +281,7 @@ export type OrderStatus =
   | 'refunded'
 
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded'
-export type PaymentMethod = 'stripe' | 'cash_on_delivery' | 'wallet'
+export type PaymentMethod = 'stripe' | 'cash_on_delivery' | 'wallet' | 'instapay'
 
 export interface Order {
   _id: string
@@ -294,6 +294,8 @@ export interface Order {
   paymentStatus: PaymentStatus
   paymentMethod: PaymentMethod
   stripePaymentIntentId?: string
+  paymentProofImage?: string
+  paymentProofFileName?: string
   subtotal: number
   discount: number
   deliveryFee: number

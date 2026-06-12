@@ -27,6 +27,29 @@ const ssrSafeStorage = {
   },
 }
 
+function isProductLike(value: unknown): value is Product {
+  if (!value || typeof value !== 'object') return false
+  const product = value as Partial<Product>
+  return (
+    typeof product._id === 'string' &&
+    product._id.length > 0 &&
+    typeof product.name === 'string' &&
+    typeof product.slug === 'string' &&
+    Number.isFinite(product.price)
+  )
+}
+
+function sanitizeProducts(products: unknown): Product[] {
+  if (!Array.isArray(products)) return []
+  const seen = new Set<string>()
+
+  return products.filter((product): product is Product => {
+    if (!isProductLike(product) || seen.has(product._id)) return false
+    seen.add(product._id)
+    return true
+  })
+}
+
 // ─── Wishlist Store ────────────────────────────────────────────
 interface WishlistStore {
   items:      Product[]
@@ -44,6 +67,7 @@ export const useWishlistStore = create<WishlistStore>()(
       items: [],
 
       addItem(product) {
+        if (!isProductLike(product)) return
         if (get().hasItem(product._id)) return
         set(state => ({ items: [...state.items, product] }))
       },
@@ -70,9 +94,17 @@ export const useWishlistStore = create<WishlistStore>()(
 
       hasItem: (productId) => get().items.some(i => i._id === productId),
       clear:   () => set({ items: [] }),
-      setItems:(items) => set({ items }),
+      setItems:(items) => set({ items: sanitizeProducts(items) }),
     }),
-    { name: 'doctorfit-wishlist', storage: createJSONStorage(() => ssrSafeStorage) },
+    {
+      name: 'doctorfit-wishlist',
+      storage: createJSONStorage(() => ssrSafeStorage),
+      partialize: state => ({ items: sanitizeProducts(state.items) }),
+      onRehydrateStorage: () => state => {
+        if (!state) return
+        state.items = sanitizeProducts(state.items)
+      },
+    },
   ),
 )
 
@@ -144,16 +176,25 @@ export const useRecentlyViewedStore = create<RecentlyViewedStore>()(
       products: [],
 
       addProduct(product) {
+        if (!isProductLike(product)) return
         set({
           products: [
             product,
-            ...get().products.filter(p => p._id !== product._id),
+            ...sanitizeProducts(get().products).filter(p => p._id !== product._id),
           ].slice(0, MAX_RECENT),
         })
       },
 
       clear: () => set({ products: [] }),
     }),
-    { name: 'doctorfit-recently-viewed', storage: createJSONStorage(() => ssrSafeStorage) },
+    {
+      name: 'doctorfit-recently-viewed',
+      storage: createJSONStorage(() => ssrSafeStorage),
+      partialize: state => ({ products: sanitizeProducts(state.products).slice(0, MAX_RECENT) }),
+      onRehydrateStorage: () => state => {
+        if (!state) return
+        state.products = sanitizeProducts(state.products).slice(0, MAX_RECENT)
+      },
+    },
   ),
 )

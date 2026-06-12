@@ -34,6 +34,29 @@ const ssrSafeSessionStorage = {
   },
 }
 
+function isUserLike(value: unknown): value is User {
+  if (!value || typeof value !== 'object') return false
+  const user = value as Partial<User>
+  return (
+    typeof user._id === 'string' &&
+    typeof user.name === 'string' &&
+    typeof user.email === 'string'
+  )
+}
+
+function sanitizeAuthState(state: Partial<AuthState>) {
+  const user = isUserLike(state.user) ? state.user : null
+  const accessToken = typeof state.accessToken === 'string' && state.accessToken.length > 0
+    ? state.accessToken
+    : null
+
+  return {
+    user,
+    accessToken,
+    isAuthenticated: Boolean(user && accessToken && state.isAuthenticated),
+  }
+}
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -122,10 +145,16 @@ export const useAuthStore = create<AuthStore>()(
       name:    'doctorfit-auth',
       storage: createJSONStorage(() => ssrSafeSessionStorage),
       partialize: state => ({
-        user:            state.user,
-        accessToken:     state.accessToken,
-        isAuthenticated: state.isAuthenticated,
+        ...sanitizeAuthState(state),
       }),
+      onRehydrateStorage: () => state => {
+        if (!state) return
+        const safeState = sanitizeAuthState(state)
+        state.user = safeState.user
+        state.accessToken = safeState.accessToken
+        state.isAuthenticated = safeState.isAuthenticated
+        state.isLoading = false
+      },
     },
   ),
 )

@@ -261,6 +261,29 @@ export default function AdminOrdersPage() {
               <div className="flex justify-between font-bold text-gray-900 dark:text-gray-100"><span>Total</span><span>{formatPrice(selected.total)}</span></div>
             </div>
 
+            {(selected.paymentProofImage || selected.notes) && (
+              <div className="rounded-xl bg-surface-raised dark:bg-surface-overlay p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">Payment Proof</p>
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Method: {selected.paymentMethod.replace(/_/g, ' ')}
+                  </p>
+                  {selected.notes && (
+                    <p className="whitespace-pre-line text-sm text-gray-600 dark:text-gray-400">{selected.notes}</p>
+                  )}
+                  {selected.paymentProofImage && (
+                    <a href={selected.paymentProofImage} target="_blank" rel="noreferrer" className="block">
+                      <img
+                        src={selected.paymentProofImage}
+                        alt={selected.paymentProofFileName ?? 'Payment screenshot'}
+                        className="max-h-80 rounded-lg object-contain"
+                      />
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Timeline */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Timeline</p>

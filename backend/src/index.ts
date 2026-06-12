@@ -6,6 +6,7 @@ import compression  from 'compression'
 import cookieParser from 'cookie-parser'
 import morgan       from 'morgan'
 import rateLimit    from 'express-rate-limit'
+import path          from 'path'
 
 import { connectDB }       from './config/database'
 import { errorHandler }    from './middleware/errorHandler'
@@ -23,7 +24,6 @@ const app  = express()
 const PORT = process.env.PORT ?? 5000
 
 // ─── Database ──────────────────────────────────────────────────
-connectDB()
 
 // ─── Stripe webhook — MUST use raw body, before express.json() ─
 app.post(
@@ -36,9 +36,15 @@ app.post(
 )
 
 // ─── Security / performance middleware ─────────────────────────
-app.use(helmet())
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}))
 app.use(compression())
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads'), {
+  maxAge: '30d',
+  immutable: true,
+}))
 
 // ─── Rate limiting ─────────────────────────────────────────────
 const globalLimiter = rateLimit({
@@ -96,11 +102,13 @@ app.use(notFoundHandler)
 app.use(errorHandler)
 
 // ─── Start ─────────────────────────────────────────────────────
-app.listen(PORT, () => {
+async function start() {
+  await connectDB()
+  app.listen(PORT, () => {
   console.log(`\n🚀  API running on :${PORT}  [${process.env.NODE_ENV ?? 'development'}]`)
 
   // ─── One-time startup migration: sync all category productCounts ───
-  setTimeout(async () => {
+  void (async () => {
     try {
       const { Category } = await import('./models/index')
       const { Product }  = await import('./models/Product')
@@ -113,7 +121,10 @@ app.listen(PORT, () => {
     } catch (err) {
       console.error('❌  Failed to sync category counts:', err)
     }
-  }, 2000) // wait 2s for DB connection to stabilize
-})
+  })()
+  })
+}
+
+void start()
 
 export default app

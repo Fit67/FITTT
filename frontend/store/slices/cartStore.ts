@@ -16,8 +16,26 @@ interface CartStore extends Cart {
   getItemQty:    (productId: string, variantId?: string) => number
 }
 
-function calcTotals(items: CartItem[], coupon?: Coupon) {
-  const subtotal = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+function sanitizeItems(items: unknown = []) {
+  if (!Array.isArray(items)) return []
+
+  return items.filter((item): item is CartItem =>
+    item?.product?._id &&
+    typeof item.product._id === 'string' &&
+    typeof item.product.name === 'string' &&
+    typeof item.product.slug === 'string' &&
+    Number.isFinite(item.product.price) &&
+    Number.isFinite(item.quantity) &&
+    item.quantity > 0,
+  ).map(item => ({
+    ...item,
+    quantity: Math.min(Math.floor(item.quantity), 99),
+  }))
+}
+
+function calcTotals(items: unknown, coupon?: Coupon) {
+  const safeItems = sanitizeItems(items)
+  const subtotal = safeItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
   const { freeDeliveryThreshold, standardDeliveryFee } = storeConfig.delivery
   const rawDelivery = subtotal >= freeDeliveryThreshold || subtotal === 0 ? 0 : standardDeliveryFee
 
@@ -91,8 +109,10 @@ export const useCartStore = create<CartStore>()(
       itemCount:   0,
 
       addItem(product, variant, qty = 1) {
+        if (!product?._id || !Number.isFinite(product.price) || !Number.isFinite(qty)) return
         set(state => {
           const key      = itemKey(product._id, variant?._id)
+          state.items = sanitizeItems(state.items) as typeof state.items
           const existing = state.items.find(
             i => itemKey(i.product._id, i.variant?._id) === key,
           )
@@ -110,7 +130,7 @@ export const useCartStore = create<CartStore>()(
       removeItem(productId, variantId) {
         set(state => {
           const key   = itemKey(productId, variantId)
-          state.items = state.items.filter(
+          state.items = sanitizeItems(state.items).filter(
             i => itemKey(i.product._id, i.variant?._id) !== key,
           ) as typeof state.items
           const totals    = calcTotals(state.items, state.coupon)
@@ -123,6 +143,7 @@ export const useCartStore = create<CartStore>()(
         set(state => {
           if (quantity < 1) return
           const key  = itemKey(productId, variantId)
+          state.items = sanitizeItems(state.items) as typeof state.items
           const item = state.items.find(
             i => itemKey(i.product._id, i.variant?._id) === key,
           )
@@ -164,20 +185,21 @@ export const useCartStore = create<CartStore>()(
 
       hasItem: (productId, variantId) => {
         const key = itemKey(productId, variantId)
-        return get().items.some(i => itemKey(i.product._id, i.variant?._id) === key)
+        return sanitizeItems(get().items).some(i => itemKey(i.product._id, i.variant?._id) === key)
       },
 
       getItemQty: (productId, variantId) => {
         const key = itemKey(productId, variantId)
-        return get().items.find(i => itemKey(i.product._id, i.variant?._id) === key)?.quantity ?? 0
+        return sanitizeItems(get().items).find(i => itemKey(i.product._id, i.variant?._id) === key)?.quantity ?? 0
       },
     })),
     {
       name:    'doctorfit-cart',
       storage: createJSONStorage(() => ssrSafeStorage),
-      partialize: state => ({ items: state.items, coupon: state.coupon }),
+      partialize: state => ({ items: sanitizeItems(state.items), coupon: state.coupon }),
       onRehydrateStorage: () => state => {
         if (!state) return
+        state.items = sanitizeItems(state.items) as typeof state.items
         const totals    = calcTotals(state.items, state.coupon)
         Object.assign(state, totals)
         state.itemCount = state.items.reduce((n, i) => n + i.quantity, 0)

@@ -71,7 +71,7 @@ const ProductSchema = new Schema<IProduct>(
   {
     name:             { type: String, required: true, trim: true },
     slug:             { type: String, required: true, unique: true, lowercase: true },
-    description:      { type: String, required: true },
+    description:      { type: String, required: false, default: '' },
     shortDescription: { type: String, maxlength: 300 },
 
     images: [{
@@ -173,17 +173,17 @@ async function syncCategoryCount(categoryId: mongoose.Types.ObjectId | undefined
 }
 
 ProductSchema.post('save', async function (this: IProduct) {
-  await syncCategoryCount(this.category as mongoose.Types.ObjectId)
+  void syncCategoryCount(this.category as mongoose.Types.ObjectId)
 })
 
 // findByIdAndUpdate triggers findOneAndUpdate
 ProductSchema.post('findOneAndUpdate', async function () {
   const doc = await this.model.findOne(this.getQuery()).lean<IProduct>()
-  if (doc) await syncCategoryCount(doc.category as mongoose.Types.ObjectId)
+  if (doc) void syncCategoryCount(doc.category as mongoose.Types.ObjectId)
 })
 
 ProductSchema.post('deleteOne', { document: true, query: false }, async function (this: IProduct) {
-  await syncCategoryCount(this.category as mongoose.Types.ObjectId)
+  void syncCategoryCount(this.category as mongoose.Types.ObjectId)
 })
 
 export const Product = mongoose.model<IProduct>('Product', ProductSchema)

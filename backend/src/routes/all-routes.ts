@@ -27,8 +27,8 @@ productRouter.get ('/search',                  productCtrl.searchProducts)
 productRouter.get ('/featured',                productCtrl.getFeaturedProducts)
 productRouter.get ('/top-sellers',             productCtrl.getTopSellersProducts)
 productRouter.get ('/new',                     productCtrl.getNewProducts)
-productRouter.get ('/:slug',     optionalAuth, productCtrl.getProductBySlug)
 productRouter.get ('/:id/related',             productCtrl.getRelatedProducts)
+productRouter.get ('/:slug',     optionalAuth, productCtrl.getProductBySlug)
 
 // ─── Categories ────────────────────────────────────────────────
 export const categoryRouter = Router()

@@ -9,13 +9,27 @@ import { requireUser } from '../middleware/auth'
 export async function createOrder(req: Request, res: Response, next: NextFunction) {
   try {
     const {
-      items, shippingAddress, paymentMethod, couponCode, notes,
+      items, shippingAddress, paymentMethod, couponCode, notes, paymentProofImage, paymentProofFileName,
     } = req.body as {
       items: Array<{ productId: string; variantId?: string; quantity: number }>
       shippingAddress: Record<string, string>
       paymentMethod:   string
       couponCode?:     string
       notes?:          string
+      paymentProofImage?: string
+      paymentProofFileName?: string
+    }
+
+    const allowedPaymentMethods = ['instapay', 'cash_on_delivery', 'stripe', 'wallet']
+    if (!allowedPaymentMethods.includes(paymentMethod)) {
+      return next(new AppError('Invalid payment method', 400))
+    }
+
+    if (
+      paymentProofImage &&
+      (!paymentProofImage.startsWith('data:image/') || paymentProofImage.length > 8_000_000)
+    ) {
+      return next(new AppError('Invalid payment proof image', 400))
     }
 
     const lineItems: Array<{
@@ -37,7 +51,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       }
       if (
         product.inventory.trackInventory &&
-        product.inventory.quantity - product.inventory.reserved < item.quantity &&
+        product.inventory.quantity < item.quantity &&
         !product.inventory.allowBackorder
       ) {
         return next(new AppError(`Insufficient stock for ${product.name}`, 400))
@@ -100,13 +114,15 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       tax,
       total,
       notes,
+      paymentProofImage,
+      paymentProofFileName,
       paymentStatus:   paymentMethod === 'cash_on_delivery' ? 'pending' : 'pending',
     })
 
     // Reserve inventory
     for (const item of lineItems) {
       await Product.findByIdAndUpdate(item.product, {
-        $inc: { 'inventory.reserved': item.quantity },
+        $inc: { 'inventory.quantity': -item.quantity },
       })
     }
 
@@ -189,7 +205,7 @@ export async function cancelOrder(req: Request, res: Response, next: NextFunctio
     // Release reserved inventory
     for (const item of order.items) {
       await Product.findByIdAndUpdate(item.product, {
-        $inc: { 'inventory.reserved': -item.quantity },
+        $inc: { 'inventory.quantity': item.quantity },
       })
     }
 
@@ -239,6 +255,9 @@ export async function adminUpdateOrderStatus(req: Request, res: Response, next: 
     const order = await Order.findById(req.params.id)
     if (!order) return next(new AppError('Order not found', 404))
 
+    const isReturning = ['cancelled', 'refunded', 'returned'].includes(status)
+    const wasReturned = ['cancelled', 'refunded', 'returned'].includes(order.status)
+
     order.status = status as typeof order.status
     order.timeline.push({
       status,
@@ -246,17 +265,26 @@ export async function adminUpdateOrderStatus(req: Request, res: Response, next: 
       timestamp: new Date(),
     })
 
+    if (isReturning && !wasReturned) {
+      // Restock inventory
+      for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { 'inventory.quantity': item.quantity },
+        })
+      }
+    } else if (!isReturning && wasReturned) {
+      // Re-deduct if admin undoes the cancellation/return
+      for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { 'inventory.quantity': -item.quantity },
+        })
+      }
+    }
+
     if (status === 'delivered' && order.paymentMethod === 'cash_on_delivery') {
       order.paymentStatus = 'paid'
       order.deliveredAt   = new Date()
-      for (const item of order.items) {
-        await Product.findByIdAndUpdate(item.product, {
-          $inc: {
-            'inventory.quantity': -item.quantity,
-            'inventory.reserved': -item.quantity,
-          },
-        })
-      }
+      // Quantity was already deducted at order creation
     }
 
     await order.save()

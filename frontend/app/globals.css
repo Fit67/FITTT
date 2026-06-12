@@ -118,12 +118,19 @@
 
   html {
     scroll-behavior: smooth;
-    /* ── FONT SIZE: increased 32% (16px → ~21px base) ── */
-    font-size: 21px;
+    font-size: 16px;
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  @media (min-width: 640px) {
+    html { font-size: 18px; }
+  }
+
+  @media (min-width: 1024px) {
+    html { font-size: 21px; }
   }
 
   body {
