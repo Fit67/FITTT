@@ -5,6 +5,8 @@ import { Category } from '../models/index'
 import { AppError } from '../middleware/errorHandler'
 import { uploadImageBuffer } from '../utils/cloudinary'
 
+const toBool = (val: any) => val === 'true' || val === true
+
 // ─── GET /products ─────────────────────────────────────────────
 export async function getProducts(req: Request, res: Response, next: NextFunction) {
   try {
@@ -119,6 +121,19 @@ export async function getFeaturedProducts(req: Request, res: Response, next: Nex
   } catch (err) { next(err) }
 }
 
+// ─── GET /products/top-sellers ─────────────────────────────────
+export async function getTopSellersProducts(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { limit = '4' } = req.query as { limit?: string }
+    const products = await Product.find({ isTopSeller: true, status: 'active' })
+      .populate('category', 'name slug')
+      .sort({ 'ratings.average': -1 as SortOrder })
+      .limit(Number(limit))
+      .lean()
+    res.json({ success: true, data: products })
+  } catch (err) { next(err) }
+}
+
 // ─── GET /products/new ─────────────────────────────────────────
 export async function getNewProducts(req: Request, res: Response, next: NextFunction) {
   try {
@@ -170,6 +185,10 @@ export async function createProduct(req: Request, res: Response, next: NextFunct
     console.log('[createProduct] req.file:', req.file ? 'File attached' : 'No file')
     
     const productData = { ...req.body }
+    if (productData.isFeatured !== undefined) productData.isFeatured = toBool(productData.isFeatured)
+    if (productData.isTopSeller !== undefined) productData.isTopSeller = toBool(productData.isTopSeller)
+    if (productData.newArrival !== undefined) productData.newArrival = toBool(productData.newArrival)
+
     if (productData.inventory && typeof productData.inventory === 'string') {
       try { productData.inventory = JSON.parse(productData.inventory) } catch (e) {}
     } else if (productData.quantity) {
@@ -193,6 +212,10 @@ export async function updateProduct(req: Request, res: Response, next: NextFunct
     console.log('[updateProduct] req.file:', req.file ? 'File attached' : 'No file')
 
     const productData = { ...req.body }
+    if (productData.isFeatured !== undefined) productData.isFeatured = toBool(productData.isFeatured)
+    if (productData.isTopSeller !== undefined) productData.isTopSeller = toBool(productData.isTopSeller)
+    if (productData.newArrival !== undefined) productData.newArrival = toBool(productData.newArrival)
+
     if (productData.inventory && typeof productData.inventory === 'string') {
       try { productData.inventory = JSON.parse(productData.inventory) } catch (e) {}
     } else if (productData.quantity !== undefined) {

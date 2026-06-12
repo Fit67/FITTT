@@ -58,6 +58,7 @@ export interface IProduct extends Document {
   ratings:          { average: number; count: number }
   status:           'active' | 'draft' | 'archived' | 'out_of_stock'
   isFeatured:       boolean
+  isTopSeller:      boolean
   // NOTE: "isNew" is reserved by Mongoose (indicates unsaved document).
   // We store it as "newArrival" in the schema but expose "isNew" via virtual.
   newArrival:       boolean
@@ -116,6 +117,7 @@ const ProductSchema = new Schema<IProduct>(
 
     status:     { type: String, enum: ['active','draft','archived','out_of_stock'], default: 'active' },
     isFeatured: { type: Boolean, default: false },
+    isTopSeller: { type: Boolean, default: false },
     // Stored as "newArrival" to avoid conflict with Mongoose's built-in "isNew" property
     newArrival: { type: Boolean, default: true },
 
