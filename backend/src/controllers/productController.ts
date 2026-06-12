@@ -197,7 +197,7 @@ export async function createProduct(req: Request, res: Response, next: NextFunct
 
     if (req.file) {
       const uploadResult = await uploadImageBuffer(req.file.buffer)
-      productData.images = [uploadResult.secure_url]
+      productData.images = [{ url: uploadResult.secure_url, alt: productData.name, isPrimary: true }]
     }
 
     const product = await Product.create(productData)
@@ -224,8 +224,7 @@ export async function updateProduct(req: Request, res: Response, next: NextFunct
 
     if (req.file) {
       const uploadResult = await uploadImageBuffer(req.file.buffer)
-      if (!productData.images) productData.images = []
-      productData.images.push(uploadResult.secure_url)
+      productData.images = [{ url: uploadResult.secure_url, alt: productData.name, isPrimary: true }]
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, productData, {
