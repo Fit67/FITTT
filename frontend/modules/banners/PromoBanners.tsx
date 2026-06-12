@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, ShieldCheck, Zap, Activity, Sparkles } from 'lucide-react'
+import { ArrowRight, ShieldCheck, Zap, Activity, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { useFeaturedProducts, useCategories, useBanners, useProducts } from '@/hooks/useQueries'
 import { ProductCard, ProductCardSkeleton } from '@/modules/product-card/ProductCard'
@@ -14,9 +14,9 @@ import { storeConfig, currentBusiness } from '@/config/store'
 import { cn } from '@/lib/utils'
 
 // ─── Section eyebrow + header ──────────────────────────────────
-function SectionHeader({ label, title, href }: { label: string; title: string; href?: string }) {
+function SectionHeader({ label, title, href, actions }: { label: string; title: string; href?: string; actions?: React.ReactNode }) {
   return (
-    <div className="flex items-end justify-between gap-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 w-full">
       <div>
         <div className="flex items-center gap-3 mb-3">
           <div className="h-px w-8 bg-gray-200 dark:bg-[#2a2a2a]" />
@@ -28,14 +28,17 @@ function SectionHeader({ label, title, href }: { label: string; title: string; h
           {title}
         </h2>
       </div>
-      {href && (
-        <Link
-          href={href}
-          className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.1em] font-light text-gray-400 dark:text-[#555] hover:text-primary-600 dark:hover:text-[#c8822a] transition-colors whitespace-nowrap"
-        >
-          View all <ArrowRight size={12} />
-        </Link>
-      )}
+      <div className="flex items-center gap-4">
+        {actions}
+        {href && (
+          <Link
+            href={href}
+            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.1em] font-light text-gray-400 dark:text-[#555] hover:text-primary-600 dark:hover:text-[#c8822a] transition-colors whitespace-nowrap"
+          >
+            View all <ArrowRight size={12} />
+          </Link>
+        )}
+      </div>
     </div>
   )
 }
@@ -157,17 +160,51 @@ export function FeaturedProducts() {
   const products    = hasFeatured ? featuredData    : latestData?.data
   const label       = hasFeatured ? t('featuredProducts') : t('latestProducts')
 
-  return (
-    <section className="py-14 md:py-20 bg-white dark:bg-[#0a0a0a]">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <SectionHeader label={t('handPicked')} title={label} href="/shop/products" />
+  const scrollRef = React.useRef<HTMLDivElement>(null)
 
-        {/* Product grid — editorial 1px gap layout */}
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-gray-100 dark:bg-[#1a1a1a]">
+  const scroll = (dir: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const amount = 320
+      scrollRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' })
+    }
+  }
+
+  const actions = (
+    <div className="flex gap-2 hidden md:flex">
+      <button onClick={() => scroll('left')} className="p-1.5 rounded-full border border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#111] transition-colors text-gray-500 dark:text-[#888] focus:outline-none">
+        <ChevronLeft size={16} strokeWidth={1.5} />
+      </button>
+      <button onClick={() => scroll('right')} className="p-1.5 rounded-full border border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#111] transition-colors text-gray-500 dark:text-[#888] focus:outline-none">
+        <ChevronRight size={16} strokeWidth={1.5} />
+      </button>
+    </div>
+  )
+
+  return (
+    <section className="py-14 md:py-20 bg-white dark:bg-[#0a0a0a] overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <SectionHeader label={t('handPicked')} title={label} href="/shop/products" actions={actions} />
+
+        {/* Product Carousel */}
+        <div 
+          ref={scrollRef}
+          className="mt-8 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-6 items-stretch"
+          style={{ scrollBehavior: 'smooth' }}
+        >
           {isLoading
-            ? Array.from({ length: 10 }).map((_, i) => <ProductCardSkeleton key={i} index={i} />)
+            ? Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="w-[260px] sm:w-[300px] shrink-0 snap-start flex">
+                  <div className="w-full h-full">
+                    <ProductCardSkeleton index={i} />
+                  </div>
+                </div>
+              ))
             : products?.map((product, i) => (
-                <ProductCard key={product._id} product={product} priority={i < 4} />
+                <div key={product._id} className="w-[260px] sm:w-[300px] shrink-0 snap-start flex">
+                  <div className="w-full h-full">
+                    <ProductCard product={product} priority={i < 4} className="h-full" />
+                  </div>
+                </div>
               ))
           }
         </div>

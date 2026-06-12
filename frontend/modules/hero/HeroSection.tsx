@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { ShoppingBag, Truck, Shield } from 'lucide-react'
 import { storeConfig } from '@/config/store'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useQuery } from '@tanstack/react-query'
+import { productService } from '@/services'
+import { formatPrice } from '@/lib/utils'
 
 const EASE = [0.0, 0.0, 0.2, 1.0] as const
 
@@ -36,6 +39,13 @@ export function HeroSection() {
 
 function EditorialHero() {
   const { t } = useTranslation()
+
+  const { data: featuredData, isLoading } = useQuery({
+    queryKey: ['top-sellers'],
+    queryFn: () => productService.getTopSellers(4),
+  })
+  
+  const products = Array.isArray(featuredData) ? featuredData : []
 
   return (
     <section className="relative pt-[62px] overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
@@ -135,9 +145,33 @@ function EditorialHero() {
           {/* Product stack */}
           <div className="flex-1">
             <div className="text-[10px] uppercase tracking-[0.12em] text-gray-400 dark:text-[#444] mb-3 font-light">
-              What's selling
+              {t('heroWhatsSelling')}
             </div>
-            {TOP_SELLERS.map((item, i) => (
+
+            {isLoading && (
+              <div className="text-gray-400 text-xs py-4 font-light tracking-wide animate-pulse">Loading products...</div>
+            )}
+
+            {!isLoading && products.length > 0 && products.slice(0, 4).map((product, i) => (
+              <Link href={`/shop/products/${product.slug}`} key={product._id} className="block">
+                <motion.div
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.07, ease: EASE, duration: 0.4 }}
+                  className="flex items-center justify-between py-[14px] border-b border-gray-100 dark:border-[#1e1e1e] group cursor-pointer first:border-t"
+                >
+                  <span className="text-[10px] text-gray-300 dark:text-[#444] font-light w-6">0{i + 1}</span>
+                  <span className="flex-1 text-[13px] font-light text-gray-500 dark:text-[#888] group-hover:text-gray-900 dark:group-hover:text-[#e8e0d4] transition-colors tracking-[0.01em]">
+                    {product.name}
+                  </span>
+                  <span className="font-display text-[14px] italic text-primary-600 dark:text-[#c8822a]">
+                    {formatPrice(product.price)}
+                  </span>
+                </motion.div>
+              </Link>
+            ))}
+
+            {!isLoading && products.length === 0 && getTopSellers(t).map((item, i) => (
               <motion.div
                 key={item.num}
                 initial={{ opacity: 0, x: 12 }}

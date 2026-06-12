@@ -59,6 +59,9 @@ export const productService = {
   getFeatured: (limit = 8) =>
     api(() => apiClient.get<{ success:true; data: Product[] }>('/products/featured', { params: { limit } })),
 
+  getTopSellers: (limit = 4) =>
+    api(() => apiClient.get<{ success:true; data: Product[] }>('/products/top-sellers', { params: { limit } })),
+
   getNew: (limit = 8) =>
     api(() => apiClient.get<{ success:true; data: Product[] }>('/products/new', { params: { limit } })),
 

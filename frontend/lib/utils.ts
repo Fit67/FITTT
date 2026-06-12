@@ -19,7 +19,6 @@ const currencyLocaleMap: Record<string, string> = {
 
 // Custom symbol overrides (shown instead of ISO code)
 const currencySymbolMap: Record<string, string> = {
-  EGP: 'ج.م.',
   SAR: 'ر.س.',
   AED: 'د.إ.',
 }
@@ -28,14 +27,27 @@ export function formatPrice(
   amount: number,
   currency = storeConfig.currency,
 ): string {
-  const customSymbol = currencySymbolMap[currency]
-  if (customSymbol) {
-    // e.g. "120.00 ج.م."
+  let isAr = false
+  if (typeof document !== 'undefined') {
+    isAr = document.documentElement.dir === 'rtl' || document.documentElement.lang === 'ar'
+  }
+
+  if (currency === 'EGP') {
+    const symbol = isAr ? 'ج.م.' : 'EGP'
     const formatted = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
     }).format(amount)
-    return `${formatted} ${customSymbol}`
+    return isAr ? `${formatted} ${symbol}` : `${symbol} ${formatted}`
+  }
+
+  const customSymbol = currencySymbolMap[currency]
+  if (customSymbol) {
+    const formatted = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount)
+    return isAr ? `${formatted} ${customSymbol}` : `${customSymbol} ${formatted}`
   }
   const locale = currencyLocaleMap[currency] ?? 'en-US'
   return new Intl.NumberFormat(locale, {

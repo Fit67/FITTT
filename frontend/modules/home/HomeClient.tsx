@@ -21,10 +21,10 @@ export function HomeClient() {
   const catList = ['All', ...(categories?.map(c => c.name) || [])]
 
   return (
-    <main className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-white dark:bg-[#0e0e0e]">
       {/* HERO SECTION */}
       <section className="grid grid-cols-1 lg:grid-cols-2 min-h-[75vh] border-b border-gray-200 dark:border-[#1e1e1e]">
-        <div className="p-10 lg:p-[60px] flex flex-col justify-center items-start bg-surface">
+        <div className="p-10 lg:p-[60px] flex flex-col justify-center items-start bg-white dark:bg-[#0e0e0e]">
           <h1 className="font-display text-[56px] lg:text-[72px] leading-[0.95] mb-6 text-gray-900 dark:text-[#e8e0d4] font-normal" dangerouslySetInnerHTML={{ __html: t('performanceTitle').replace('Redefined.', '<em class="italic text-accent">Redefined.</em>').replace('بمفهوم جديد.', '<em class="italic text-accent">بمفهوم جديد.</em>') }}>
           </h1>
           <p className="text-[14px] text-gray-600 dark:text-[#888] max-w-[320px] leading-[1.6] mb-10">
@@ -34,13 +34,13 @@ export function HomeClient() {
             {t('shopCollection')}
           </button>
         </div>
-        <div className="bg-surface-overlay flex items-center justify-center text-[60px] lg:border-l border-gray-200 dark:border-[#1e1e1e] min-h-[300px]">
+        <div className="bg-gray-50 dark:bg-[#111] flex items-center justify-center text-[60px] lg:border-l border-gray-200 dark:border-[#1e1e1e] min-h-[300px]">
           📸
         </div>
       </section>
 
       {/* TICKER */}
-      <div className="overflow-hidden whitespace-nowrap py-3 border-b border-gray-200 dark:border-[#1e1e1e] bg-surface flex items-center">
+      <div className="overflow-hidden whitespace-nowrap py-3 border-b border-gray-200 dark:border-[#1e1e1e] bg-white dark:bg-[#0e0e0e] flex items-center">
         <motion.div 
           className="flex items-center gap-6 text-[10px] uppercase tracking-[0.1em] text-gray-500 dark:text-[#555]"
           animate={{ x: ["0%", "-50%"] }}
@@ -66,7 +66,7 @@ export function HomeClient() {
       </div>
 
       {/* CATEGORIES */}
-      <section className="flex flex-wrap gap-2.5 px-7 py-8 border-b border-gray-200 dark:border-[#1e1e1e] bg-surface overflow-x-auto no-scrollbar">
+      <section className="flex flex-wrap gap-2.5 px-7 py-8 border-b border-gray-200 dark:border-[#1e1e1e] bg-white dark:bg-[#0e0e0e] overflow-x-auto no-scrollbar">
         {catList.map(cat => (
           <button
             key={cat}
@@ -93,7 +93,7 @@ export function HomeClient() {
             <ProductCard key={product._id} product={product} />
           ))
         ) : (
-          <div className="col-span-full py-20 text-center text-gray-500 bg-surface">
+          <div className="col-span-full py-20 text-center text-gray-500 bg-white dark:bg-[#0e0e0e]">
             {t('noProductsFound')}
           </div>
         )}
@@ -101,7 +101,7 @@ export function HomeClient() {
 
       {/* EDITORIAL / PROMO */}
       <section className="grid grid-cols-1 lg:grid-cols-2">
-        <div className="p-10 lg:p-[60px] flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-[#1e1e1e] bg-surface">
+        <div className="p-10 lg:p-[60px] flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-[#1e1e1e] bg-white dark:bg-[#0e0e0e]">
           <h2 className="font-display text-[32px] lg:text-[40px] leading-[1.1] mb-4 text-gray-900 dark:text-[#e8e0d4] font-normal">
             {t('exploreStandardTitle')}
           </h2>
@@ -112,7 +112,7 @@ export function HomeClient() {
             {t('learnMore')} <span className="text-accent group-hover:translate-x-1 transition-transform">→</span>
           </button>
         </div>
-        <div className="bg-surface-overlay flex items-center justify-center text-[40px] text-gray-300 dark:text-[#333] aspect-video lg:aspect-auto min-h-[300px]">
+        <div className="bg-gray-50 dark:bg-[#111] flex items-center justify-center text-[40px] text-gray-300 dark:text-[#333] aspect-video lg:aspect-auto min-h-[300px]">
           📹
         </div>
       </section>

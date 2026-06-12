@@ -32,7 +32,8 @@ export default function AdminProductsPage() {
     try {
       await productService.delete(product._id)
       toast.success('Product archived', product.name)
-      qc.invalidateQueries({ queryKey: QK.products() })
+      qc.invalidateQueries({ queryKey: ['products'] })
+      qc.invalidateQueries({ queryKey: ['featured'] })
       setModal(null)
     } catch {
       toast.error('Failed to delete product')
@@ -266,7 +267,9 @@ export default function AdminProductsPage() {
           categories={categories ?? []}
           onClose={() => setModal(null)}
           onSuccess={() => {
-            qc.invalidateQueries({ queryKey: QK.products() })
+            qc.invalidateQueries({ queryKey: ['products'] })
+            qc.invalidateQueries({ queryKey: ['featured'] })
+            qc.invalidateQueries({ queryKey: ['top-sellers'] })
             setModal(null)
             toast.success(modal?.type === 'create' ? 'Product created!' : 'Product updated!')
           }}
@@ -308,6 +311,7 @@ function ProductForm({
     category:         product?.category?._id   ?? '',
     status:           product?.status          ?? 'active',
     isFeatured:       product?.isFeatured       ?? false,
+    isTopSeller:      product?.isTopSeller      ?? false,
     quantity:         product?.inventory?.quantity?.toString() ?? '0',
   })
 
@@ -445,7 +449,11 @@ function ProductForm({
         />
         <div className="sm:col-span-2 flex items-center gap-2">
           <input type="checkbox" id="featured" checked={form.isFeatured} onChange={e => set('isFeatured', e.target.checked)} className="h-4 w-4 rounded accent-primary-600" />
-          <label htmlFor="featured" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">Featured product</label>
+          <label htmlFor="featured" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">Featured product (Carousel)</label>
+        </div>
+        <div className="sm:col-span-2 flex items-center gap-2">
+          <input type="checkbox" id="topSeller" checked={form.isTopSeller} onChange={e => set('isTopSeller', e.target.checked)} className="h-4 w-4 rounded accent-primary-600" />
+          <label htmlFor="topSeller" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">What's Selling (Hero Section)</label>
         </div>
         <div className="sm:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
           <Button variant="outline" type="button" onClick={onClose}>Cancel</Button>

@@ -13,6 +13,7 @@ export const QK = {
   product:     (slug: string)             => ['product', slug]           as const,
   related:     (id: string)               => ['related', id]             as const,
   featured:    ()                         => ['featured']                as const,
+  topSellers:  ()                         => ['top-sellers']             as const,
   newProducts: ()                         => ['new-products']            as const,
   categories:  ()                         => ['categories']              as const,
   myOrders:    (page: number)             => ['my-orders', page]         as const,
