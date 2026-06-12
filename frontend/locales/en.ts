@@ -112,4 +112,5 @@ export const en = {
   didntReceive: "Didn't receive it?",
   tryAgain: "Try again",
   backToSignIn: "Back to sign in",
+  heroWhatsSelling: "What's Selling",
 }

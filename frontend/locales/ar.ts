@@ -114,4 +114,5 @@ export const ar = {
   didntReceive: "لم تستلمه؟",
   tryAgain: "حاول مرة أخرى",
   backToSignIn: "العودة لتسجيل الدخول",
+  heroWhatsSelling: "الأكثر مبيعاً",
 }
