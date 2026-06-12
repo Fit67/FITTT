@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-// ─── Input ─────────────────────────────────────────────────────
+// ─── Input — editorial flat style ─────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?:    string
   hint?:     string
@@ -15,14 +15,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ label, hint, error, leading, trailing, className, id, ...props }, ref) => {
     const generatedId = React.useId()
-  const inputId = id ?? generatedId
+    const inputId = id ?? generatedId
 
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
           <label
             htmlFor={inputId}
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-500 dark:text-[#666]"
           >
             {label}
             {props.required && <span className="ml-1 text-red-500">*</span>}
@@ -31,7 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center">
           {leading && (
-            <span className="pointer-events-none absolute left-3 text-gray-400">
+            <span className="pointer-events-none absolute left-3 text-gray-400 dark:text-[#555]">
               {leading}
             </span>
           )}
@@ -39,13 +39,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full rounded-button border bg-surface px-3.5 py-2.5',
-              'font-body text-sm text-gray-900 placeholder:text-gray-400',
-              'outline-none transition-all duration-150',
-              'dark:bg-surface-raised dark:text-gray-100 dark:placeholder:text-gray-500',
+              'w-full border bg-transparent px-3.5 py-2.5',
+              'font-body text-[13px] font-light text-gray-900 placeholder:text-gray-300',
+              'dark:text-[#ccc] dark:placeholder:text-[#3a3a3a]',
+              'outline-none transition-colors duration-150',
               error
-                ? 'border-red-400 focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,.15)]'
-                : 'border-gray-200 focus:border-primary-500 focus:shadow-input dark:border-gray-700',
+                ? 'border-red-400 focus:border-red-500'
+                : 'border-gray-200 dark:border-[#2a2a2a] focus:border-primary-500 dark:focus:border-[#c8822a]',
               leading  && 'pl-10',
               trailing && 'pr-10',
               className,
@@ -53,12 +53,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {trailing && (
-            <span className="absolute right-3 text-gray-400">{trailing}</span>
+            <span className="absolute right-3 text-gray-400 dark:text-[#555]">{trailing}</span>
           )}
         </div>
 
         {(hint || error) && (
-          <p className={cn('text-xs', error ? 'text-red-500' : 'text-gray-500 dark:text-gray-400')}>
+          <p className={cn('text-[11px] font-light', error ? 'text-red-500' : 'text-gray-400 dark:text-[#555]')}>
             {error ?? hint}
           </p>
         )}
@@ -80,12 +80,12 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, hint, options, placeholder, className, id, ...props }, ref) => {
     const generatedId = React.useId()
-  const selectId = id ?? generatedId
+    const selectId = id ?? generatedId
 
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={selectId} className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor={selectId} className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-500 dark:text-[#666]">
             {label}
             {props.required && <span className="ml-1 text-red-500">*</span>}
           </label>
@@ -94,13 +94,13 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full rounded-button border bg-surface px-3.5 py-2.5 pr-9',
-            'font-body text-sm text-gray-900',
-            'outline-none appearance-none transition-all duration-150',
-            'dark:bg-surface-raised dark:text-gray-100 dark:border-gray-700',
+            'w-full border bg-transparent px-3.5 py-2.5 pr-9',
+            'font-body text-[13px] font-light text-gray-900 dark:text-[#ccc]',
+            'outline-none appearance-none transition-colors duration-150',
+            'dark:bg-[#0e0e0e]',
             error
               ? 'border-red-400 focus:border-red-500'
-              : 'border-gray-200 focus:border-primary-500 focus:shadow-input',
+              : 'border-gray-200 dark:border-[#2a2a2a] focus:border-primary-500 dark:focus:border-[#c8822a]',
             className,
           )}
           {...props}
@@ -111,7 +111,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {(hint || error) && (
-          <p className={cn('text-xs', error ? 'text-red-500' : 'text-gray-500')}>
+          <p className={cn('text-[11px] font-light', error ? 'text-red-500' : 'text-gray-400')}>
             {error ?? hint}
           </p>
         )}
@@ -131,12 +131,12 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, hint, className, id, ...props }, ref) => {
     const generatedId = React.useId()
-  const textId = id ?? generatedId
+    const textId = id ?? generatedId
 
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={textId} className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor={textId} className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-500 dark:text-[#666]">
             {label}
           </label>
         )}
@@ -145,19 +145,19 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={textId}
           rows={4}
           className={cn(
-            'w-full resize-none rounded-button border bg-surface px-3.5 py-2.5',
-            'font-body text-sm text-gray-900 placeholder:text-gray-400',
-            'outline-none transition-all duration-150',
-            'dark:bg-surface-raised dark:text-gray-100 dark:border-gray-700',
+            'w-full resize-none border bg-transparent px-3.5 py-2.5',
+            'font-body text-[13px] font-light text-gray-900 placeholder:text-gray-300',
+            'dark:text-[#ccc] dark:placeholder:text-[#3a3a3a]',
+            'outline-none transition-colors duration-150',
             error
               ? 'border-red-400 focus:border-red-500'
-              : 'border-gray-200 focus:border-primary-500 focus:shadow-input',
+              : 'border-gray-200 dark:border-[#2a2a2a] focus:border-primary-500 dark:focus:border-[#c8822a]',
             className,
           )}
           {...props}
         />
         {(hint || error) && (
-          <p className={cn('text-xs', error ? 'text-red-500' : 'text-gray-500')}>
+          <p className={cn('text-[11px] font-light', error ? 'text-red-500' : 'text-gray-400')}>
             {error ?? hint}
           </p>
         )}
@@ -169,14 +169,14 @@ Textarea.displayName = 'Textarea'
 
 // ─── Checkbox ──────────────────────────────────────────────────
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?:     string
+  label?:       string
   description?: string
 }
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ label, description, className, id, ...props }, ref) => {
     const generatedId = React.useId()
-  const checkId = id ?? generatedId
+    const checkId = id ?? generatedId
 
     return (
       <div className="flex gap-3">
@@ -185,16 +185,20 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           type="checkbox"
           id={checkId}
           className={cn(
-            'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-gray-300',
-            'accent-primary-600 dark:accent-primary-400',
+            'mt-0.5 h-4 w-4 shrink-0 cursor-pointer border-gray-300',
+            'accent-primary-600 dark:accent-[#c8822a]',
             className,
           )}
           {...props}
         />
         {(label || description) && (
           <label htmlFor={checkId} className="cursor-pointer">
-            {label && <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">{label}</span>}
-            {description && <span className="block text-xs text-gray-500 dark:text-gray-400">{description}</span>}
+            {label && (
+              <span className="block text-[13px] font-light text-gray-800 dark:text-[#ccc]">{label}</span>
+            )}
+            {description && (
+              <span className="block text-[11px] font-light text-gray-500 dark:text-[#555]">{description}</span>
+            )}
           </label>
         )}
       </div>

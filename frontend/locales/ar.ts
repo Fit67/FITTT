@@ -91,4 +91,27 @@ export const ar = {
   premiumMetricTwo: "تحديث سريع للمخزون",
   premiumMetricThree: "دعم للرياضيين",
   premiumCta: "تصفح المنتجات",
+  // Navbar user menu
+  profile: "الملف الشخصي",
+  myOrders: "طلباتي",
+  // HomeClient keys
+  performanceTitle: "الأداء بمفهوم جديد.",
+  performanceSub: "مكملات غذائية ومعدات رياضية عالية الجودة للرياضيين الجادين.",
+  shopCollection: "تسوق المجموعة",
+  tickerShipping: "شحن مجاني فوق 2000 جنيه",
+  tickerDelivery: "توصيل للقاهرة خلال 24 ساعة",
+  tickerTested: "مكملات أصلية موثوقة",
+  noProductsFound: "لا توجد منتجات",
+  exploreStandardTitle: "طريقة أذكى لبناء مجموعتك الرياضية",
+  exploreStandardSub: "اكتشف المكملات وأدوات الاستشفاء والأساسيات الرياضية من خلال تجربة تسوق أسرع وأنظف.",
+  learnMore: "اعرف أكثر",
+  // Forgot password page
+  forgotPasswordTitle: "نسيت كلمة المرور؟",
+  forgotPasswordSub: "لا تقلق. أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.",
+  sendResetLink: "إرسال رابط الاستعادة",
+  checkYourEmail: "تحقق من بريدك الإلكتروني",
+  resetLinkSent: "لقد أرسلنا رابط إعادة تعيين كلمة المرور. ينتهي الرابط خلال ساعة.",
+  didntReceive: "لم تستلمه؟",
+  tryAgain: "حاول مرة أخرى",
+  backToSignIn: "العودة لتسجيل الدخول",
 }

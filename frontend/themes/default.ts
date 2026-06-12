@@ -1,70 +1,78 @@
-// themes/default.ts
-// Supermarket / general-purpose theme
+// themes/default.ts — DoctorFit editorial redesign
+// Light: white / sky-blue / blue  |  Dark: exact editorial (#0a0a0a + gold)
 export const defaultTheme = {
   id: 'default',
-  name: 'Default',
-  description: 'Clean, modern light theme with dark blue/orange dark mode.',
+  name: 'DoctorFit Editorial',
+  description: 'Editorial typography, blue-light / dark-gold duotone.',
 
-  // ─── Color Palettes (RGB values for Tailwind opacity modifiers) ─
   colors: {
     primary: {
-      50:  '255 251 235',
-      100: '254 243 199',
-      200: '253 230 138',
-      300: '252 211 77',
-      400: '251 191 36',
-      500: '245 158 11',
-      600: '217 119 6',
-      700: '180 83 9',
-      800: '146 64 14',
-      900: '120 53 15',
+      50:  '239 246 255',
+      100: '219 234 254',
+      200: '191 219 254',
+      300: '147 197 253',
+      400: '96  165 250',
+      500: '59  130 246',
+      600: '37  99  235',
+      700: '29  78  216',
+      800: '30  64  175',
+      900: '30  58  138',
     },
-    accent:      '250 204 21',  // yellow-400
-    accentLight: '253 224 71', // yellow-300
+    accent:      '14  165 233',
+    accentLight: '125 211 252',
     surface:        '255 255 255',
-    surfaceRaised:  '249 250 251',
-    surfaceOverlay: '243 244 246',
+    surfaceRaised:  '248 250 252',
+    surfaceOverlay: '241 245 249',
   },
 
-  // ─── Typography ─────────────────────────────────────────────
   fonts: {
-    display: '"Cairo", system-ui, sans-serif',
-    body:    '"Cairo", system-ui, sans-serif',
+    display: '"Instrument Serif", Georgia, serif',
+    body:    '"DM Sans", system-ui, sans-serif',
     mono:    '"JetBrains Mono", monospace',
-    // Google Fonts import string
-    googleFonts: 'Cairo:wght@400;600;700;800',
+    googleFonts: 'Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700',
   },
 
-  // ─── Radii ──────────────────────────────────────────────────
   radius: {
-    card:   '16px',
-    button: '10px',
-    badge:  '100px',
-    input:  '10px',
+    card:   '4px',
+    button: '0px',
+    badge:  '2px',
+    input:  '0px',
   },
 
-  // ─── Shadows ────────────────────────────────────────────────
   shadows: {
-    card:      '0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06)',
-    cardHover: '0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05)',
-    modal:     '0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04)',
-    input:     '0 0 0 3px rgba(217,119,6,.2)',
+    card:      '0 1px 3px 0 rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04)',
+    cardHover: '0 10px 30px -6px rgba(37,99,235,.14)',
+    modal:     '0 20px 40px -8px rgba(0,0,0,.15)',
+    input:     '0 0 0 3px rgba(37,99,235,.18)',
   },
 
-  // ─── Gradient Mesh ──────────────────────────────────────────
   gradientMesh:
-    'radial-gradient(at 50% 0%, hsla(45, 90%, 95%, 1) 0px, transparent 60%), ' +
-    'radial-gradient(at 0% 0%, hsla(35, 90%, 98%, 1) 0px, transparent 50%), ' +
-    'radial-gradient(at 100% 0%, hsla(35, 90%, 98%, 1) 0px, transparent 50%)',
+    'radial-gradient(at 0% 0%, hsla(210, 100%, 96%, 1) 0px, transparent 55%), ' +
+    'radial-gradient(at 100% 0%, hsla(199, 100%, 94%, 1) 0px, transparent 50%), ' +
+    'radial-gradient(at 50% 100%, hsla(220, 60%, 97%, 1) 0px, transparent 60%)',
 
-  // ─── Dark Mode overrides ────────────────────────────────────
   dark: {
-    surface:        '11 15 25',
-    surfaceRaised:  '19 26 42',
-    surfaceOverlay: '26 34 53',
+    surface:        '10  10  10',
+    surfaceRaised:  '14  14  14',
+    surfaceOverlay: '20  20  20',
+    // Override primary in dark to gold
+    primary: {
+      50:  '20  20  20',
+      100: '30  30  30',
+      200: '42  42  42',
+      300: '100 75  35',
+      400: '150 105 52',
+      500: '200 130 42',
+      600: '200 130 42',
+      700: '168 102 30',
+      800: '133 77  18',
+      900: '100 55  10',
+    },
+    accent:      '200 130 42',
+    accentLight: '220 160 80',
     gradientMesh:
-      'radial-gradient(at 50% 0%, hsla(45, 90%, 15%, 1) 0px, transparent 60%), ' +
-      'radial-gradient(at 0% 0%, hsla(35, 90%, 10%, 1) 0px, transparent 50%), ' +
-      'linear-gradient(180deg, #0B0F19 0%, #131A2A 100%)',
+      'radial-gradient(at 40% 20%, hsla(38, 60%, 10%, 1) 0px, transparent 55%), ' +
+      'radial-gradient(at 80% 0%, hsla(30, 80%, 6%, 1) 0px, transparent 50%), ' +
+      'linear-gradient(180deg, #0a0a0a 0%, #0e0e0e 100%)',
   },
 }

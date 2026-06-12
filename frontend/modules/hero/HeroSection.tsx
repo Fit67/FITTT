@@ -2,274 +2,200 @@
 
 import { motion, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowRight, ShoppingBag, Truck, Shield, Star } from 'lucide-react'
-import { storeConfig, currentBusiness } from '@/config/store'
-import { Button } from '@/components/ui/Button'
-import { AmbientParticles, GlowOrbs } from '@/components/ui/AmbientParticles'
-import { cn } from '@/lib/utils'
+import { ShoppingBag, Truck, Shield } from 'lucide-react'
+import { storeConfig } from '@/config/store'
 import { useTranslation } from '@/hooks/useTranslation'
 
-// ─── Animation config ──────────────────────────────────────────
-const EASE_ENTER = [0.0, 0.0, 0.2, 1.0] as const
+const EASE = [0.0, 0.0, 0.2, 1.0] as const
 
 const stagger = {
-  container: {
-    animate: {
-      transition: {
-        staggerChildren: 0.10,
-        delayChildren: 0.12,
-      },
-    },
-  },
+  container: { animate: { transition: { staggerChildren: 0.10, delayChildren: 0.12 } } },
   item: {
     initial: { opacity: 0, y: 22, filter: 'blur(4px)' },
-    animate: {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      transition: { duration: 0.55, ease: EASE_ENTER },
-    },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.55, ease: EASE } },
   },
 }
 
-export function HeroSection() {
-  const { heroStyle } = storeConfig
+// ─── Products data (from design direction) ─────────────────────
+const TOP_SELLERS = [
+  { num: '01', name: 'Whey Pro Gold 2.2kg',   price: '480 ج.م.' },
+  { num: '02', name: 'Rage X Pre-Workout',     price: '220 ج.م.' },
+  { num: '03', name: 'BCAA Matrix Cherry',     price: '255 ج.م.' },
+  { num: '04', name: 'Omega-3 90 Caps',        price: '150 ج.م.' },
+]
 
-  switch (heroStyle) {
-    case 'split':       return <SplitHero />
-    case 'fullscreen':  return <FullscreenHero />
-    case 'minimal':     return <MinimalHero />
-    default:            return <SplitHero />
-  }
+const METRICS = [
+  { val: '12k+', label: 'Athletes served' },
+  { val: '4.9',  label: 'Average rating'  },
+  { val: '24h',  label: 'Cairo delivery'  },
+]
+
+export function HeroSection() {
+  return <EditorialHero />
 }
 
-// ─── Split Hero (default) ──────────────────────────────────────
-function SplitHero() {
+function EditorialHero() {
   const { t } = useTranslation()
-  const prefersReduced = useReducedMotion()
 
   return (
-    <section className="relative min-h-[86vh] overflow-hidden bg-surface pt-16 transition-colors duration-500 dark:bg-[#0B0F19]">
-      {/* Ambient background layers */}
-      <GlowOrbs />
-      <AmbientParticles count={14} mode="hero" />
+    <section className="relative pt-[62px] overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
 
-      {/* Premium Animated Grid Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-
-      {/* Subtle gold shimmer line at top */}
-      <div
-        className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+      {/* ── Subtle grid background ── */}
+      <div className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(245,158,11,0.5) 50%, transparent 100%)',
-          backgroundSize: '200% 100%',
-          animation: 'shimmer 3s ease-in-out infinite',
+          backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
+      {/* Dark mode grid */}
+      <div className="absolute inset-0 pointer-events-none hidden dark:block"
+        style={{
+          backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
         }}
       />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 py-14 sm:py-18 md:grid-cols-2 md:gap-8 md:px-6 md:py-20">
+      {/* ── Two-column hero ── */}
+      <div className="relative max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 min-h-[520px] md:min-h-[480px]">
 
-        {/* ── Text side ───────────────────────────────────────── */}
+        {/* LEFT: Headline + CTAs */}
         <motion.div
           variants={stagger.container}
           initial="initial"
           animate="animate"
-          className="flex flex-col gap-5"
+          className="flex flex-col justify-between px-6 md:px-8 py-14 md:py-16 md:border-r border-b border-gray-100 dark:border-[#1e1e1e]"
         >
-          {/* Live badge */}
-          <motion.div variants={stagger.item}>
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-3 py-1.5 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-500" />
+          <div>
+            {/* Eyebrow */}
+            <motion.div variants={stagger.item} className="flex items-center gap-2.5 mb-8">
+              <div className="h-px w-6 bg-gray-300 dark:bg-[#555]" />
+              <span className="text-[11px] font-light uppercase tracking-[0.14em] text-gray-400 dark:text-[#555]">
+                01 / 03 &nbsp; Performance nutrition
               </span>
-              {t('nowDelivering')}
-            </span>
-          </motion.div>
+            </motion.div>
 
-          {/* Headline with animated gradient on key word */}
-          <motion.h1
-            variants={stagger.item}
-            className="font-display text-4xl font-bold leading-[1.08] text-gray-900 dark:text-white sm:text-5xl md:text-6xl lg:text-7xl"
-          >
-            {t('heroHeadline').split(' ').map((word: string, i: number) => (
-              <span
-                key={i}
-                className={cn(
-                  'inline-block mr-3',
-                  i === 1 && 'animate-text-shimmer',
-                )}
-              >
-                {word}
-              </span>
-            ))}
-          </motion.h1>
+            {/* Headline */}
+            <motion.h1
+              variants={stagger.item}
+              className="font-display text-[clamp(44px,6vw,68px)] font-normal leading-[1.0] text-gray-900 dark:text-[#e8e0d4] tracking-[-0.02em] mb-0"
+            >
+              Fuel the<br />
+              <em className="italic text-primary-600 dark:text-[#c8822a]">work</em>
+              <span className="block ml-8 md:ml-10">that matters.</span>
+            </motion.h1>
+          </div>
 
+          {/* Subtext */}
           <motion.p
             variants={stagger.item}
-            className="max-w-md text-lg text-gray-500 dark:text-gray-400 leading-relaxed"
+            className="text-[13px] font-light text-gray-500 dark:text-[#666] leading-[1.8] max-w-[280px] border-l-2 border-primary-500 dark:border-[#c8822a] pl-4 mt-8"
           >
-            {t('heroSubtext')}
+            Premium supplements for athletes who train seriously. No fillers. No compromises. Delivered to Cairo in 24h.
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={stagger.item} className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
-            <Link href="/shop/products" className="w-full sm:w-auto">
-              <Button size="lg" icon={<ShoppingBag size={18} />} className="w-full sm:w-auto ripple-effect glow-gold">
-                {t('shopNow')}
-              </Button>
+          <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-5 mt-8">
+            <Link href="/shop/products">
+              <button className="text-[11px] font-medium uppercase tracking-[0.12em] bg-primary-600 dark:bg-[#c8822a] text-white px-6 py-3 hover:opacity-90 transition-opacity">
+                Shop now
+              </button>
             </Link>
-            <Link href="/shop/products?onSale=true" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" iconRight={<ArrowRight size={16} />} className="w-full sm:w-auto">
-                {t('todaysDeals')}
-              </Button>
+            <Link href="/shop/products?onSale=true" className="flex items-center gap-2 text-[11px] font-light uppercase tracking-[0.12em] text-gray-500 dark:text-[#666] hover:text-gray-900 dark:hover:text-[#e8e0d4] transition-colors">
+              See today's deals
+              <span className="text-primary-600 dark:text-[#c8822a]">→</span>
             </Link>
           </motion.div>
 
-          {/* Trust badges */}
-          <motion.div
-            variants={stagger.item}
-            className="flex flex-wrap gap-6 pt-4 border-t border-gray-100 dark:border-gray-800 mt-4"
-          >
+          {/* Trust line */}
+          <motion.div variants={stagger.item} className="flex flex-wrap gap-6 mt-8 pt-8 border-t border-gray-100 dark:border-[#1e1e1e]">
             {[
-              { icon: Truck,  label: t('freeShipping') },
-              { icon: Shield, label: t('qualityGuarantee') },
+              { icon: Truck,   label: 'Free shipping over 2,000 ج.م.' },
+              { icon: Shield,  label: 'Verified authentic supplements' },
             ].map(({ icon: Icon, label }) => (
-              <div key={label as string} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Icon size={15} className="text-primary-500" />
+              <div key={label} className="flex items-center gap-2 text-[12px] text-gray-400 dark:text-[#555]">
+                <Icon size={14} className="text-primary-500 dark:text-[#c8822a] shrink-0" />
                 {label}
               </div>
             ))}
           </motion.div>
         </motion.div>
 
-        {/* ── Visual side ─────────────────────────────────────── */}
+        {/* RIGHT: Products + Metrics */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.88, x: 30 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 0.75, ease: EASE_ENTER, delay: 0.18 }}
-          className="relative"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.65, ease: EASE, delay: 0.2 }}
+          className="flex flex-col justify-between px-6 md:px-8 py-14 md:py-16 border-b border-gray-100 dark:border-[#1e1e1e]"
         >
-          <motion.div
-            animate={prefersReduced ? {} : {
-              y: [-12, 12, -12],
-              rotateZ: [-0.8, 0.8, -0.8],
-            }}
-            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative h-[300px] w-full sm:h-[380px] lg:h-[480px]"
-            style={{ willChange: 'transform' }}
-          >
-            {/* Main glass card */}
-            <div className="absolute inset-0 rounded-2xl overflow-hidden bg-white/45 dark:bg-gray-900/40 backdrop-blur-3xl border border-white/60 dark:border-primary-500/20 shadow-2xl">
-              {/* Inner glow */}
-              <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary-200/50 dark:bg-primary-800/15 blur-3xl" />
-              <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-amber-100/60 dark:bg-orange-900/15 blur-3xl" />
+          {/* Tag */}
+          <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-primary-600 dark:text-[#c8822a] mb-6">
+            ↑ Featured this week
+          </div>
 
-              {/* Scanline overlay */}
-              <div className="absolute inset-0 premium-scanline opacity-30 dark:opacity-50 pointer-events-none" />
-              <div className="absolute inset-0 premium-grid pointer-events-none" />
-
-              {/* Hero image placeholder */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-primary-300 dark:text-primary-700">
-                  <ShoppingBag size={80} strokeWidth={1} />
-                  <p className="mt-3 text-sm font-medium">Hero Image Here</p>
-                </div>
-              </div>
+          {/* Product stack */}
+          <div className="flex-1">
+            <div className="text-[10px] uppercase tracking-[0.12em] text-gray-400 dark:text-[#444] mb-3 font-light">
+              What's selling
             </div>
+            {TOP_SELLERS.map((item, i) => (
+              <motion.div
+                key={item.num}
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.07, ease: EASE, duration: 0.4 }}
+                className="flex items-center justify-between py-[14px] border-b border-gray-100 dark:border-[#1e1e1e] group cursor-pointer first:border-t"
+              >
+                <span className="text-[10px] text-gray-300 dark:text-[#444] font-light w-6">{item.num}</span>
+                <span className="flex-1 text-[13px] font-light text-gray-500 dark:text-[#888] group-hover:text-gray-900 dark:group-hover:text-[#e8e0d4] transition-colors tracking-[0.01em]">
+                  {item.name}
+                </span>
+                <span className="font-display text-[14px] italic text-primary-600 dark:text-[#c8822a]">
+                  {item.price}
+                </span>
+              </motion.div>
+            ))}
+          </div>
 
-            {/* Floating stat card — delivery */}
-            <motion.div
-              animate={prefersReduced ? {} : { y: [-4, 4, -4] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute left-3 top-1/4 flex items-center gap-3 rounded-xl border border-white/50 bg-white/88 p-3 shadow-2xl backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/85 sm:-left-8 sm:p-4"
-              style={{ willChange: 'transform' }}
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/40">
-                <Truck size={18} className="text-primary-600 dark:text-primary-400" />
+          {/* Metrics row */}
+          <div className="flex items-end justify-between pt-7 border-t border-gray-100 dark:border-[#1e1e1e] mt-6">
+            {METRICS.map(({ val, label }) => (
+              <div key={label} className="flex flex-col gap-1">
+                <span className="font-display text-[28px] italic text-gray-900 dark:text-[#e8e0d4] leading-none">
+                  {val}
+                </span>
+                <span className="text-[10px] font-light uppercase tracking-[0.1em] text-gray-400 dark:text-[#555]">
+                  {label}
+                </span>
               </div>
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{t('deliveryTime')}</p>
-                <p className="text-sm font-bold text-gray-900 dark:text-white">{t('within3Days') as string}</p>
-              </div>
-            </motion.div>
-
-            {/* Floating stat card — rating */}
-            <motion.div
-              animate={prefersReduced ? {} : { y: [4, -4, 4] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-              className="absolute -right-2 bottom-1/4 flex items-center gap-2.5 rounded-xl border border-white/50 bg-white/88 px-3 py-2.5 shadow-2xl backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/85 sm:-right-6"
-              style={{ willChange: 'transform' }}
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                <Star size={14} className="fill-amber-500 text-amber-500" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-900 dark:text-white">4.9★</p>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400">2k+ reviews</p>
-              </div>
-            </motion.div>
-          </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
-    </section>
-  )
-}
 
-// ─── Fullscreen Hero ───────────────────────────────────────────
-function FullscreenHero() {
-  const { heroHeadline, heroSubtext } = currentBusiness
-
-  return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-950 pt-16">
-      <GlowOrbs />
-      <AmbientParticles count={20} mode="hero" />
-      <div className="absolute inset-0 bg-gradient-mesh opacity-40" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        transition={{ duration: 0.8, ease: EASE_ENTER }}
-        className="relative z-10 mx-auto max-w-4xl px-4 text-center"
-      >
-        <h1 className="font-display text-6xl font-bold leading-tight text-white md:text-7xl lg:text-8xl">
-          {heroHeadline}
-        </h1>
-        <p className="mt-6 text-xl text-gray-400 max-w-xl mx-auto">{heroSubtext}</p>
-        <div className="mt-10 flex flex-wrap gap-4 justify-center">
-          <Link href="/shop/products">
-            <Button size="xl" className="ripple-effect glow-gold">Shop Now</Button>
-          </Link>
-          <Link href="/shop/products?onSale=true">
-            <Button size="xl" variant="outline">See Deals</Button>
-          </Link>
+      {/* ── Ticker ── */}
+      <div className="border-t border-b border-gray-100 dark:border-[#1e1e1e] py-[10px] overflow-hidden">
+        <div className="ticker-track">
+          {[
+            'Free shipping over 2,000 ج.م.',
+            'Verified authentic supplements',
+            'انضم لجروب الواتساب لأحدث العروض',
+            'Easy 30-day returns',
+            '1:1 athlete support',
+            'Free shipping over 2,000 ج.م.',
+            'Verified authentic supplements',
+            'انضم لجروب الواتساب لأحدث العروض',
+            'Easy 30-day returns',
+            '1:1 athlete support',
+          ].map((item, i) => (
+            <span
+              key={i}
+              className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-400 dark:text-[#555] whitespace-nowrap flex items-center gap-3"
+            >
+              <span className="text-primary-500 dark:text-[#c8822a] text-[8px]">✦</span>
+              {item}
+            </span>
+          ))}
         </div>
-      </motion.div>
-    </section>
-  )
-}
-
-// ─── Minimal Hero ──────────────────────────────────────────────
-function MinimalHero() {
-  const { heroHeadline, heroSubtext } = currentBusiness
-
-  return (
-    <section className="pt-32 pb-20 px-4">
-      <div className="mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 0.5, ease: EASE_ENTER }}
-          className="max-w-2xl"
-        >
-          <h1 className="font-display text-5xl font-bold text-gray-900 dark:text-white md:text-6xl">
-            {heroHeadline}
-          </h1>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">{heroSubtext}</p>
-          <Link href="/shop/products" className="mt-8 inline-flex">
-            <Button size="lg" iconRight={<ArrowRight size={16} />}>Browse Products</Button>
-          </Link>
-        </motion.div>
       </div>
     </section>
   )

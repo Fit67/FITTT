@@ -61,7 +61,7 @@ export const storeConfig: StoreConfig = {
     email: 'doctorfit@gmail.com',
     phone: '+20 103 040 9766',
     address: '5th Settlement',
-    city: 'CAIRO',
+    city: 'Cairo',
     country: 'EGYPT',
     workingHours: '24/7',
   },

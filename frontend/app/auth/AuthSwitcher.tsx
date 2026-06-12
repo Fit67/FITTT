@@ -18,43 +18,29 @@ import { type TranslationKey, useTranslation } from '@/hooks/useTranslation'
 type AuthMode = 'login' | 'register'
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email:      z.string().email('Please enter a valid email'),
+  password:   z.string().min(6, 'Password must be at least 6 characters'),
   rememberMe: z.boolean().optional(),
 })
 
 const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email'),
-  phone: z.string().optional(),
+  name:     z.string().min(2, 'Name must be at least 2 characters'),
+  email:    z.string().email('Please enter a valid email'),
+  phone:    z.string().optional(),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirm: z.string(),
+  confirm:  z.string(),
 }).refine(d => d.password === d.confirm, {
   message: 'Passwords do not match',
   path: ['confirm'],
 })
 
-type LoginForm = z.infer<typeof loginSchema>
+type LoginForm    = z.infer<typeof loginSchema>
 type RegisterForm = z.infer<typeof registerSchema>
 
-const panelTransition = {
-  type: 'spring',
-  stiffness: 260,
-  damping: 32,
-  mass: 0.72,
-} as const
-
-const contentTransition = {
-  type: 'spring',
-  stiffness: 300,
-  damping: 34,
-  mass: 0.65,
-} as const
-
 const fadeUp = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: contentTransition },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.1 } },
+  initial: { opacity: 0, y: 14, filter: 'blur(4px)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.45, ease: [0.0, 0.0, 0.2, 1.0] } },
+  exit:    { opacity: 0, y: -8, filter: 'blur(2px)', transition: { duration: 0.1 } },
 }
 
 export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
@@ -63,17 +49,12 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
   const toast = useToast()
   const { login, register: registerUser } = useAuthStore()
   const [mode, setMode] = React.useState<AuthMode>(initialMode)
-  const [showLoginPw, setShowLoginPw] = React.useState(false)
+  const [showLoginPw, setShowLoginPw]       = React.useState(false)
   const [showRegisterPw, setShowRegisterPw] = React.useState(false)
 
   const isRegister = mode === 'register'
-  const loginForm = useForm<LoginForm>({ resolver: zodResolver(loginSchema) })
+  const loginForm    = useForm<LoginForm>({ resolver: zodResolver(loginSchema) })
   const registerForm = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) })
-
-  function switchMode(nextMode: AuthMode) {
-    if (nextMode === mode) return
-    setMode(nextMode)
-  }
 
   async function onLogin(data: LoginForm) {
     try {
@@ -81,8 +62,7 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
       toast.success('Welcome back!', 'You have been signed in.')
       router.push('/')
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })
-        ?.response?.data?.message ?? 'Invalid email or password.'
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Invalid email or password.'
       toast.error('Sign in failed', msg)
     }
   }
@@ -93,27 +73,31 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
       toast.success('Account created!', 'Welcome to ' + storeConfig.name)
       router.push('/')
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })
-        ?.response?.data?.message ?? 'Something went wrong. Please try again.'
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Something went wrong.'
       toast.error('Registration failed', msg)
     }
   }
 
   return (
-    <main className="relative flex min-h-screen overflow-hidden bg-white text-gray-900 dark:bg-[#0B0F19] dark:text-white lg:p-6">
+    <main className="relative flex min-h-screen bg-white dark:bg-[#0a0a0a]">
+
+      {/* Back arrow */}
       <Link
         href="/"
-        className="absolute left-6 top-6 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 backdrop-blur-md transition-colors hover:bg-gray-200 hover:text-gray-900 dark:bg-white/8 dark:text-white/75 dark:hover:bg-white/14 dark:hover:text-white"
+        className="absolute left-5 top-5 z-30 flex h-8 w-8 items-center justify-center border border-gray-200 dark:border-[#2a2a2a] text-gray-500 dark:text-[#666] hover:text-gray-900 dark:hover:text-[#e8e0d4] hover:border-gray-400 dark:hover:border-[#555] transition-all"
         aria-label="Back to home"
       >
-        <ArrowLeft size={20} />
+        <ArrowLeft size={16} />
       </Link>
 
-      <div className="relative grid min-h-screen w-full overflow-hidden bg-white dark:bg-[#0B0F19] lg:min-h-[calc(100vh-3rem)] lg:grid-cols-2 lg:rounded-[28px] lg:shadow-[0_28px_90px_rgba(0,0,0,.45)]">
+      {/* ── Grid ── */}
+      <div className="grid min-h-screen w-full lg:grid-cols-2">
+
+        {/* Form side */}
         <motion.section
           layout
-          transition={panelTransition}
-          className="relative z-10 flex items-center justify-center px-6 py-20 lg:px-12"
+          transition={{ type: 'spring', stiffness: 260, damping: 32, mass: 0.72 }}
+          className="relative z-10 flex items-center justify-center px-6 py-20 lg:px-14"
           style={{ gridColumn: isRegister ? 2 : 1, gridRow: 1 }}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -125,7 +109,7 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
                 showPw={showLoginPw}
                 setShowPw={setShowLoginPw}
                 onSubmit={onLogin}
-                onSwitch={() => switchMode('register')}
+                onSwitch={() => setMode('register')}
               />
             ) : (
               <RegisterFormPanel
@@ -135,54 +119,116 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
                 showPw={showRegisterPw}
                 setShowPw={setShowRegisterPw}
                 onSubmit={onRegister}
-                onSwitch={() => switchMode('login')}
+                onSwitch={() => setMode('login')}
               />
             )}
           </AnimatePresence>
         </motion.section>
 
+        {/* Brand side — adapts to light and dark mode */}
         <motion.aside
           layout
-          transition={panelTransition}
-          className="hidden overflow-hidden bg-gradient-to-br from-[#d97706] via-[#f59e0b] to-[#0B0F19] lg:flex"
-          style={{ gridColumn: isRegister ? 1 : 2, gridRow: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 32, mass: 0.72 }}
+          className="hidden lg:flex flex-col relative overflow-hidden border-l border-gray-100 dark:border-[#1e1e1e]
+                     bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900
+                     dark:bg-none dark:from-transparent dark:via-transparent dark:to-transparent"
+          style={{
+            gridColumn: isRegister ? 1 : 2,
+            gridRow: 1,
+          }}
         >
-          <div className="relative flex h-full w-full items-center justify-center px-12 text-center">
-            <motion.div
-              animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
-              transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 opacity-45 mix-blend-screen bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.28),transparent_48%)] bg-[length:220%_220%]"
-            />
-            <motion.div
-              animate={{ scale: [1, 1.08, 1], rotate: [0, 18, 0] }}
-              transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -right-36 top-10 h-[440px] w-[440px] rounded-full bg-white/12 blur-[90px]"
-            />
+          {/* Dark mode: dark gradient overlay */}
+          <div
+            className="absolute inset-0 hidden dark:block"
+            style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #111 100%)' }}
+          />
+
+          {/* Light mode: subtle pattern overlay */}
+          <div className="absolute inset-0 dark:hidden pointer-events-none"
+            style={{
+              backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+            }}
+          />
+
+          {/* Dark mode: subtle grid */}
+          <div className="absolute inset-0 pointer-events-none hidden dark:block"
+            style={{
+              backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+            }}
+          />
+
+          {/* Light mode: white glow blob */}
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full opacity-20 pointer-events-none dark:hidden"
+            style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)' }}
+          />
+
+          {/* Dark mode: gold glow blob */}
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full opacity-10 pointer-events-none hidden dark:block"
+            style={{ background: 'radial-gradient(circle, #c8822a 0%, transparent 70%)' }}
+          />
+
+          <div className="relative z-10 flex flex-col justify-between h-full px-12 py-16">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 flex items-center justify-center bg-white/20 dark:bg-[#c8822a]">
+                <span className="text-white font-display font-semibold text-sm">{storeConfig.name.charAt(0)}</span>
+              </div>
+              <span className="font-display text-[18px] text-white dark:text-[#e8e0d4]">
+                Doctor<em className="italic text-white/80 dark:text-[#c8822a]">Fit</em>
+              </span>
+            </div>
+
+            {/* Centre copy */}
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={mode}
-                initial={{ opacity: 0, x: isRegister ? -28 : 28 }}
+                initial={{ opacity: 0, x: isRegister ? -24 : 24 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: isRegister ? 28 : -28 }}
-                transition={contentTransition}
-                className="relative z-10 max-w-lg"
+                exit={{ opacity: 0, x: isRegister ? 24 : -24 }}
+                transition={{ duration: 0.35, ease: [0.0, 0.0, 0.2, 1.0] }}
               >
-                <h2 className="font-display text-5xl font-bold tracking-tight">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-px w-8 bg-white/30 dark:bg-[#2a2a2a]" />
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-white/60 dark:text-[#555]">
+                    {isRegister ? 'Welcome back' : 'New here'}
+                  </span>
+                </div>
+                <h2 className="font-display text-[clamp(32px,3vw,44px)] font-normal text-white dark:text-[#e8e0d4] leading-[1.1] tracking-[-0.02em] mb-5">
                   {isRegister ? t('authWelcomeBackTitle') : t('authNewHereTitle')}
                 </h2>
-                <p className="mt-6 text-lg leading-relaxed text-white/82">
+                <p className="text-[13px] font-light text-white/70 dark:text-[#666] leading-[1.9] max-w-[280px] mb-8">
                   {isRegister ? t('authWelcomeBackBody') : t('authNewHereBody')}
                 </p>
-                <Button
+                <button
                   type="button"
-                  size="lg"
-                  onClick={() => switchMode(isRegister ? 'login' : 'register')}
-                  className="mt-10 h-12 px-10 bg-white/10 text-base font-semibold text-white border-2 border-white/40 backdrop-blur-md hover:bg-white hover:text-primary-600"
+                  onClick={() => setMode(isRegister ? 'login' : 'register')}
+                  className="text-[11px] font-medium uppercase tracking-[0.12em]
+                             border border-white/40 text-white/80 px-6 py-3
+                             hover:border-white hover:text-white
+                             dark:border-[#3a3a3a] dark:text-[#888]
+                             dark:hover:border-[#c8822a] dark:hover:text-[#c8822a]
+                             transition-all"
                 >
-                  {isRegister ? 'Sign In' : 'Sign Up'}
-                </Button>
+                  {isRegister ? 'Sign In' : 'Create Account'}
+                </button>
               </motion.div>
             </AnimatePresence>
+
+            {/* Bottom metrics */}
+            <div className="flex gap-8 pt-8 border-t border-white/20 dark:border-[#1e1e1e]">
+              {[
+                { val: '12k+', label: 'Active athletes' },
+                { val: '4.9★', label: 'Rating' },
+                { val: '24h',  label: 'Delivery' },
+              ].map(({ val, label }) => (
+                <div key={label}>
+                  <div className="font-display text-[20px] italic text-white dark:text-[#c8822a]">{val}</div>
+                  <div className="text-[10px] uppercase tracking-[0.1em] text-white/50 dark:text-[#444] mt-0.5">{label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </motion.aside>
       </div>
@@ -190,14 +236,8 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
   )
 }
 
-function LoginFormPanel({
-  t,
-  form,
-  showPw,
-  setShowPw,
-  onSubmit,
-  onSwitch,
-}: {
+// ─── Login form ────────────────────────────────────────────────
+function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch }: {
   t: (key: TranslationKey) => string
   form: ReturnType<typeof useForm<LoginForm>>
   showPw: boolean
@@ -208,57 +248,48 @@ function LoginFormPanel({
   const { register, handleSubmit, formState: { errors, isSubmitting } } = form
 
   return (
-    <motion.div {...fadeUp} className="w-full max-w-[390px] text-gray-900 dark:text-white">
+    <motion.div {...fadeUp} className="w-full max-w-[360px]">
       <MobileLogo />
-      <div className="mb-10 text-center lg:text-left">
-        <h1 className="font-display text-4xl font-bold tracking-tight">{t('welcomeBack')}</h1>
-        <p className="mt-2 text-gray-500 dark:text-gray-400">{t('signInToAccount')}</p>
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-px w-6 bg-gray-200 dark:bg-[#2a2a2a]" />
+          <span className="text-[10px] uppercase tracking-[0.18em] text-gray-400 dark:text-[#555]">Account</span>
+        </div>
+        <h1 className="font-display text-[32px] font-normal tracking-[-0.02em] text-gray-900 dark:text-[#e8e0d4] leading-[1.1]">
+          {t('welcomeBack')}
+        </h1>
+        <p className="mt-2 text-[12px] font-light text-gray-400 dark:text-[#555]">{t('signInToAccount')}</p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-5">
-          <Input
-            label={t('emailAddress')}
-            type="email"
-            placeholder="you@email.com"
-            autoComplete="email"
-            leading={<Mail size={18} />}
-            error={errors.email?.message}
-            className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]"
-            {...register('email')}
-          />
-          <Input
-            label={t('password')}
-            type={showPw ? 'text' : 'password'}
-            placeholder="Password"
-            autoComplete="current-password"
-            leading={<Lock size={18} />}
-            trailing={
-              <button type="button" onClick={() => setShowPw(v => !v)} className="text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300">
-                {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            }
-            error={errors.password?.message}
-            className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]"
-            {...register('password')}
-          />
-        </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <Input label={t('emailAddress')} type="email" placeholder="you@email.com" autoComplete="email"
+          leading={<Mail size={14} />} error={errors.email?.message} {...register('email')} />
+        <Input label={t('password')} type={showPw ? 'text' : 'password'} placeholder="••••••••" autoComplete="current-password"
+          leading={<Lock size={14} />}
+          trailing={
+            <button type="button" onClick={() => setShowPw(v => !v)} className="text-gray-300 dark:text-[#444] hover:text-gray-600 dark:hover:text-[#888] transition-colors">
+              {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+            </button>
+          }
+          error={errors.password?.message}
+          {...register('password')}
+        />
 
-        <div className="flex items-center justify-between">
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 bg-transparent accent-primary-600 dark:border-gray-700" {...register('rememberMe')} />
+        <div className="flex items-center justify-between pt-1">
+          <label className="flex cursor-pointer items-center gap-2 text-[11px] font-light text-gray-500 dark:text-[#666]">
+            <input type="checkbox" className="h-3.5 w-3.5 border-gray-300 dark:border-[#3a3a3a] accent-primary-600 dark:accent-[#c8822a]" {...register('rememberMe')} />
             {t('rememberMe')}
           </label>
-          <Link href="/auth/forgot-password" className="text-sm font-medium text-primary-600 transition-colors hover:text-primary-500 dark:text-primary-400">
+          <Link href="/auth/forgot-password" className="text-[11px] font-light text-primary-600 dark:text-[#c8822a] hover:opacity-70 transition-opacity">
             {t('forgotPassword')}
           </Link>
         </div>
 
-        <Button type="submit" fullWidth size="lg" loading={isSubmitting} className="mt-2 h-12 text-base font-semibold shadow-[0_0_20px_rgba(var(--color-primary-500),0.3)] hover:shadow-[0_0_30px_rgba(var(--color-primary-500),0.5)]">
+        <Button type="submit" fullWidth size="lg" loading={isSubmitting} className="mt-2">
           {t('signIn')}
         </Button>
 
-        <button type="button" onClick={onSwitch} className="w-full text-center text-sm font-medium text-primary-600 transition-colors hover:text-primary-500 lg:hidden">
+        <button type="button" onClick={onSwitch} className="w-full text-center text-[11px] font-light text-primary-600 dark:text-[#c8822a] hover:opacity-70 transition-opacity lg:hidden">
           {t('authNewHereMobile')}
         </button>
       </form>
@@ -266,14 +297,8 @@ function LoginFormPanel({
   )
 }
 
-function RegisterFormPanel({
-  t,
-  form,
-  showPw,
-  setShowPw,
-  onSubmit,
-  onSwitch,
-}: {
+// ─── Register form ─────────────────────────────────────────────
+function RegisterFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch }: {
   t: (key: TranslationKey) => string
   form: ReturnType<typeof useForm<RegisterForm>>
   showPw: boolean
@@ -284,40 +309,42 @@ function RegisterFormPanel({
   const { register, handleSubmit, formState: { errors, isSubmitting } } = form
 
   return (
-    <motion.div {...fadeUp} className="w-full max-w-[390px] text-gray-900 dark:text-white">
+    <motion.div {...fadeUp} className="w-full max-w-[360px]">
       <MobileLogo />
-      <div className="mb-8 text-center lg:text-left">
-        <h1 className="font-display text-4xl font-bold tracking-tight">{t('createAccount')}</h1>
-        <p className="mt-2 text-gray-500 dark:text-gray-400">{t('joinUs')}</p>
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-px w-6 bg-gray-200 dark:bg-[#2a2a2a]" />
+          <span className="text-[10px] uppercase tracking-[0.18em] text-gray-400 dark:text-[#555]">New account</span>
+        </div>
+        <h1 className="font-display text-[32px] font-normal tracking-[-0.02em] text-gray-900 dark:text-[#e8e0d4] leading-[1.1]">
+          {t('createAccount')}
+        </h1>
+        <p className="mt-2 text-[12px] font-light text-gray-400 dark:text-[#555]">{t('joinUs')}</p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <Input label={t('fullName')} placeholder="" leading={<User size={18} />} error={errors.name?.message} className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]" {...register('name')} />
-        <Input label={t('emailAddress')} type="email" placeholder="" leading={<Mail size={18} />} error={errors.email?.message} className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]" {...register('email')} />
-        <Input label={t('phoneOptional')} type="tel" placeholder="" leading={<Phone size={18} />} error={errors.phone?.message} className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]" {...register('phone')} />
-        <Input
-          label={t('password')}
-          type={showPw ? 'text' : 'password'}
-          placeholder=""
-          leading={<Lock size={18} />}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Input label={t('fullName')} placeholder="" leading={<User size={14} />} error={errors.name?.message} {...register('name')} />
+        <Input label={t('emailAddress')} type="email" placeholder="" leading={<Mail size={14} />} error={errors.email?.message} {...register('email')} />
+        <Input label={t('phoneOptional')} type="tel" placeholder="" leading={<Phone size={14} />} error={errors.phone?.message} {...register('phone')} />
+        <Input label={t('password')} type={showPw ? 'text' : 'password'} placeholder=""
+          leading={<Lock size={14} />}
           trailing={
-            <button type="button" onClick={() => setShowPw(v => !v)} className="text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300">
-              {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+            <button type="button" onClick={() => setShowPw(v => !v)} className="text-gray-300 dark:text-[#444] hover:text-gray-600 dark:hover:text-[#888] transition-colors">
+              {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
           }
           error={errors.password?.message}
-          className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]"
           {...register('password')}
         />
-        <Input label={t('confirmPassword')} type="password" placeholder="" leading={<Lock size={18} />} error={errors.confirm?.message} className="bg-gray-50 dark:bg-[#131A2A] border-gray-200 dark:border-gray-800 focus:bg-white dark:focus:bg-[#1A2235]" {...register('confirm')} />
+        <Input label={t('confirmPassword')} type="password" placeholder="" leading={<Lock size={14} />} error={errors.confirm?.message} {...register('confirm')} />
 
-        <p className="pb-2 pt-1 text-xs text-gray-500 dark:text-gray-400">{t('termsAndPrivacy')}</p>
+        <p className="text-[11px] font-light text-gray-400 dark:text-[#555] pb-1">{t('termsAndPrivacy')}</p>
 
-        <Button type="submit" fullWidth size="lg" loading={isSubmitting} className="mt-2 h-12 text-base font-semibold shadow-[0_0_20px_rgba(var(--color-primary-500),0.3)] hover:shadow-[0_0_30px_rgba(var(--color-primary-500),0.5)]">
+        <Button type="submit" fullWidth size="lg" loading={isSubmitting}>
           {t('createAccount')}
         </Button>
 
-        <button type="button" onClick={onSwitch} className="w-full text-center text-sm font-medium text-primary-600 transition-colors hover:text-primary-500 lg:hidden">
+        <button type="button" onClick={onSwitch} className="w-full text-center text-[11px] font-light text-primary-600 dark:text-[#c8822a] hover:opacity-70 transition-opacity lg:hidden">
           {t('authAlreadyMemberMobile')}
         </button>
       </form>
@@ -328,8 +355,8 @@ function RegisterFormPanel({
 function MobileLogo() {
   return (
     <div className="mb-10 flex justify-center lg:hidden">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-lg">
-        <span className="font-display text-xl font-bold text-white">{storeConfig.name.charAt(0)}</span>
+      <div className="flex h-10 w-10 items-center justify-center bg-primary-600 dark:bg-[#c8822a]">
+        <span className="font-display text-lg font-semibold text-white">{storeConfig.name.charAt(0)}</span>
       </div>
     </div>
   )

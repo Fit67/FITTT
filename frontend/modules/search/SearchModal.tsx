@@ -88,7 +88,7 @@ export function SearchModal() {
             animate={{ opacity: 1, y: 0,   scale: 1    }}
             exit={{    opacity: 0, y: -20, scale: 0.98  }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="relative z-10 w-full max-w-2xl overflow-hidden rounded-card bg-surface shadow-modal dark:bg-surface-raised"
+            className="relative z-10 w-full max-w-2xl overflow-hidden bg-white dark:bg-[#0e0e0e] border border-gray-100 dark:border-[#1e1e1e] shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           >
             {/* Search Input */}
             <form onSubmit={handleSubmit} className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-800">
@@ -106,7 +106,7 @@ export function SearchModal() {
                   <X size={18} />
                 </button>
               )}
-              <kbd className="hidden sm:flex items-center gap-1 rounded px-2 py-1 bg-gray-100 dark:bg-gray-800 text-xs text-gray-400 font-mono">
+              <kbd className="hidden sm:flex items-center gap-1 px-2 py-1 border border-gray-200 dark:border-[#2a2a2a] text-[10px] text-gray-400 dark:text-[#555] font-mono">
                 Esc
               </kbd>
             </form>
@@ -122,12 +122,12 @@ export function SearchModal() {
                     <button
                       key={product._id}
                       onClick={() => { closeSearch(); router.push(`/shop/products/${product.slug}`) }}
-                      className="flex w-full items-center gap-4 rounded-lg px-3 py-2.5 hover:bg-surface-overlay dark:hover:bg-surface-overlay transition-colors text-left"
+                      className="flex w-full items-center gap-4 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors text-left"
                     >
                       <img
                         src={getProductImage(product.images)}
                         alt={product.name}
-                        className="h-10 w-10 rounded-lg object-cover shrink-0"
+                        className="h-10 w-10 object-cover shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
@@ -142,7 +142,7 @@ export function SearchModal() {
                   ))}
                   <button
                     onClick={() => commit(query)}
-                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 py-2.5 text-sm text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                    className="mt-2 flex w-full items-center justify-center gap-2 border border-gray-200 dark:border-[#2a2a2a] py-2.5 text-[11px] uppercase tracking-[0.1em] font-light text-primary-600 dark:text-[#c8822a] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
                   >
                     See all results for "{query}"
                     <ArrowRight size={14} />
@@ -161,7 +161,7 @@ export function SearchModal() {
                           <button
                             key={term}
                             onClick={() => { setQuery(term); commit(term) }}
-                            className="rounded-full border border-gray-200 dark:border-gray-700 px-3 py-1 text-xs text-gray-600 dark:text-gray-400 hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                            className="border border-gray-200 dark:border-[#2a2a2a] px-3 py-1.5 text-[10px] uppercase tracking-[0.08em] font-light text-gray-500 dark:text-[#666] hover:border-primary-600 dark:hover:border-[#c8822a] hover:text-primary-600 dark:hover:text-[#c8822a] transition-colors"
                           >
                             {term}
                           </button>
@@ -180,7 +180,7 @@ export function SearchModal() {
                         <button
                           key={term}
                           onClick={() => { setQuery(term); commit(term) }}
-                          className="rounded-full bg-primary-50 dark:bg-primary-900/30 px-3 py-1 text-xs text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors"
+                          className="border border-primary-200 dark:border-[#3a2010] bg-primary-50 dark:bg-[#1a1005] px-3 py-1.5 text-[10px] uppercase tracking-[0.08em] font-light text-primary-600 dark:text-[#c8822a] hover:bg-primary-100 dark:hover:bg-[#2a1810] transition-colors"
                         >
                           {term}
                         </button>

@@ -5,7 +5,6 @@ import { ToastContainer } from '@/components/ui/Toast'
 import { SearchModal } from '@/modules/search/SearchModal'
 import { NavigationProgress } from '@/components/ui/NavigationProgress'
 import { storeConfig } from '@/config/store'
-import { getGoogleFontsUrl } from '@/themes'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -27,23 +26,29 @@ export const metadata: Metadata = {
 }
 
 import { LanguageProvider } from '@/components/providers/LanguageProvider'
+import { ThemeApplier } from '@/components/providers/ThemeApplier'
 import { Suspense } from 'react'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const fontsUrl = getGoogleFontsUrl(storeConfig.theme)
-
   return (
     <html lang={storeConfig.language} dir={storeConfig.direction} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="font-body bg-surface text-gray-900 dark:text-gray-100 antialiased">
+      <body
+        className="font-body bg-surface text-gray-900 dark:text-[#e8e0d4] antialiased transition-colors duration-300"
+        style={{ fontFamily: '"DM Sans", system-ui, sans-serif' }}
+      >
         <LanguageProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+            {/* ThemeApplier syncs CSS vars + body classes on every page, every theme change */}
+            <ThemeApplier />
             <QueryProvider>
-              {/* Gold progress bar — shows instantly on link click */}
               <Suspense fallback={null}>
                 <NavigationProgress />
               </Suspense>

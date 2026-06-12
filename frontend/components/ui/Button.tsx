@@ -18,36 +18,38 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   children?:  React.ReactNode
 }
 
+// Editorial flat buttons — no border-radius, clean uppercase tracking
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-primary-600 text-white shadow-sm shadow-primary-500/20 hover:shadow-primary-500/40 hover:bg-primary-700 active:bg-primary-800 ' +
-    'dark:bg-primary-500 dark:hover:bg-primary-400 focus-visible:ring-primary-400 transition-all duration-300',
+    'bg-primary-600 text-white hover:opacity-90 active:opacity-80 ' +
+    'dark:bg-[#c8822a] dark:hover:opacity-90 ' +
+    'transition-opacity duration-200',
   secondary:
-    'bg-white/80 backdrop-blur-sm text-gray-900 border border-gray-200 shadow-sm hover:shadow-md hover:bg-white ' +
-    'dark:bg-gray-900/50 dark:backdrop-blur-md dark:text-gray-100 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:border-gray-700 ' +
-    'focus-visible:ring-gray-400 transition-all duration-300',
+    'bg-gray-100 text-gray-800 hover:bg-gray-200 ' +
+    'dark:bg-[#1e1e1e] dark:text-[#ccc] dark:hover:bg-[#2a2a2a] ' +
+    'transition-colors duration-200',
   outline:
-    'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 active:bg-primary-100 ' +
-    'dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-950 ' +
-    'focus-visible:ring-primary-400',
+    'border border-current text-primary-600 hover:bg-primary-50 active:bg-primary-100 ' +
+    'dark:text-[#c8822a] dark:hover:bg-[#1e1e1e] ' +
+    'transition-colors duration-200',
   ghost:
-    'text-gray-700 hover:bg-gray-100 active:bg-gray-200 ' +
-    'dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700 ' +
-    'focus-visible:ring-gray-400',
+    'text-gray-600 hover:text-gray-900 hover:bg-gray-100 ' +
+    'dark:text-[#888] dark:hover:text-[#e8e0d4] dark:hover:bg-[#1e1e1e] ' +
+    'transition-colors duration-200',
   danger:
-    'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 ' +
-    'focus-visible:ring-red-400',
+    'bg-red-600 text-white hover:opacity-90 ' +
+    'transition-opacity duration-200',
   success:
-    'bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 active:bg-emerald-800 ' +
-    'focus-visible:ring-emerald-400',
+    'bg-emerald-600 text-white hover:opacity-90 ' +
+    'transition-opacity duration-200',
 }
 
 const sizeClasses: Record<Size, string> = {
-  xs:  'h-7  px-2.5 text-xs  gap-1   rounded-[calc(var(--radius-button)-2px)]',
-  sm:  'h-8  px-3   text-sm  gap-1.5 rounded-[calc(var(--radius-button)-1px)]',
-  md:  'h-10 px-4   text-sm  gap-2   rounded-button',
-  lg:  'h-11 px-5   text-base gap-2  rounded-button',
-  xl:  'h-13 px-7   text-base gap-2.5 rounded-button',
+  xs:  'h-7  px-3   text-[9px]  gap-1   tracking-[0.1em] uppercase',
+  sm:  'h-8  px-3.5 text-[10px] gap-1.5 tracking-[0.1em] uppercase',
+  md:  'h-10 px-4   text-[11px] gap-2   tracking-[0.1em] uppercase',
+  lg:  'h-11 px-5   text-[11px] gap-2   tracking-[0.12em] uppercase',
+  xl:  'h-12 px-6   text-[12px] gap-2.5 tracking-[0.12em] uppercase',
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -72,15 +74,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         disabled={isDisabled}
-        whileTap={isDisabled ? undefined : { scale: 0.97 }}
-        whileHover={isDisabled ? undefined : { scale: 1.01 }}
+        whileTap={isDisabled ? undefined : { scale: 0.98 }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         className={cn(
           // Base
           'relative inline-flex items-center justify-center font-body font-medium',
-          'outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'transition-colors duration-150 select-none cursor-pointer',
-          'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+          'outline-none focus-visible:outline-1 focus-visible:outline-primary-600',
+          'select-none cursor-pointer',
+          'disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none',
           // Variant + size
           variantClasses[variant],
           sizeClasses[size],
@@ -90,9 +91,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && (
-          <Loader2 className="absolute inset-0 m-auto animate-spin" size={16} />
+          <Loader2 className="absolute inset-0 m-auto animate-spin" size={14} />
         )}
-        <span className={cn('flex items-center gap-inherit', loading && 'invisible')}>
+        <span className={cn('flex items-center gap-[inherit]', loading && 'invisible')}>
           {icon && <span className="shrink-0">{icon}</span>}
           {children}
           {iconRight && <span className="shrink-0">{iconRight}</span>}

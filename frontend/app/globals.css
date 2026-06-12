@@ -1,78 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================
-   THEME VARIABLES — set by themes/index.ts at runtime
-   Fallback values below match the default (supermarket) theme
+   DOCTORFIT DESIGN SYSTEM
+   Dark mode = editorial (#0a0a0a + #c8822a gold)
+   Light mode = warm white / sky-blue / blue palette with color variety
    ============================================================ */
 
 :root {
-  /* Primary palette — Sky Blue for Light Mode */
-  --color-primary-50:  240 249 255;
-  --color-primary-100: 224 242 254;
-  --color-primary-200: 186 230 253;
-  --color-primary-300: 125 211 252;
-  --color-primary-400: 56 189 248;
-  --color-primary-500: 14 165 233;
-  --color-primary-600: 2 132 199;
-  --color-primary-700: 3 105 161;
-  --color-primary-800: 7 89 133;
-  --color-primary-900: 12 74 110;
+  /* ── Light mode: white / sky-blue / blue ── */
+  --color-primary-50:  239 246 255;
+  --color-primary-100: 219 234 254;
+  --color-primary-200: 191 219 254;
+  --color-primary-300: 147 197 253;
+  --color-primary-400: 96  165 250;
+  --color-primary-500: 59  130 246;
+  --color-primary-600: 37  99  235;
+  --color-primary-700: 29  78  216;
+  --color-primary-800: 30  64  175;
+  --color-primary-900: 30  58  138;
 
-  /* Accent - Blue */
-  --color-accent:       14 165 233;
-  --color-accent-light: 56 189 248;
+  /* Accent — sky blue */
+  --color-accent:       14  165 233;
+  --color-accent-light: 125 211 252;
 
-  /* Light background base */
-  --color-surface:          255 255 255;
-  --color-surface-raised:   248 250 252;
-  --color-surface-overlay:  241 245 249;
+  /* Surfaces — warm off-white with color variety */
+  --color-surface:          250 251 255;
+  --color-surface-raised:   243 246 255;
+  --color-surface-overlay:  235 241 255;
+
+  /* Gold / amber for badges */
+  --color-gold: 200 130 42;
 
   /* Typography */
-  --font-display: "Instrument Serif", "Cairo", serif;
-  --font-body:    "DM Sans", "Cairo", sans-serif;
-  --font-mono:    "JetBrains Mono", monospace;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 
   /* Radii */
-  --radius-card:   16px;
-  --radius-button: 10px;
-  --radius-badge:  100px;
+  --radius-card:   4px;
+  --radius-button: 0px;
+  --radius-badge:  2px;
 
   /* Shadows */
-  --shadow-card:       0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
-  --shadow-card-hover: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
-  --shadow-modal:      0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04);
-  --shadow-input:      0 0 0 3px rgba(217,119,6,.2);
+  --shadow-card:       0 1px 3px 0 rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04);
+  --shadow-card-hover: 0 10px 30px -6px rgba(37,99,235,.14), 0 4px 12px -2px rgba(37,99,235,.08);
+  --shadow-modal:      0 20px 40px -8px rgba(0,0,0,.15);
+  --shadow-input:      0 0 0 3px rgba(37,99,235,.18);
 
-  /* Gradient - Light mesh */
+  /* Light gradient mesh — colorful sections */
   --gradient-mesh:
-    radial-gradient(at 40% 20%, hsla(45, 60%, 95%, 1) 0px, transparent 50%),
-    radial-gradient(at 80%  0%, hsla(35, 90%, 98%, 1) 0px, transparent 50%),
-    radial-gradient(at  0% 50%, hsla(55, 50%, 97%, 1) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, hsla(210, 100%, 94%, 1) 0px, transparent 55%),
+    radial-gradient(at 100% 0%, hsla(199, 100%, 90%, 1) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, hsla(220, 80%, 94%, 1) 0px, transparent 60%),
+    linear-gradient(180deg, #f0f4ff 0%, #fafbff 100%);
 
-  /* Transition timing — shared tokens for consistency */
+  /* Transition tokens */
   --transition-fast:   150ms cubic-bezier(0.0, 0.0, 0.2, 1.0);
   --transition-smooth: 280ms cubic-bezier(0.0, 0.0, 0.2, 1.0);
   --transition-slow:   450ms cubic-bezier(0.2, 0.0, 0.0, 1.0);
+
+  /* Border colours */
+  --border-default: rgba(37,99,235,.1);
+  --border-strong:  rgba(37,99,235,.2);
+
+  /* Light mode section alternating bg */
+  --section-alt-bg: 235 242 255;
+  --section-tint-bg: 224 234 255;
 }
 
+/* ── DARK MODE ── */
 .dark {
-  /* Deep Dark Mode Backgrounds - Exact Match HTML */
-  --color-surface:          10  10  10; /* #0a0a0a */
-  --color-surface-raised:   14  14  14; /* #0e0e0e */
-  --color-surface-overlay:  17  17  17; /* #111 */
+  --color-primary-50:  20  20  20;
+  --color-primary-100: 30  30  30;
+  --color-primary-200: 42  42  42;
+  --color-primary-300: 100 75  35;
+  --color-primary-400: 150 105 52;
+  --color-primary-500: 200 130 42;
+  --color-primary-600: 200 130 42;
+  --color-primary-700: 168 102 30;
+  --color-primary-800: 133 77  18;
+  --color-primary-900: 100 55  10;
 
-  /* Gold Accent */
-  --color-primary-500: 200 130 42; /* #c8822a */
-  --color-accent:      200 130 42;
+  --color-accent:       200 130 42;
+  --color-accent-light: 220 160 80;
 
-  --shadow-card:       0 1px 4px 0 rgba(0,0,0,.5), 0 4px 16px 0 rgba(0,0,0,.5);
-  --shadow-card-hover: 0 8px 32px 0 rgba(200,130,42,.15);
-  --shadow-modal:      0 20px 80px -10px rgba(0,0,0,.8);
-  --shadow-input:      0 0 0 3px rgba(200,130,42,.2);
+  --color-surface:          10  10  10;
+  --color-surface-raised:   14  14  14;
+  --color-surface-overlay:  20  20  20;
 
-  --gradient-mesh: none;
+  --shadow-card:       0 1px 4px 0 rgba(0,0,0,.6), 0 4px 16px 0 rgba(0,0,0,.5);
+  --shadow-card-hover: 0 8px 32px 0 rgba(200,130,42,.18);
+  --shadow-modal:      0 24px 80px -10px rgba(0,0,0,.9);
+  --shadow-input:      0 0 0 2px rgba(200,130,42,.35);
+
+  --gradient-mesh:
+    radial-gradient(at 40% 20%, hsla(38, 60%, 10%, 1) 0px, transparent 55%),
+    radial-gradient(at 80% 0%, hsla(30, 80%, 6%, 1) 0px, transparent 50%),
+    linear-gradient(180deg, #0a0a0a 0%, #0e0e0e 100%);
+
+  --border-default: rgba(255,255,255,.07);
+  --border-strong:  rgba(255,255,255,.12);
+
+  --section-alt-bg: 14 14 14;
+  --section-tint-bg: 20 20 20;
 }
 
 /* ============================================================
@@ -84,8 +118,9 @@
 
   html {
     scroll-behavior: smooth;
+    /* ── FONT SIZE: increased 32% (16px → ~21px base) ── */
+    font-size: 21px;
     -webkit-text-size-adjust: 100%;
-    /* Critical: enable hardware acceleration at the document level */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -95,42 +130,46 @@
     background-color: rgb(var(--color-surface));
     min-height: 100vh;
     line-height: 1.6;
-    /* Prevent layout shifts during page transitions */
     overflow-x: hidden;
+    font-family: var(--font-body);
+    /* Full dark/light mode transition */
+    transition: background-color 280ms ease, color 280ms ease;
+    color: #1a202c;
   }
-  
+
+  .dark body,
+  body.dark {
+    color: #e8e0d4;
+  }
+
   body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: -1;
     background-image: var(--gradient-mesh);
+    transition: background-image 280ms ease;
   }
 
-  /* Custom scrollbar — themed to match gold palette */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track  { background: transparent; }
-  ::-webkit-scrollbar-thumb  {
-    background-color: rgba(217, 119, 6, 0.25);
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(37,99,235,.2);
     border-radius: 100px;
-    transition: background-color var(--transition-fast);
   }
-  ::-webkit-scrollbar-thumb:hover { background-color: rgba(217, 119, 6, 0.5); }
-  .dark ::-webkit-scrollbar-thumb { background-color: rgba(245, 158, 11, 0.2); }
-  .dark ::-webkit-scrollbar-thumb:hover { background-color: rgba(245, 158, 11, 0.4); }
+  ::-webkit-scrollbar-thumb:hover { background-color: rgba(37,99,235,.4); }
+  .dark ::-webkit-scrollbar-thumb { background-color: rgba(200,130,42,.2); }
+  .dark ::-webkit-scrollbar-thumb:hover { background-color: rgba(200,130,42,.4); }
 
-  /* Focus styles */
   :focus-visible {
-    outline: 2px solid rgb(var(--color-primary-500));
+    outline: 1px solid rgb(var(--color-primary-600));
     outline-offset: 2px;
-    border-radius: 4px;
   }
 
   img, video { max-width: 100%; height: auto; display: block; }
-
   a { color: inherit; text-decoration: none; }
 
-  /* ── Respect reduced motion preferences ───────────────────── */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -142,22 +181,33 @@
 }
 
 /* ============================================================
+   FULL DARK / LIGHT MODE — all surfaces respond to .dark class
+   ============================================================ */
+
+/* All pages get the right background in both modes */
+html, body {
+  background-color: rgb(var(--color-surface));
+}
+
+/* Ensure every page's min-h-screen sections pick up the theme */
+.dark .bg-white,
+.dark [class*="bg-white"] {
+  --tw-bg-opacity: 1;
+}
+
+/* Section coloring helper classes for light mode variety */
+.section-tinted {
+  background-color: rgb(var(--section-alt-bg));
+}
+.section-colored {
+  background-color: rgb(var(--section-tint-bg));
+}
+
+/* ============================================================
    COMPONENT UTILITIES
    ============================================================ */
 
 @layer components {
-  /* Skeleton shimmer */
-  .skeleton {
-    @apply rounded-card;
-    background: linear-gradient(
-      90deg,
-      rgb(var(--color-surface-raised)) 25%,
-      rgb(var(--color-surface-overlay)) 50%,
-      rgb(var(--color-surface-raised)) 75%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.6s ease-in-out infinite;
-  }
 
   /* Page container */
   .container-page {
@@ -171,11 +221,24 @@
 
   /* Section heading */
   .section-heading {
-    @apply font-display text-3xl font-bold text-gray-900 dark:text-white md:text-4xl;
+    font-family: var(--font-display);
+    @apply text-3xl font-normal text-gray-900 dark:text-[#e8e0d4] md:text-4xl;
+    letter-spacing: -0.02em;
   }
 
+  /* Editorial eyebrow */
+  .eyebrow {
+    @apply text-[10px] font-normal uppercase tracking-[0.18em];
+    color: rgb(var(--color-primary-600));
+  }
+  .dark .eyebrow {
+    color: #c8822a;
+  }
+
+  /* Glass card */
   .glass {
-    @apply bg-white/70 border border-white/50 dark:bg-[#131A2A]/80 dark:border-white/10;
+    @apply bg-white/80 border border-white/60 backdrop-blur-xl;
+    @apply dark:bg-[rgba(14,14,14,0.9)] dark:border-[rgba(255,255,255,0.07)];
   }
 
   /* Gradient mesh background */
@@ -185,50 +248,50 @@
 
   /* Product grid */
   .product-grid {
-    @apply grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5;
+    @apply grid grid-cols-1 gap-px min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4;
   }
 
   /* Admin sidebar link */
   .admin-nav-link {
-    @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium;
+    @apply flex items-center gap-3 px-3 py-2.5 text-sm font-medium;
     transition: background-color var(--transition-fast), color var(--transition-fast);
   }
-
   .admin-nav-link-active {
     @apply bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400;
   }
-
   .admin-nav-link-inactive {
     @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100;
   }
 
-  /* ── Smooth hover card ──────────────────────────────────────── */
+  /* Hover card */
   .hover-card {
     transition:
       transform var(--transition-smooth),
       box-shadow var(--transition-smooth),
       border-color var(--transition-smooth);
   }
-  .hover-card:hover {
-    transform: translateY(-4px);
+  .hover-card:hover { transform: translateY(-3px); }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--color-surface-raised)) 25%,
+      rgb(var(--color-surface-overlay)) 50%,
+      rgb(var(--color-surface-raised)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
   }
 
-  /* ── Glow pulse — for CTAs and important badges ──────────── */
-  .glow-gold {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
-    animation: glow-ring 2.8s ease-in-out infinite;
-  }
-
-  /* ── Progress bar at top during navigation ───────────────── */
+  /* Nav progress */
   .nav-progress {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(
       90deg,
-      rgb(var(--color-primary-500)),
+      rgb(var(--color-primary-600)),
       rgb(var(--color-accent)),
       rgb(var(--color-primary-600))
     );
@@ -237,6 +300,54 @@
     animation: progress-shimmer 1.2s linear infinite;
     transform-origin: left;
   }
+
+  /* Ticker */
+  .ticker-track {
+    display: flex;
+    gap: 48px;
+    animation: ticker 22s linear infinite;
+    width: max-content;
+  }
+}
+
+/* ============================================================
+   LIGHT MODE SECTION VARIETY
+   Make non-home pages feel less stark-white
+   ============================================================ */
+
+/* Alternating section backgrounds in light mode */
+:not(.dark) .min-h-screen.pt-20,
+:not(.dark) .min-h-screen.pt-24 {
+  background: linear-gradient(180deg,
+    rgb(var(--color-surface)) 0%,
+    rgb(var(--section-alt-bg)) 100%
+  );
+}
+
+/* Light mode cards get a subtle blue tint instead of pure white */
+:not(.dark) .rounded-card,
+:not(.dark) [class*="rounded-card"] {
+  background-color: rgba(255,255,255,0.92);
+  border-color: rgba(37,99,235,.08);
+}
+
+/* Page headers in light mode get a gentle gradient */
+:not(.dark) .container-page > div:first-child,
+:not(.dark) .container-page > motion\.div:first-child {
+  background: transparent;
+}
+
+/* Light mode: bg-surface gets a slight blue tint */
+:not(.dark) .bg-surface {
+  background-color: rgb(250 251 255);
+}
+
+/* Light mode section alt coloring */
+:not(.dark) .bg-surface-overlay {
+  background-color: rgb(235 241 255);
+}
+:not(.dark) .bg-surface-raised {
+  background-color: rgb(243 246 255);
 }
 
 /* ============================================================
@@ -258,35 +369,25 @@
   animation: float 6s ease-in-out infinite;
 }
 
-/* ── Ambient grid ─────────────────────────────────────────────── */
-.premium-grid {
-  background-image:
-    linear-gradient(to right, rgba(217,119,6,.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(217,119,6,.08) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mask-image: radial-gradient(ellipse 85% 65% at 50% 35%, #000 60%, transparent 100%);
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-/* ── Scanline overlay ─────────────────────────────────────────── */
-.premium-scanline {
-  background:
-    linear-gradient(to bottom, transparent, rgba(245,158,11,.18), transparent),
-    repeating-linear-gradient(to bottom, rgba(255,255,255,.08) 0 1px, transparent 1px 8px);
-  animation: premium-scan 4.8s ease-in-out infinite;
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0px); }
 }
 
-@keyframes premium-scan {
-  0%, 100% { transform: translateY(-32%); opacity: .45; }
-  50% { transform: translateY(32%); opacity: .85; }
+.animate-fade-in-up {
+  animation: fade-in-up 0.45s cubic-bezier(0.0, 0.0, 0.2, 1.0) forwards;
 }
 
-/* ── Glow ring pulse ─────────────────────────────────────────── */
-@keyframes glow-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.35); }
-  50%       { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+@keyframes progress-shimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position:  200% 0; }
 }
 
-/* ── Gold shimmer on text ────────────────────────────────────── */
 @keyframes text-shimmer {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
@@ -296,10 +397,10 @@
 .animate-text-shimmer {
   background: linear-gradient(
     90deg,
-    rgb(var(--color-primary-600)) 0%,
+    rgb(var(--color-primary-700)) 0%,
     rgb(var(--color-accent)) 30%,
     rgb(var(--color-primary-500)) 60%,
-    rgb(var(--color-primary-700)) 100%
+    rgb(var(--color-primary-600)) 100%
   );
   background-size: 300% auto;
   -webkit-background-clip: text;
@@ -308,31 +409,17 @@
   animation: text-shimmer 4s linear infinite;
 }
 
-/* ── Progress bar animation ──────────────────────────────────── */
-@keyframes progress-shimmer {
-  0%   { background-position: -100% 0; }
-  100% { background-position:  200% 0; }
-}
+/* Stagger helpers */
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
 
-/* ── Particle float (ambient dots) ──────────────────────────── */
-@keyframes particle-drift {
-  0%   { transform: translateY(0px) translateX(0px) scale(1); opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 0.6; }
-  100% { transform: translateY(-80px) translateX(20px) scale(0.6); opacity: 0; }
-}
-
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.2));
-  animation: particle-drift linear infinite;
-  pointer-events: none;
-}
-
-/* ── Magnetic button ripple ──────────────────────────────────── */
+/* Ripple */
 @keyframes ripple-out {
-  0%   { transform: scale(0); opacity: 0.5; }
+  0%   { transform: scale(0); opacity: 0.4; }
   100% { transform: scale(4); opacity: 0; }
 }
 
@@ -341,55 +428,41 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
   transform: scale(0);
   opacity: 0;
 }
-
 .ripple-effect:active::after {
   animation: ripple-out 0.5s ease-out forwards;
 }
 
-/* ── Smooth image reveal ─────────────────────────────────────── */
-@keyframes img-reveal {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0% 0 0); }
+/* Premium grid overlay */
+.premium-grid {
+  background-image:
+    linear-gradient(to right, var(--border-default) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-default) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 35%, #000 60%, transparent 100%);
 }
 
-/* ── Badge pulse (for live indicators) ──────────────────────── */
-@keyframes badge-pulse {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.08); }
+/* Glow */
+.glow-gold {
+  box-shadow: 0 0 0 0 rgba(37,99,235,0.3);
+  animation: glow-ring 2.8s ease-in-out infinite;
+}
+.dark .glow-gold {
+  box-shadow: 0 0 0 0 rgba(200,130,42,0.35);
 }
 
-.animate-badge-pulse {
-  animation: badge-pulse 2s ease-in-out infinite;
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(37,99,235,0); }
 }
 
-/* ── Fade-in-up (CSS fallback for non-framer components) ─────── */
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0px);
-  }
+.dark .glow-ring-dark {
+  animation: glow-ring-dark 2.8s ease-in-out infinite;
 }
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.45s cubic-bezier(0.0, 0.0, 0.2, 1.0) forwards;
+@keyframes glow-ring-dark {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,130,42,0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(200,130,42,0); }
 }
-
-/* ── Staggered children via CSS custom properties ────────────── */
-.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
-.stagger-children > *:nth-child(2) { animation-delay: 0.10s; }
-.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
-.stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
-.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
-.stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
-.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
-.stagger-children > *:nth-child(8) { animation-delay: 0.40s; }

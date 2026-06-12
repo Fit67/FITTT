@@ -89,4 +89,27 @@ export const en = {
   premiumMetricTwo: "Fast restocks",
   premiumMetricThree: "Athlete support",
   premiumCta: "Explore products",
+  // Navbar user menu
+  profile: "Profile",
+  myOrders: "My Orders",
+  // HomeClient keys
+  performanceTitle: "Performance Redefined.",
+  performanceSub: "Premium supplements and gear for serious athletes who push limits.",
+  shopCollection: "Shop Collection",
+  tickerShipping: "Free shipping over 2,000 EGP",
+  tickerDelivery: "Delivered to Cairo in 24h",
+  tickerTested: "Verified authentic supplements",
+  noProductsFound: "No products found",
+  exploreStandardTitle: "A sharper way to build your stack",
+  exploreStandardSub: "Explore supplements, recovery tools, and athlete essentials through a cleaner shopping experience built for serious training.",
+  learnMore: "Learn more",
+  // Forgot password page
+  forgotPasswordTitle: "Forgot your password?",
+  forgotPasswordSub: "No worries. Enter your email and we'll send you a reset link.",
+  sendResetLink: "Send Reset Link",
+  checkYourEmail: "Check your email",
+  resetLinkSent: "We've sent a password reset link. The link expires in 1 hour.",
+  didntReceive: "Didn't receive it?",
+  tryAgain: "Try again",
+  backToSignIn: "Back to sign in",
 }

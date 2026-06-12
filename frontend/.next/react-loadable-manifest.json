@@ -1,4 +1,8 @@
 {
+  "app\\admin\\products\\page.tsx -> @/services": {
+    "id": "app\\admin\\products\\page.tsx -> @/services",
+    "files": []
+  },
   "node_modules\\@tanstack\\query-devtools\\build\\dev.js -> ./DevtoolsComponent/I4EE2JD6.js": {
     "id": "node_modules\\@tanstack\\query-devtools\\build\\dev.js -> ./DevtoolsComponent/I4EE2JD6.js",
     "files": [
