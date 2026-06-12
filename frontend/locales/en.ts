@@ -35,6 +35,7 @@ export const en = {
   // Hero Section
   heroHeadline: "Fuel Your Performance",
   heroSubtext: "Premium supplements and gear for serious athletes.",
+  heroWhatsSelling: "What's Selling",
   nowDelivering: "Fast shipping on all orders",
   shopNow: "Shop Now",
   todaysDeals: "Today's Deals",
