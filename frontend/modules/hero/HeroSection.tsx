@@ -171,7 +171,7 @@ function EditorialHero() {
               </Link>
             ))}
 
-            {!isLoading && products.length === 0 && getTopSellers(t).map((item, i) => (
+            {!isLoading && products.length === 0 && TOP_SELLERS.map((item, i) => (
               <motion.div
                 key={item.num}
                 initial={{ opacity: 0, x: 12 }}
