@@ -248,7 +248,8 @@ export async function getOrderById(req: Request, res: Response, next: NextFuncti
     if (!order) return next(new AppError('Order not found', 404))
 
     const { id: userId, role } = requireUser(req)
-    if (role === 'customer' && (typeof order.user === "object" && order.user !== null ? (order.user as any)._id.toString() : order.user.toString()) !== userId) {
+    const orderUserId = (order.user as any)?._id?.toString() || (order.user as any)?.toString()
+    if (role === 'customer' && orderUserId !== userId) {
       return next(new AppError('Not authorized', 403))
     }
 
