@@ -60,7 +60,7 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16">
+      <main className="min-h-screen pb-16 pt-6">
         <div className="container-page max-w-4xl">
 
           {/* ── Profile header ───────────────────────────────── */}
@@ -90,7 +90,7 @@ export default function ProfilePage() {
                       className={cn(
                         'flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors',
                         tab === t.id
-                          ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
+                          ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                           : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
                       )}
                     >
@@ -108,7 +108,7 @@ export default function ProfilePage() {
                 key={tab}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-card border border-gray-100 bg-surface p-6 shadow-card dark:border-gray-800 dark:bg-surface-raised"
+                className="rounded-xl border border-gray-100 bg-white p-6 shadow-card dark:border-gray-800 dark:bg-gray-900"
               >
                 {/* Profile Tab */}
                 {tab === 'profile' && (
@@ -166,8 +166,8 @@ export default function ProfilePage() {
                           >
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex items-start gap-3">
-                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-900/30">
-                                  <MapPin size={14} className="text-primary-600 dark:text-primary-400" />
+                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/30">
+                                  <MapPin size={14} className="text-red-600 dark:text-red-400" />
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-2 mb-0.5">
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                                       {addr.label}
                                     </span>
                                     {addr.isDefault && (
-                                      <span className="flex items-center gap-1 text-[10px] font-medium text-primary-600 dark:text-primary-400">
+                                      <span className="flex items-center gap-1 text-[10px] font-medium text-red-600 dark:text-red-400">
                                         <Check size={10} /> Default
                                       </span>
                                     )}
@@ -356,7 +356,7 @@ function AddressModal({
             id="isDefault"
             checked={form.isDefault ?? false}
             onChange={e => set('isDefault', e.target.checked)}
-            className="h-4 w-4 rounded accent-primary-600"
+            className="h-4 w-4 rounded accent-red-600"
           />
           <label htmlFor="isDefault" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
             Set as default address

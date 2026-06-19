@@ -107,10 +107,16 @@ reviewRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id: userId } = requireUser(req)
+      const { rating, title, body } = req.body as { rating: number; title?: string; body?: string }
+      if (!rating || rating < 1 || rating > 5) {
+        return next(new AppError('Rating must be between 1 and 5', 400))
+      }
       const review = await Review.create({
         product: req.params.productId,
         user:    userId,
-        ...req.body,
+        rating,
+        title,
+        body,
       })
       await review.populate('user', 'name avatar')
       res.status(201).json({ success: true, data: review })
@@ -160,7 +166,10 @@ couponRouter.post(
       let discount = 0
       if (coupon.type === 'percentage')    discount = subtotal * (coupon.value / 100)
       if (coupon.type === 'fixed')         discount = Math.min(coupon.value, subtotal)
-      if (coupon.type === 'free_shipping') discount = 4.99
+      if (coupon.type === 'free_shipping') {
+        const actualDeliveryFee = subtotal >= 2000 ? 0 : 80
+        discount = actualDeliveryFee
+      }
 
       res.json({ success: true, data: { coupon, discount } })
     } catch (err) { next(err) }
@@ -197,13 +206,30 @@ paymentRouter.post(
   authenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { amount, currency = 'usd' } = req.body as { amount: number; currency?: string }
-      const { id: userId }               = requireUser(req)
+      const { orderId, currency = 'usd' } = req.body as { orderId: string; currency?: string }
+      const { id: userId } = requireUser(req)
+
+      if (!orderId) return next(new AppError('orderId is required', 400))
+
+      const { Order } = await import('../models/Order')
+      const order = await Order.findById(orderId)
+
+      if (!order) return next(new AppError('Order not found', 404))
+      if (order.user.toString() !== userId) return next(new AppError('Not authorized', 403))
+      if (order.paymentStatus === 'paid') return next(new AppError('Order is already paid', 400))
+
+      const amount = Math.round(order.total * 100) // use server total, never trust client
+      if (amount < 50) return next(new AppError('Order total too low for card payment', 400))
+
       const intent = await stripe.paymentIntents.create({
-        amount:   Math.round(amount * 100),
+        amount,
         currency,
-        metadata: { userId },
+        metadata: { userId, orderId: order._id.toString() },
       })
+
+      // Store intentId on order so webhook can match it
+      await Order.findByIdAndUpdate(order._id, { stripePaymentIntentId: intent.id })
+
       res.json({ success: true, data: { clientSecret: intent.client_secret } })
     } catch (err) { next(err) }
   },
@@ -214,10 +240,15 @@ paymentRouter.post(
   async (req: Request, res: Response) => {
     const sig = req.headers['stripe-signature'] as string
     try {
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+      if (!webhookSecret) {
+        console.error('STRIPE_WEBHOOK_SECRET is not set — rejecting webhook')
+        return res.status(500).json({ error: 'Webhook not configured' })
+      }
       const event = stripe.webhooks.constructEvent(
         req.body as Buffer,
         sig,
-        process.env.STRIPE_WEBHOOK_SECRET ?? '',
+        webhookSecret,
       )
       if (event.type === 'payment_intent.succeeded') {
         const pi = event.data.object as Stripe.PaymentIntent
@@ -251,65 +282,173 @@ adminRouter.use(authenticate, authorize('admin', 'manager'))
 // Dashboard stats
 adminRouter.get('/dashboard', async (_req: Request, res: Response, next: NextFunction) => {
   try {
-    const { Order: OrderModel }   = await import('../models/Order')
+    const { Order: OrderModel }     = await import('../models/Order')
     const { Product: ProductModel } = await import('../models/Product')
-    const { User: UserModel }     = await import('../models/User')
+    const { User: UserModel }       = await import('../models/User')
+
+    const now            = new Date()
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const sixtyDaysAgo  = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+    const sevenDaysAgo  = new Date(now.getTime() -  7 * 24 * 60 * 60 * 1000)
+    const startOfToday  = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const calcGrowth = (current: number, previous: number) => {
+      if (previous === 0) return current > 0 ? 100 : 0
+      return Math.round(((current - previous) / previous) * 1000) / 10
+    }
 
     const [
-      totalRevenue, totalOrders, totalCustomers,
-      totalProducts, lowStock, pendingOrders, recentOrders,
+      // Revenue — current vs previous 30-day window
+      revenueNow,
+      revenuePrev,
+      // Orders — current vs previous 30-day window
+      ordersNow,
+      ordersPrev,
+      pendingOrders,
+      // Customers
+      totalCustomers,
+      customersNow,
+      customersPrev,
+      newToday,
+      // Products
+      totalProducts,
+      lowStock,
+      outOfStock,
+      // Lists
+      recentOrders,
+      revenueChart,
+      topProducts,
+      ordersByStatus,
     ] = await Promise.all([
+      // Current 30d revenue — all active orders (exclude cancelled/refunded)
       OrderModel.aggregate([
-        { $match: { paymentStatus: 'paid' } },
+        { $match: { status: { $nin: ['cancelled', 'refunded', 'returned'] }, createdAt: { $gte: thirtyDaysAgo } } },
         { $group: { _id: null, total: { $sum: '$total' } } },
       ]).then((r: Array<{ total?: number }>) => r[0]?.total ?? 0),
-      OrderModel.countDocuments(),
+
+      // Previous 30d revenue
+      OrderModel.aggregate([
+        { $match: { status: { $nin: ['cancelled', 'refunded', 'returned'] }, createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } } },
+        { $group: { _id: null, total: { $sum: '$total' } } },
+      ]).then((r: Array<{ total?: number }>) => r[0]?.total ?? 0),
+
+      // Orders this period
+      OrderModel.countDocuments({ status: { $nin: ['cancelled', 'refunded', 'returned'] }, createdAt: { $gte: thirtyDaysAgo } }),
+      // Orders previous period
+      OrderModel.countDocuments({ status: { $nin: ['cancelled', 'refunded', 'returned'] }, createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } }),
+      // Pending
+      OrderModel.countDocuments({ status: 'pending' }),
+
+      // All customers
       UserModel.countDocuments({ role: 'customer' }),
+      // New customers this period
+      UserModel.countDocuments({ role: 'customer', createdAt: { $gte: thirtyDaysAgo } }),
+      // New customers previous period
+      UserModel.countDocuments({ role: 'customer', createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } }),
+      // New customers today
+      UserModel.countDocuments({ role: 'customer', createdAt: { $gte: startOfToday } }),
+
+      // Products
       ProductModel.countDocuments({ status: 'active' }),
       ProductModel.countDocuments({
         status: 'active',
-        $expr: { $lte: ['$inventory.quantity', '$inventory.lowStockThreshold'] },
+        $expr: { $and: [
+          { $gt:  ['$inventory.quantity', 0] },
+          { $lte: ['$inventory.quantity', '$inventory.lowStockThreshold'] },
+        ]},
       }),
-      OrderModel.countDocuments({ status: 'pending' }),
+      ProductModel.countDocuments({ status: 'active', 'inventory.quantity': { $lte: 0 } }),
+
+      // Recent 5 orders
       OrderModel.find()
         .sort({ createdAt: -1 })
         .limit(5)
         .populate('user', 'name email')
         .lean(),
-    ])
 
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    const revenueChart = await OrderModel.aggregate([
-      { $match: { createdAt: { $gte: sevenDaysAgo }, paymentStatus: 'paid' } },
-      {
-        $group: {
+      // 7-day daily revenue chart — all active orders
+      OrderModel.aggregate([
+        { $match: { status: { $nin: ['cancelled', 'refunded', 'returned'] }, createdAt: { $gte: sevenDaysAgo } } },
+        { $group: {
           _id:   { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
           value: { $sum: '$total' },
-        },
-      },
-      { $sort: { _id: 1 } },
-      { $project: { label: '$_id', value: 1, _id: 0 } },
+        }},
+        { $sort: { _id: 1 } },
+        { $project: { label: '$_id', value: 1, _id: 0 } },
+      ]),
+
+      // Top 5 products by revenue — all active orders
+      OrderModel.aggregate([
+        { $match: { status: { $nin: ['cancelled', 'refunded', 'returned'] } } },
+        { $unwind: '$items' },
+        { $group: {
+          _id:       '$items.product',
+          totalSold: { $sum: '$items.quantity' },
+          revenue:   { $sum: { $multiply: ['$items.price', '$items.quantity'] } },
+        }},
+        { $sort: { revenue: -1 } },
+        { $limit: 5 },
+        { $lookup: { from: 'products', localField: '_id', foreignField: '_id', as: 'product' } },
+        { $unwind: { path: '$product', preserveNullAndEmptyArrays: true } },
+        { $project: { name: '$product.name', totalSold: 1, revenue: 1 } },
+      ]),
+
+      // Orders grouped by status (for the status breakdown widget)
+      OrderModel.aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+      ]),
     ])
+
+    // Build status map
+    const statusMap: Record<string, number> = {}
+    for (const s of ordersByStatus as Array<{ _id: string; count: number }>) {
+      statusMap[s._id] = s.count
+    }
 
     res.json({
       success: true,
       data: {
-        revenue:   { total: totalRevenue,   growth: 12.5, chartData: revenueChart },
-        orders:    { total: totalOrders,    growth: 8.2,  pending: pendingOrders, chartData: [] },
-        customers: { total: totalCustomers, growth: 5.1,  newToday: 0 },
-        products:  { total: totalProducts,  lowStock, outOfStock: 0 },
+        revenue: {
+          total:     revenueNow,
+          growth:    calcGrowth(revenueNow as number, revenuePrev as number),
+          chartData: revenueChart,
+        },
+        orders: {
+          total:   ordersNow,
+          growth:  calcGrowth(ordersNow, ordersPrev),
+          pending: pendingOrders,
+          byStatus: {
+            pending:    statusMap['pending']    ?? 0,
+            processing: statusMap['processing'] ?? 0,
+            confirmed:  statusMap['confirmed']  ?? 0,
+            shipped:    statusMap['shipped']    ?? 0,
+            delivered:  statusMap['delivered']  ?? 0,
+            cancelled:  statusMap['cancelled']  ?? 0,
+          },
+        },
+        customers: {
+          total:    totalCustomers,
+          growth:   calcGrowth(customersNow, customersPrev),
+          newToday,
+        },
+        products: {
+          total:      totalProducts,
+          lowStock,
+          outOfStock,
+        },
         recentOrders,
-        topProducts: [],
-        salesByCategory: [],
+        topProducts,
       },
     })
   } catch (err) { next(err) }
 })
 
 // Admin: Products
-adminRouter.post  ('/products',     upload.single('image'), productCtrl.createProduct)
-adminRouter.patch ('/products/:id', upload.single('image'), productCtrl.updateProduct)
-adminRouter.delete('/products/:id', productCtrl.deleteProduct)
+adminRouter.get   ('/products',              productCtrl.adminGetProducts)
+adminRouter.post  ('/products',              upload.single('image'), productCtrl.createProduct)
+adminRouter.patch ('/products/:id',          upload.single('image'), productCtrl.updateProduct)
+adminRouter.patch ('/products/:id/toggle',   productCtrl.toggleProductVisibility)
+adminRouter.delete('/products/:id',          productCtrl.deleteProduct)
 
 // Admin: Categories
 adminRouter.get('/categories', async (_req: Request, res: Response, next: NextFunction) => {
@@ -408,6 +547,86 @@ adminRouter.delete('/banners/:id', async (req: Request, res: Response, next: Nex
   } catch (err) { next(err) }
 })
 
+// Admin: Settings (stored in a simple JSON-like structure in memory / env)
+adminRouter.get('/settings', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { Setting } = await import('../models/index')
+    const settings = await Setting.find().lean()
+    // Convert array to key-value object for frontend
+    const result: Record<string, unknown> = {}
+    for (const s of settings) {
+      result[s.key] = s.value
+    }
+    res.json({ success: true, data: result })
+  } catch (err) { next(err) }
+})
+
+adminRouter.patch('/settings', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { Setting } = await import('../models/index')
+    const updates = req.body as Record<string, unknown>
+    await Promise.all(
+      Object.entries(updates).map(([key, value]) =>
+        Setting.findOneAndUpdate({ key }, { key, value }, { upsert: true, new: true })
+      )
+    )
+    res.json({ success: true, message: 'Settings saved successfully' })
+  } catch (err) { next(err) }
+})
+
+// Admin: Notifications
+adminRouter.get('/notifications', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { Order: OrderModel }   = await import('../models/Order')
+    const { Product: ProductModel } = await import('../models/Product')
+
+    const [pendingOrders, lowStockProducts, recentOrders] = await Promise.all([
+      OrderModel.countDocuments({ status: 'pending' }),
+      ProductModel.find({
+        status: 'active',
+        $expr: { $lte: ['$inventory.quantity', '$inventory.lowStockThreshold'] },
+      }).select('name inventory.quantity inventory.lowStockThreshold').limit(10).lean(),
+      OrderModel.find({ status: 'pending' })
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(),
+    ])
+
+    const notifications: Array<{ id: string; type: string; title: string; message: string; createdAt: Date }> = []
+
+    for (const order of recentOrders) {
+      const o = order as { _id: { toString(): string }; user?: { name?: string }; total?: number; createdAt?: Date }
+      notifications.push({
+        id:        o._id.toString(),
+        type:      'order',
+        title:     'New Order',
+        message:   `New order from ${(o.user as { name?: string })?.name ?? 'customer'} — $${(o.total ?? 0).toFixed(2)}`,
+        createdAt: o.createdAt ?? new Date(),
+      })
+    }
+
+    for (const p of lowStockProducts) {
+      const prod = p as { _id: { toString(): string }; name?: string; inventory?: { quantity?: number }; createdAt?: Date }
+      notifications.push({
+        id:        prod._id.toString(),
+        type:      'stock',
+        title:     'Low Stock Alert',
+        message:   `"${prod.name}" has only ${prod.inventory?.quantity ?? 0} units left`,
+        createdAt: prod.createdAt ?? new Date(),
+      })
+    }
+
+    res.json({
+      success: true,
+      data: {
+        notifications,
+        counts: { pendingOrders, lowStockProducts: lowStockProducts.length, total: notifications.length },
+      },
+    })
+  } catch (err) { next(err) }
+})
+
 // Admin: Users
 adminRouter.get('/users', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -416,7 +635,9 @@ adminRouter.get('/users', async (req: Request, res: Response, next: NextFunction
     const limit = Number(req.query.limit ?? 20)
     const skip  = (page - 1) * limit
     const total = await UserModel.countDocuments()
-    const users = await UserModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
+    const users = await UserModel.find()
+      .select('-password -googleId -resetPasswordToken -resetPasswordExpires')
+      .sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
     res.json({
       success: true,
       data:    users,
@@ -432,7 +653,15 @@ adminRouter.get('/users', async (req: Request, res: Response, next: NextFunction
 adminRouter.patch('/users/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { User: UserModel } = await import('../models/User')
-    const user = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    const { name, email, phone, role, isActive, isVerified, avatar } = req.body as {
+      name?: string; email?: string; phone?: string; role?: string
+      isActive?: boolean; isVerified?: boolean; avatar?: string
+    }
+    const user = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { name, email, phone, role, isActive, isVerified, avatar },
+      { new: true, runValidators: true },
+    )
     if (!user) return next(new AppError('User not found', 404))
     res.json({ success: true, data: user })
   } catch (err) { next(err) }

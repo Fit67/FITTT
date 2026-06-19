@@ -24,8 +24,8 @@ export default function NotFound() {
             Page not found
           </h1>
           <p className="mt-3 text-gray-500 dark:text-gray-400 leading-relaxed">
-            The page you're looking for doesn't exist or has been moved.
-            Let's get you back on track.
+            The page you&apos;re looking for doesn&apos;t exist or has been moved.
+            Let&apos;s get you back on track.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">

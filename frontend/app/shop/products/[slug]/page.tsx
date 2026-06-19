@@ -111,7 +111,7 @@ export default function ProductPage({ params }: Props) {
             <h2 className="font-display text-xl font-bold text-gray-900 dark:text-white">
               Product not found
             </h2>
-            <Link href="/shop/products" className="mt-4 inline-block text-primary-600 dark:text-primary-400 hover:underline">
+            <Link href="/shop/products" className="mt-4 inline-block text-red-600 dark:text-red-400 hover:underline">
               ← Back to products
             </Link>
           </div>
@@ -127,13 +127,17 @@ export default function ProductPage({ params }: Props) {
   const tags           = product.tags ?? []
   const ratings        = product.ratings ?? { average: 0, count: 0 }
   const inventory      = product.inventory ?? { quantity: 0, reserved: 0, lowStockThreshold: 5 }
-  const outOfStock     = inventory.quantity - (inventory.reserved ?? 0) < 1
+  const availableStock = selectedVariant
+    ? (selectedVariant.inventory ?? 0)
+    : Math.max(0, (inventory.quantity ?? 0) - (inventory.reserved ?? 0))
+  const outOfStock     = availableStock < 1
   const effectivePrice = selectedVariant ? selectedVariant.price : product.price
 
   function handleAddToCart() {
-    if (!product) return;
-    addItem(product, selectedVariant ?? undefined, qty)
-    toast.success('Added to cart!', `${qty}× ${product.name}`)
+    if (!product || outOfStock) return
+    const safeQty = Math.min(qty, availableStock)
+    addItem(product, selectedVariant ?? undefined, safeQty)
+    toast.success('Added to cart!', `${safeQty}× ${product.name}`)
   }
 
   function handleWishlist() {
@@ -164,15 +168,15 @@ export default function ProductPage({ params }: Props) {
 
           {/* Breadcrumb */}
           <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <Link href="/" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</Link>
+            <Link href="/" className="hover:text-red-600 dark:hover:text-red-400 transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/shop/products" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Products</Link>
+            <Link href="/shop/products" className="hover:text-red-600 dark:hover:text-red-400 transition-colors">Products</Link>
             {product.category?.name && (
               <>
                 <span>/</span>
                 <Link
                   href={`/shop/products?category=${product.category.slug}`}
-                  className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  className="hover:text-red-600 dark:hover:text-red-400 transition-colors"
                 >
                   {product.category.name}
                 </Link>
@@ -189,7 +193,7 @@ export default function ProductPage({ params }: Props) {
 
             {/* Image Gallery */}
             <div className="flex flex-col gap-4">
-              <div className="relative aspect-square overflow-hidden rounded-card bg-surface-raised dark:bg-surface-overlay">
+              <div className="relative aspect-square overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={selectedImg}
@@ -240,7 +244,7 @@ export default function ProductPage({ params }: Props) {
                       className={cn(
                         'h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all',
                         selectedImg === i
-                          ? 'border-primary-500 shadow-sm ring-2 ring-primary-200 dark:ring-primary-800'
+                          ? 'border-red-500 shadow-sm ring-2 ring-red-200 dark:ring-red-800'
                           : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600',
                       )}
                     >
@@ -262,7 +266,7 @@ export default function ProductPage({ params }: Props) {
                 {product.category?.name && (
                   <Link
                     href={`/shop/products?category=${product.category.slug}`}
-                    className="text-xs font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400 hover:underline"
+                    className="text-xs font-semibold uppercase tracking-widest text-red-600 dark:text-red-400 hover:underline"
                   >
                     {product.category.name}
                   </Link>
@@ -277,7 +281,7 @@ export default function ProductPage({ params }: Props) {
                   <StarRating value={ratings.average} size={18} showValue count={ratings.count} />
                   <button
                     onClick={() => setActiveTab('reviews')}
-                    className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                    className="text-sm text-red-600 dark:text-red-400 hover:underline"
                   >
                     See all reviews
                   </button>
@@ -339,7 +343,7 @@ export default function ProductPage({ params }: Props) {
                         className={cn(
                           'rounded-lg border-2 px-4 py-2 text-sm font-medium transition-colors',
                           selectedVariant?._id === v._id
-                            ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
+                            ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300'
                             : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:text-gray-300',
                           v.inventory <= 0 && 'opacity-40 cursor-not-allowed line-through',
                         )}
@@ -356,10 +360,11 @@ export default function ProductPage({ params }: Props) {
 
               {/* Quantity + CTA */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center rounded-button border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center rounded-full border border-gray-200 dark:border-gray-700">
                   <button
                     onClick={() => setQty(q => Math.max(1, q - 1))}
-                    className="flex h-11 w-11 items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                    disabled={outOfStock || qty <= 1}
+                    className="flex h-11 w-11 items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Minus size={15} />
                   </button>
@@ -367,8 +372,9 @@ export default function ProductPage({ params }: Props) {
                     {qty}
                   </span>
                   <button
-                    onClick={() => setQty(q => q + 1)}
-                    className="flex h-11 w-11 items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                    onClick={() => setQty(q => Math.min(q + 1, availableStock))}
+                    disabled={outOfStock || qty >= availableStock}
+                    className="flex h-11 w-11 items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Plus size={15} />
                   </button>
@@ -387,7 +393,7 @@ export default function ProductPage({ params }: Props) {
                   <button
                     onClick={handleWishlist}
                     className={cn(
-                      'flex h-11 w-11 shrink-0 items-center justify-center rounded-button border-2 transition-colors',
+                      'flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                       wishlisted
                         ? 'border-red-400 bg-red-50 text-red-500 dark:bg-red-900/20'
                         : 'border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-400 dark:border-gray-700',
@@ -400,16 +406,16 @@ export default function ProductPage({ params }: Props) {
 
                 <button
                   onClick={handleShare}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-button border-2 border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 dark:border-gray-700 transition-colors"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 dark:border-gray-700 transition-colors"
                   aria-label="Share"
                 >
                   <Share2 size={17} />
                 </button>
               </div>
 
-              {!outOfStock && inventory.quantity <= (inventory.lowStockThreshold ?? 5) && (
+              {!outOfStock && availableStock <= (inventory.lowStockThreshold ?? 5) && (
                 <p className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                  ⚠️ Only {inventory.quantity - (inventory.reserved ?? 0)} left in stock
+                  {availableStock === 1 ? '⚠️ Last piece available!' : `⚠️ Only ${availableStock} left in stock`}
                 </p>
               )}
 
@@ -420,8 +426,8 @@ export default function ProductPage({ params }: Props) {
                   { icon: Shield,    text: 'Quality assured', sub: '100% fresh' },
                   { icon: RotateCcw, text: 'Easy returns', sub: 'Within 24h' },
                 ].map(({ icon: Icon, text, sub }) => (
-                  <div key={text} className="flex flex-col items-center gap-1.5 text-center rounded-xl bg-surface-raised dark:bg-surface-overlay p-3">
-                    <Icon size={18} className="text-primary-600 dark:text-primary-400" />
+                  <div key={text} className="flex flex-col items-center gap-1.5 text-center rounded-xl bg-gray-50 dark:bg-gray-800 p-3">
+                    <Icon size={18} className="text-red-600 dark:text-red-400" />
                     <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">{text}</p>
                     <p className="text-[10px] text-gray-400">{sub}</p>
                   </div>
@@ -440,7 +446,7 @@ export default function ProductPage({ params }: Props) {
                   className={cn(
                     'relative px-5 py-3 text-sm font-medium capitalize transition-colors',
                     activeTab === tab
-                      ? 'text-primary-600 dark:text-primary-400'
+                      ? 'text-red-600 dark:text-red-400'
                       : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
                   )}
                 >
@@ -448,7 +454,7 @@ export default function ProductPage({ params }: Props) {
                   {activeTab === tab && (
                     <motion.div
                       layoutId="tab-underline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-400"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600 dark:bg-red-400"
                     />
                   )}
                 </button>
@@ -616,7 +622,7 @@ function ReviewsSection({
           ))}
 
       {isAuthenticated && (
-        <div className="mt-8 rounded-card border border-gray-100 dark:border-gray-800 p-6">
+         <div className="mt-8 rounded-xl border border-gray-100 dark:border-gray-800 p-6">
           <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">
             Write a Review
           </h3>
@@ -630,7 +636,7 @@ function ReviewsSection({
               onChange={e => setTitle(e.target.value)}
               placeholder="Review title"
               required
-              className="w-full rounded-button border border-gray-200 dark:border-gray-700 bg-surface dark:bg-surface-raised px-4 py-2.5 text-sm outline-none focus:border-primary-500"
+               className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-sm outline-none focus:border-red-500"
             />
             <textarea
               value={body}
@@ -638,7 +644,7 @@ function ReviewsSection({
               placeholder="Share your experience…"
               rows={4}
               required
-              className="w-full rounded-button border border-gray-200 dark:border-gray-700 bg-surface dark:bg-surface-raised px-4 py-2.5 text-sm outline-none focus:border-primary-500 resize-none"
+               className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-sm outline-none focus:border-red-500 resize-none"
             />
             <Button type="submit" loading={isPending}>Submit Review</Button>
           </form>
@@ -651,7 +657,7 @@ function ReviewsSection({
 // ─── Helpers ───────────────────────────────────────────────────
 function MetaChip({ emoji, label, value }: { emoji: string; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-1.5 rounded-lg bg-surface-raised dark:bg-surface-overlay px-3 py-1.5 text-sm">
+    <div className="flex items-center gap-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-1.5 text-sm">
       <span>{emoji}</span>
       <span className="text-gray-500 dark:text-gray-400">{label}:</span>
       <span className="font-medium text-gray-900 dark:text-gray-100">{value}</span>
@@ -666,7 +672,7 @@ function ProductPageSkeleton() {
       <main className="min-h-screen pt-20">
         <div className="container-page py-10">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-            <Skeleton className="aspect-square rounded-card" />
+            <Skeleton className="aspect-square rounded-xl" />
             <div className="space-y-5">
               <Skeleton className="h-5 w-24" />
               <Skeleton className="h-9 w-3/4" />
@@ -674,8 +680,8 @@ function ProductPageSkeleton() {
               <Skeleton className="h-10 w-28" />
               <Skeleton lines={3} />
               <div className="flex gap-3 pt-4">
-                <Skeleton className="h-11 w-32 rounded-button" />
-                <Skeleton className="h-11 flex-1 rounded-button" />
+                <Skeleton className="h-11 w-32 rounded-full" />
+                <Skeleton className="h-11 flex-1 rounded-full" />
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { useWishlistStore } from './uiStore'
 interface AuthStore extends AuthState {
   login:       (payload: LoginPayload) => Promise<void>
   register:    (payload: RegisterPayload) => Promise<void>
+  googleLogin: (credential: string) => Promise<void>
   logout:      () => Promise<void>
   refreshUser: () => Promise<void>
   updateUser:  (data: Partial<User>) => void
@@ -72,6 +73,28 @@ export const useAuthStore = create<AuthStore>()(
             success: boolean
             data: { user: User; accessToken: string }
           }>('/auth/login', payload)
+
+          const { user, accessToken } = data.data
+          ssrSafeSessionStorage.setItem('accessToken', accessToken)
+
+          if (user.wishlist) {
+            useWishlistStore.getState().setItems(user.wishlist as any)
+          }
+
+          set({ user, accessToken, isAuthenticated: true, isLoading: false })
+        } catch (err) {
+          set({ isLoading: false })
+          throw err
+        }
+      },
+
+      async googleLogin(credential) {
+        set({ isLoading: true })
+        try {
+          const { data } = await apiClient.post<{
+            success: boolean
+            data: { user: User; accessToken: string }
+          }>('/auth/google', { credential })
 
           const { user, accessToken } = data.data
           ssrSafeSessionStorage.setItem('accessToken', accessToken)

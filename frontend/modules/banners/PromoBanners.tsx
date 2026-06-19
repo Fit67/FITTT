@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, ShieldCheck, Zap, Activity, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 
 import { useFeaturedProducts, useCategories, useBanners, useProducts } from '@/hooks/useQueries'
 import { ProductCard, ProductCardSkeleton } from '@/modules/product-card/ProductCard'
@@ -13,29 +13,20 @@ import { formatPrice } from '@/lib/utils'
 import { storeConfig, currentBusiness } from '@/config/store'
 import { cn } from '@/lib/utils'
 
-// ─── Section eyebrow + header ──────────────────────────────────
+// ─── Section header with pill label ────────────────────────────
 function SectionHeader({ label, title, href, actions }: { label: string; title: string; href?: string; actions?: React.ReactNode }) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 w-full">
-      <div>
-        <div className="flex items-center gap-3 mb-3">
-          <div className="h-px w-8 bg-gray-200 dark:bg-[#2a2a2a]" />
-          <span className="text-[10px] font-normal uppercase tracking-[0.18em] text-gray-400 dark:text-[#555]">
-            {label}
-          </span>
-        </div>
-        <h2 className="font-display text-[clamp(26px,3.5vw,36px)] font-normal text-gray-900 dark:text-[#e8e0d4] tracking-[-0.02em] leading-tight">
-          {title}
-        </h2>
-      </div>
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col items-center text-center gap-3 w-full mb-10">
+      <span className="pill-label">{label}</span>
+      <h2 className="section-title">{title}</h2>
+      <div className="flex items-center gap-4 mt-2">
         {actions}
         {href && (
           <Link
             href={href}
-            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.1em] font-light text-gray-400 dark:text-[#555] hover:text-primary-600 dark:hover:text-[#c8822a] transition-colors whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-full text-gray-600 dark:text-gray-400 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-all"
           >
-            View all <ArrowRight size={12} />
+            View All Product <ArrowRight size={14} />
           </Link>
         )}
       </div>
@@ -43,107 +34,142 @@ function SectionHeader({ label, title, href, actions }: { label: string; title: 
   )
 }
 
+// ─── Categories Grid (Essentials Collection) ──────────────────
+export function CategoriesGrid() {
+  const { t } = useTranslation()
+  const { data: categories, isLoading } = useCategories()
+
+  const categoryImages = [
+    '/images/home/category-protein.png',
+    '/images/home/category-creatine.png',
+    '/images/home/category-preworkout.png',
+    '/images/home/category-vitamins.png',
+  ]
+
+  return (
+    <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a]">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <SectionHeader label="Essentials Collection" title="Begin Your Healthier Living Journey" />
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-64 rounded-xl" />
+              ))
+            : (categories ?? []).slice(0, 4).map((cat, i) => (
+                <motion.div
+                  key={cat._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <Link
+                    href={`/shop/products?category=${cat.slug}`}
+                    className="group block relative overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 aspect-[3/4] hover:shadow-lg transition-all duration-300"
+                  >
+                    <img
+                      src={categoryImages[i % categoryImages.length]}
+                      alt={cat.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-white">{cat.name}</span>
+                      <span className="flex h-8 w-8 items-center justify-center bg-white/20 backdrop-blur-sm rounded-full group-hover:bg-red-600 transition-colors">
+                        <ArrowUpRight size={14} className="text-white" />
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))
+          }
+          {/* Fallback if no categories from API */}
+          {!isLoading && (!categories || categories.length === 0) && (
+            <>
+              {[
+                { name: 'Protein Boosters', img: '/images/home/category-protein.png' },
+                { name: 'Creatine Power', img: '/images/home/category-creatine.png' },
+                { name: 'Pre-Workout', img: '/images/home/category-preworkout.png' },
+                { name: 'Vitamins & Health', img: '/images/home/category-vitamins.png' },
+              ].map((cat, i) => (
+                <motion.div
+                  key={cat.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <Link
+                    href="/shop/products"
+                    className="group block relative overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 aspect-[3/4] hover:shadow-lg transition-all duration-300"
+                  >
+                    <img src={cat.img} alt={cat.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-white">{cat.name}</span>
+                      <span className="flex h-8 w-8 items-center justify-center bg-white/20 backdrop-blur-sm rounded-full group-hover:bg-red-600 transition-colors">
+                        <ArrowUpRight size={14} className="text-white" />
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Premium Experience ────────────────────────────────────────
 export function PremiumExperience() {
   const { t } = useTranslation()
 
-  const TRUST_ITEMS = [
-    {
-      num: '01',
-      title: 'Genuine products, always',
-      sub: 'Every supplement is sourced directly from the manufacturer',
-    },
-    {
-      num: '02',
-      title: 'Delivered to your door in Cairo',
-      sub: 'Order before 3pm — arrives the same day',
-    },
-    {
-      num: '03',
-      title: 'Built for serious athletes',
-      sub: 'Not a general-purpose store. Every product earns its place',
-    },
-  ]
-
-  const STATS = [
-    { val: '100%', label: 'Verified formulas' },
-    { val: '24h',  label: 'Fast restocks' },
-    { val: '1:1',  label: 'Athlete support' },
-  ]
-
   return (
-    <section className="border-y border-gray-100 dark:border-[#1e1e1e] bg-white dark:bg-[#0a0a0a]">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2">
+    <section className="py-16 md:py-24 bg-gray-50 dark:bg-[#111]">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-        {/* Left: editorial copy */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="px-6 md:px-8 py-14 md:py-16 border-b md:border-b-0 md:border-r border-gray-100 dark:border-[#1e1e1e]"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-px w-8 bg-gray-200 dark:bg-[#2a2a2a]" />
-            <span className="text-[10px] uppercase tracking-[0.18em] text-gray-400 dark:text-[#555]">
-              DoctorFit Performance Lab
-            </span>
-          </div>
-
-          <h2 className="font-display text-[clamp(28px,3.5vw,38px)] font-normal text-gray-900 dark:text-[#e8e0d4] tracking-[-0.01em] leading-[1.1] mb-5">
-            A sharper way<br />to build <em className="italic text-primary-600 dark:text-[#c8822a]">your stack</em>
-          </h2>
-
-          <p className="text-[13px] font-light text-gray-500 dark:text-[#666] leading-[1.9] max-w-[340px] mb-8">
-            Explore supplements, recovery tools, and athlete essentials through a faster, cleaner shopping experience built for serious training. Every product verified. Every formula tested.
-          </p>
-
-          {/* Stats row */}
-          <div className="flex gap-8 pb-8 border-b border-gray-100 dark:border-[#1e1e1e] mb-8">
-            {STATS.map(({ val, label }) => (
-              <div key={label}>
-                <div className="font-display text-[32px] italic text-primary-600 dark:text-[#c8822a] leading-none">{val}</div>
-                <div className="text-[10px] font-light uppercase tracking-[0.1em] text-gray-400 dark:text-[#555] mt-1">{label}</div>
-              </div>
-            ))}
-          </div>
-
-          <Link href="/shop/products">
-            <button className="text-[11px] font-medium uppercase tracking-[0.12em] bg-primary-600 dark:bg-[#c8822a] text-white px-6 py-3 hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-              Explore all products <ArrowRight size={14} />
-            </button>
-          </Link>
-        </motion.div>
-
-        {/* Right: trust list */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col"
-        >
-          {TRUST_ITEMS.map(({ num, title, sub }, i) => (
-            <div
-              key={num}
-              className={cn(
-                'flex items-center gap-5 px-6 md:px-8 py-8',
-                i < TRUST_ITEMS.length - 1 && 'border-b border-gray-100 dark:border-[#1e1e1e]',
-              )}
-            >
-              <div
-                className="font-display text-[42px] italic text-gray-100 dark:text-[#1e1e1e] font-normal leading-none flex-shrink-0"
-                style={{ WebkitTextStroke: '1px rgba(0,0,0,0.08)' }}
-              >
-                {num}
-              </div>
-              <div>
-                <div className="text-[13px] font-normal text-gray-800 dark:text-[#ccc] mb-1 tracking-[0.01em]">{title}</div>
-                <div className="text-[11px] font-light text-gray-400 dark:text-[#555] tracking-[0.04em]">{sub}</div>
-              </div>
+          {/* Left: overlapping images */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
+            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+              <img
+                src="/images/home/community-banner.png"
+                alt="Premium supplements"
+                className="w-full h-full object-cover"
+              />
             </div>
-          ))}
-        </motion.div>
+          </motion.div>
+
+          {/* Right: text */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <span className="pill-label mb-4 inline-block">Daily Gains</span>
+            <h2 className="section-title mb-4">
+              Build Strength Every Day With Protein
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+              Proteins Are Essential Nutrients That Support Tissue Repair, Hormone Production, Enzyme Function, And Overall Health.
+            </p>
+            <Link href="/shop/products">
+              <button className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-red-600/30">
+                Grab Yours
+              </button>
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
@@ -158,7 +184,7 @@ export function FeaturedProducts() {
   const hasFeatured = (featuredData?.length ?? 0) > 0
   const isLoading   = hasFeatured ? featuredLoading : latestLoading
   const products    = hasFeatured ? featuredData    : latestData?.data
-  const label       = hasFeatured ? t('featuredProducts') : t('latestProducts')
+  const label       = hasFeatured ? 'Best Sellers' : 'Latest Products'
 
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
@@ -171,36 +197,36 @@ export function FeaturedProducts() {
 
   const actions = (
     <div className="flex gap-2 hidden md:flex">
-      <button onClick={() => scroll('left')} className="p-1.5 rounded-full border border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#111] transition-colors text-gray-500 dark:text-[#888] focus:outline-none">
-        <ChevronLeft size={16} strokeWidth={1.5} />
+      <button onClick={() => scroll('left')} className="p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400 focus:outline-none">
+        <ChevronLeft size={18} strokeWidth={2} />
       </button>
-      <button onClick={() => scroll('right')} className="p-1.5 rounded-full border border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#111] transition-colors text-gray-500 dark:text-[#888] focus:outline-none">
-        <ChevronRight size={16} strokeWidth={1.5} />
+      <button onClick={() => scroll('right')} className="p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400 focus:outline-none">
+        <ChevronRight size={18} strokeWidth={2} />
       </button>
     </div>
   )
 
   return (
-    <section className="py-14 md:py-20 bg-white dark:bg-[#0a0a0a] overflow-hidden">
+    <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <SectionHeader label={t('handPicked')} title={label} href="/shop/products" actions={actions} />
+        <SectionHeader label="Best Sellers" title="Best-Rated Product" href="/shop/products" actions={actions} />
 
         {/* Product Carousel */}
-        <div 
+        <div
           ref={scrollRef}
-          className="mt-8 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-6 items-stretch"
+          className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-6 items-stretch"
           style={{ scrollBehavior: 'smooth' }}
         >
           {isLoading
             ? Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="w-[260px] sm:w-[300px] shrink-0 snap-start flex">
+                <div key={i} className="w-[280px] sm:w-[300px] shrink-0 snap-start flex">
                   <div className="w-full h-full">
                     <ProductCardSkeleton index={i} />
                   </div>
                 </div>
               ))
             : products?.map((product, i) => (
-                <div key={product._id} className="w-[260px] sm:w-[300px] shrink-0 snap-start flex">
+                <div key={product._id} className="w-[280px] sm:w-[300px] shrink-0 snap-start flex">
                   <div className="w-full h-full">
                     <ProductCard product={product} priority={i < 4} className="h-full" />
                   </div>
@@ -213,46 +239,62 @@ export function FeaturedProducts() {
   )
 }
 
-// ─── Categories Grid ───────────────────────────────────────────
-export function CategoriesGrid() {
-  const { t } = useTranslation()
-  const { data: categories, isLoading } = useCategories()
-  const cols = currentBusiness.categoryGridCols
+// ─── Flash Deal Banner with Countdown ──────────────────────────
+export function FlashDealBanner() {
+  const [timeLeft, setTimeLeft] = React.useState({ days: 142, hours: 19, mins: 46, secs: 6 })
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        let { days, hours, mins, secs } = prev
+        secs--
+        if (secs < 0) { secs = 59; mins-- }
+        if (mins < 0) { mins = 59; hours-- }
+        if (hours < 0) { hours = 23; days-- }
+        if (days < 0) return prev
+        return { days, hours, mins, secs }
+      })
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   return (
-    <section className="py-14 md:py-20 bg-gray-50 dark:bg-[#0a0a0a] border-y border-gray-100 dark:border-[#1e1e1e]">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <SectionHeader label={t('browse')} title={t('shopByCategory')} href="/shop/products" />
+    <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a]">
+      <div className="max-w-5xl mx-auto px-4 md:px-6">
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-gray-900 via-red-950 to-gray-900 p-10 md:p-14 text-center">
+          {/* Subtle glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1/2 bg-red-600/10 blur-[80px] pointer-events-none" />
 
-        {/* Category pills — editorial style */}
-        <div className={cn(
-          'mt-8 flex flex-wrap gap-2',
-        )}>
-          {isLoading
-            ? Array.from({ length: cols }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-28" />
-              ))
-            : categories?.map((cat, i) => (
-                <motion.div
-                  key={cat._id}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <Link
-                    href={`/shop/products?category=${cat.slug}`}
-                    className="group inline-flex items-center gap-2 px-4 py-2.5 border border-gray-200 dark:border-[#1e1e1e] text-[11px] font-light uppercase tracking-[0.08em] text-gray-500 dark:text-[#666] hover:border-primary-600 dark:hover:border-[#c8822a] hover:text-primary-600 dark:hover:text-[#c8822a] transition-all duration-200"
-                  >
-                    <span className="text-base leading-none">{cat.icon ?? '🛒'}</span>
-                    {cat.name}
-                    {cat.productCount && (
-                      <span className="text-gray-300 dark:text-[#444] text-[10px]">({cat.productCount})</span>
-                    )}
-                  </Link>
-                </motion.div>
-              ))
-          }
+          <h2 className="relative font-display text-xl md:text-2xl font-bold text-white uppercase tracking-wider mb-3">
+            YOUR FITNESS FUEL JUST GOT UPGRADE SAVE BIG NOW!
+          </h2>
+          <p className="relative text-sm text-gray-400 max-w-lg mx-auto mb-6 leading-relaxed">
+            The Wait Is Over! Stock Up On Your Favorite Protein Blend And Save With Our Exclusive Offer. Clean, Powerful, And Lab-Tested This Is The Protein Your Body Deserves.
+          </p>
+
+          <Link href="/shop/products?onSale=true">
+            <button className="relative inline-flex items-center gap-2 px-8 py-3 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all mb-8">
+              Claim Your Deal
+            </button>
+          </Link>
+
+          {/* Countdown */}
+          <div className="relative flex items-center justify-center gap-3 md:gap-4">
+            {[
+              { val: timeLeft.days, label: 'Days' },
+              { val: timeLeft.hours, label: 'Hours' },
+              { val: timeLeft.mins, label: 'Mins' },
+              { val: timeLeft.secs, label: 'Sec' },
+            ].map((item, i) => (
+              <React.Fragment key={item.label}>
+                {i > 0 && <span className="text-white/30 text-xl font-bold">:</span>}
+                <div className="countdown-box bg-white/10 backdrop-blur-sm rounded-xl w-16 h-16 md:w-20 md:h-20 flex flex-col items-center justify-center">
+                  <span className="text-xl md:text-2xl font-bold text-white">{String(item.val).padStart(2, '0')}</span>
+                  <span className="text-[10px] text-gray-400 uppercase tracking-wider">{item.label}</span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -269,23 +311,23 @@ export function PromoBanners() {
     <section className="py-14 md:py-20 bg-white dark:bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className={cn(
-          'grid gap-px bg-gray-100 dark:bg-[#1e1e1e]',
+          'grid gap-6',
           middleBanners.length === 1 ? 'grid-cols-1'
           : middleBanners.length === 2 ? 'grid-cols-1 md:grid-cols-2'
           : 'grid-cols-1 md:grid-cols-3',
         )}>
           {isLoading
-            ? Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-52" />)
+            ? Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-52 rounded-xl" />)
             : middleBanners.map((banner, i) => (
                 <motion.div
                   key={banner._id}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
                   <Link href={banner.ctaLink ?? '/shop/products'}>
-                    <div className="relative h-52 overflow-hidden bg-gray-100 dark:bg-[#111] group">
+                    <div className="relative h-52 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 group">
                       <img
                         src={banner.image}
                         alt={banner.title}
@@ -294,14 +336,14 @@ export function PromoBanners() {
                       <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
                       <div className="absolute inset-0 flex flex-col justify-center px-6">
                         {banner.subtitle && (
-                          <p className="text-[10px] font-light uppercase tracking-[0.18em] text-white/60 mb-2">
+                          <p className="text-xs font-medium uppercase tracking-wider text-white/60 mb-2">
                             {banner.subtitle}
                           </p>
                         )}
-                        <h3 className="font-display text-xl font-normal italic text-white">{banner.title}</h3>
+                        <h3 className="font-display text-xl font-bold text-white">{banner.title}</h3>
                         {banner.ctaText && (
-                          <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.1em] text-white/80">
-                            {banner.ctaText} <ArrowRight size={12} />
+                          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-white/80">
+                            {banner.ctaText} <ArrowRight size={14} />
                           </span>
                         )}
                       </div>
@@ -325,13 +367,13 @@ export function DeliveryStripeBanner() {
       href={storeConfig?.social?.whatsapp || '#'}
       target="_blank"
       rel="noreferrer"
-      className="group block border-y border-primary-100 dark:border-[#1e1e1e] bg-primary-50 dark:bg-[#0e0e0e] hover:bg-primary-100 dark:hover:bg-[#111] transition-colors"
+      className="group block bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 transition-colors border-b border-red-100 dark:border-red-900/30"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3.5 flex items-center justify-center gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" className="fill-primary-500 dark:fill-[#c8822a] shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" className="fill-red-500 dark:fill-red-400 shrink-0">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
         </svg>
-        <span className="font-display italic text-[15px] md:text-[17px] text-primary-600 dark:text-[#c8822a] group-hover:opacity-90 transition-opacity">
+        <span className="font-display font-semibold text-[14px] md:text-[16px] text-red-600 dark:text-red-400 group-hover:opacity-90 transition-opacity">
           لمتابعة أخر العروض و الخصومات، انضم لجروب الواتساب الخاص بنا من هنا!
         </span>
       </div>
@@ -341,21 +383,21 @@ export function DeliveryStripeBanner() {
 
 // ─── Testimonials ──────────────────────────────────────────────
 const TESTIMONIALS = [
-  { name: 'Sarah M.',  role: 'Regular customer',   body: 'The freshest produce delivered right to my door. Never going back to the grocery store!', rating: 5, avatar: 'SM' },
-  { name: 'James K.',  role: 'Monthly subscriber', body: 'Incredible selection and the app makes it so easy to reorder my favorites.',             rating: 5, avatar: 'JK' },
-  { name: 'Priya L.',  role: 'New customer',        body: 'Fast delivery, everything was exactly as pictured. Will definitely order again.',         rating: 5, avatar: 'PL' },
-  { name: 'Daniel R.', role: 'Weekly shopper',      body: 'The quality is consistently great and the prices are very competitive.',                  rating: 5, avatar: 'DR' },
+  { name: 'Ahmed M.',  role: 'Regular customer',   body: 'I\'ve Been Using This Protein Powder For Over Three Months Now, And The Results Have Been Amazing! My Muscle Recovery Has Improved.', rating: 5, avatar: 'AM' },
+  { name: 'Sarah K.',  role: 'Monthly subscriber', body: 'Incredible selection and the app makes it so easy to reorder my favorites. Quality supplements delivered fast.',             rating: 5, avatar: 'SK' },
+  { name: 'Omar L.',  role: 'New customer',        body: 'Fast delivery, everything was exactly as pictured. Will definitely order again. Best supplement store in Cairo.',         rating: 5, avatar: 'OL' },
+  { name: 'Daniel R.', role: 'Weekly shopper',      body: 'The quality is consistently great and the prices are very competitive. Highly recommend DoctorFit.',                  rating: 5, avatar: 'DR' },
 ]
 
 export function TestimonialsSection() {
   const { t } = useTranslation()
 
   return (
-    <section className="py-14 md:py-20 bg-gray-50 dark:bg-[#0a0a0a] border-y border-gray-100 dark:border-[#1e1e1e]">
+    <section className="py-16 md:py-24 bg-gray-50 dark:bg-[#111]">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <SectionHeader label={t('whatCustomersSay')} title={t('lovedByThousands')} />
+        <SectionHeader label="Testimonials" title="FUELLED BY YOUR STORIES" />
 
-        <div className="mt-8 grid grid-cols-1 gap-px bg-gray-100 dark:bg-[#1e1e1e] sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {TESTIMONIALS.map((item, i) => (
             <motion.div
               key={item.name}
@@ -363,23 +405,23 @@ export function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="bg-white dark:bg-[#0e0e0e] p-6"
+              className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300"
             >
               <div className="flex gap-0.5 mb-4">
                 {Array.from({ length: item.rating }).map((_, j) => (
-                  <span key={j} className="text-amber-400 text-sm">★</span>
+                  <Star key={j} size={16} className="fill-red-500 text-red-500" />
                 ))}
               </div>
-              <p className="text-[13px] font-light text-gray-500 dark:text-[#666] leading-[1.9] mb-5">
-                "{item.body}"
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
+                &ldquo;{item.body}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-primary-100 dark:bg-[#1e1e1e]">
-                  <span className="text-[10px] font-bold text-primary-700 dark:text-[#c8822a]">{item.avatar}</span>
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-red-100 dark:bg-red-900/30 rounded-full">
+                  <span className="text-xs font-bold text-red-700 dark:text-red-400">{item.avatar}</span>
                 </div>
                 <div>
-                  <p className="text-[12px] font-medium text-gray-900 dark:text-[#ccc]">{item.name}</p>
-                  <p className="text-[11px] font-light text-gray-400 dark:text-[#555]">{item.role}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{item.role}</p>
                 </div>
               </div>
             </motion.div>

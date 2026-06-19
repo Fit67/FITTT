@@ -1,62 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================
-   DOCTORFIT DESIGN SYSTEM
-   Dark mode = editorial (#0a0a0a + #c8822a gold)
-   Light mode = warm white / sky-blue / blue palette with color variety
+   DOCTORFIT — VITRAPRO DESIGN SYSTEM
+   Light mode = clean white / crimson-red accents (DEFAULT)
+   Dark mode  = deep black / bright red accents
    ============================================================ */
 
 :root {
-  /* ── Light mode: white / sky-blue / blue ── */
-  --color-primary-50:  239 246 255;
-  --color-primary-100: 219 234 254;
-  --color-primary-200: 191 219 254;
-  --color-primary-300: 147 197 253;
-  --color-primary-400: 96  165 250;
-  --color-primary-500: 59  130 246;
-  --color-primary-600: 37  99  235;
-  --color-primary-700: 29  78  216;
-  --color-primary-800: 30  64  175;
-  --color-primary-900: 30  58  138;
+  /* ── Light mode: white + crimson red ── */
+  --color-primary-50:  254 242 242;
+  --color-primary-100: 254 226 226;
+  --color-primary-200: 254 202 202;
+  --color-primary-300: 252 165 165;
+  --color-primary-400: 248 113 113;
+  --color-primary-500: 220 38  38;
+  --color-primary-600: 185 28  28;
+  --color-primary-700: 153 27  27;
+  --color-primary-800: 127 29  29;
+  --color-primary-900: 105 25  25;
 
-  /* Accent — sky blue */
-  --color-accent:       14  165 233;
-  --color-accent-light: 125 211 252;
+  /* Accent — deep crimson */
+  --color-accent:       185 28  28;
+  --color-accent-light: 248 113 113;
 
-  /* Surfaces — warm off-white with color variety */
-  --color-surface:          250 251 255;
-  --color-surface-raised:   243 246 255;
-  --color-surface-overlay:  235 241 255;
+  /* Surfaces — clean white */
+  --color-surface:          255 255 255;
+  --color-surface-raised:   249 250 251;
+  --color-surface-overlay:  243 244 246;
 
-  /* Gold / amber for badges */
+  /* Gold for badges/accents */
   --color-gold: 200 130 42;
 
   /* Typography */
-  --font-display: 'Instrument Serif', Georgia, serif;
-  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 
   /* Radii */
-  --radius-card:   4px;
-  --radius-button: 0px;
-  --radius-badge:  2px;
+  --radius-card:   12px;
+  --radius-button: 50px;
+  --radius-badge:  6px;
 
   /* Shadows */
-  --shadow-card:       0 1px 3px 0 rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.04);
-  --shadow-card-hover: 0 10px 30px -6px rgba(37,99,235,.14), 0 4px 12px -2px rgba(37,99,235,.08);
+  --shadow-card:       0 1px 3px 0 rgba(0,0,0,.06), 0 1px 2px 0 rgba(0,0,0,.04);
+  --shadow-card-hover: 0 10px 30px -6px rgba(0,0,0,.1), 0 4px 12px -2px rgba(0,0,0,.06);
   --shadow-modal:      0 20px 40px -8px rgba(0,0,0,.15);
-  --shadow-input:      0 0 0 3px rgba(37,99,235,.18);
+  --shadow-input:      0 0 0 3px rgba(185,28,28,.15);
 
-  /* Light gradient mesh — colorful sections */
-  --gradient-mesh:
-    radial-gradient(at 0% 0%, hsla(210, 100%, 94%, 1) 0px, transparent 55%),
-    radial-gradient(at 100% 0%, hsla(199, 100%, 90%, 1) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, hsla(220, 80%, 94%, 1) 0px, transparent 60%),
-    linear-gradient(180deg, #f0f4ff 0%, #fafbff 100%);
+  /* Gradient mesh */
+  --gradient-mesh: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
 
   /* Transition tokens */
   --transition-fast:   150ms cubic-bezier(0.0, 0.0, 0.2, 1.0);
@@ -64,49 +60,46 @@
   --transition-slow:   450ms cubic-bezier(0.2, 0.0, 0.0, 1.0);
 
   /* Border colours */
-  --border-default: rgba(37,99,235,.1);
-  --border-strong:  rgba(37,99,235,.2);
+  --border-default: rgba(0,0,0,.06);
+  --border-strong:  rgba(0,0,0,.12);
 
-  /* Light mode section alternating bg */
-  --section-alt-bg: 235 242 255;
-  --section-tint-bg: 224 234 255;
+  /* Section backgrounds */
+  --section-alt-bg: 249 250 251;
+  --section-tint-bg: 243 244 246;
 }
 
 /* ── DARK MODE ── */
 .dark {
-  --color-primary-50:  20  20  20;
-  --color-primary-100: 30  30  30;
-  --color-primary-200: 42  42  42;
-  --color-primary-300: 100 75  35;
-  --color-primary-400: 150 105 52;
-  --color-primary-500: 200 130 42;
-  --color-primary-600: 200 130 42;
-  --color-primary-700: 168 102 30;
-  --color-primary-800: 133 77  18;
-  --color-primary-900: 100 55  10;
+  --color-primary-50:  30  15  15;
+  --color-primary-100: 50  20  20;
+  --color-primary-200: 80  30  30;
+  --color-primary-300: 220 50  50;
+  --color-primary-400: 239 68  68;
+  --color-primary-500: 239 68  68;
+  --color-primary-600: 248 113 113;
+  --color-primary-700: 252 165 165;
+  --color-primary-800: 254 202 202;
+  --color-primary-900: 254 226 226;
 
-  --color-accent:       200 130 42;
-  --color-accent-light: 220 160 80;
+  --color-accent:       239 68  68;
+  --color-accent-light: 248 113 113;
 
   --color-surface:          10  10  10;
-  --color-surface-raised:   14  14  14;
-  --color-surface-overlay:  20  20  20;
+  --color-surface-raised:   17  17  17;
+  --color-surface-overlay:  24  24  24;
 
   --shadow-card:       0 1px 4px 0 rgba(0,0,0,.6), 0 4px 16px 0 rgba(0,0,0,.5);
-  --shadow-card-hover: 0 8px 32px 0 rgba(200,130,42,.18);
+  --shadow-card-hover: 0 8px 32px 0 rgba(239,68,68,.12);
   --shadow-modal:      0 24px 80px -10px rgba(0,0,0,.9);
-  --shadow-input:      0 0 0 2px rgba(200,130,42,.35);
+  --shadow-input:      0 0 0 2px rgba(239,68,68,.35);
 
-  --gradient-mesh:
-    radial-gradient(at 40% 20%, hsla(38, 60%, 10%, 1) 0px, transparent 55%),
-    radial-gradient(at 80% 0%, hsla(30, 80%, 6%, 1) 0px, transparent 50%),
-    linear-gradient(180deg, #0a0a0a 0%, #0e0e0e 100%);
+  --gradient-mesh: linear-gradient(180deg, #0a0a0a 0%, #111111 100%);
 
   --border-default: rgba(255,255,255,.07);
   --border-strong:  rgba(255,255,255,.12);
 
-  --section-alt-bg: 14 14 14;
-  --section-tint-bg: 20 20 20;
+  --section-alt-bg: 17 17 17;
+  --section-tint-bg: 24 24 24;
 }
 
 /* ============================================================
@@ -125,28 +118,19 @@
     text-rendering: optimizeLegibility;
   }
 
-  @media (min-width: 640px) {
-    html { font-size: 18px; }
-  }
-
-  @media (min-width: 1024px) {
-    html { font-size: 21px; }
-  }
-
   body {
     background-color: rgb(var(--color-surface));
     min-height: 100vh;
     line-height: 1.6;
     overflow-x: hidden;
     font-family: var(--font-body);
-    /* Full dark/light mode transition */
     transition: background-color 280ms ease, color 280ms ease;
-    color: #1a202c;
+    color: #111827;
   }
 
   .dark body,
   body.dark {
-    color: #e8e0d4;
+    color: #f3f4f6;
   }
 
   body::before {
@@ -159,18 +143,18 @@
   }
 
   /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(37,99,235,.2);
+    background-color: rgba(185,28,28,.2);
     border-radius: 100px;
   }
-  ::-webkit-scrollbar-thumb:hover { background-color: rgba(37,99,235,.4); }
-  .dark ::-webkit-scrollbar-thumb { background-color: rgba(200,130,42,.2); }
-  .dark ::-webkit-scrollbar-thumb:hover { background-color: rgba(200,130,42,.4); }
+  ::-webkit-scrollbar-thumb:hover { background-color: rgba(185,28,28,.4); }
+  .dark ::-webkit-scrollbar-thumb { background-color: rgba(239,68,68,.2); }
+  .dark ::-webkit-scrollbar-thumb:hover { background-color: rgba(239,68,68,.4); }
 
   :focus-visible {
-    outline: 1px solid rgb(var(--color-primary-600));
+    outline: 2px solid rgb(var(--color-primary-500));
     outline-offset: 2px;
   }
 
@@ -188,21 +172,13 @@
 }
 
 /* ============================================================
-   FULL DARK / LIGHT MODE — all surfaces respond to .dark class
+   FULL DARK / LIGHT MODE
    ============================================================ */
 
-/* All pages get the right background in both modes */
 html, body {
   background-color: rgb(var(--color-surface));
 }
 
-/* Ensure every page's min-h-screen sections pick up the theme */
-.dark .bg-white,
-.dark [class*="bg-white"] {
-  --tw-bg-opacity: 1;
-}
-
-/* Section coloring helper classes for light mode variety */
 .section-tinted {
   background-color: rgb(var(--section-alt-bg));
 }
@@ -229,23 +205,34 @@ html, body {
   /* Section heading */
   .section-heading {
     font-family: var(--font-display);
-    @apply text-3xl font-normal text-gray-900 dark:text-[#e8e0d4] md:text-4xl;
+    @apply text-3xl font-bold text-gray-900 dark:text-white md:text-4xl;
     letter-spacing: -0.02em;
   }
 
-  /* Editorial eyebrow */
+  /* Pill label (like "Essentials Collection", "Best Sellers") */
+  .pill-label {
+    @apply inline-block px-4 py-1.5 text-xs font-medium border border-gray-300 dark:border-gray-600 rounded-full text-gray-600 dark:text-gray-400;
+  }
+
+  /* Section title (like "Begin Your Healthier Living Journey") */
+  .section-title {
+    font-family: var(--font-display);
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white tracking-tight;
+  }
+
+  /* Eyebrow text */
   .eyebrow {
-    @apply text-[10px] font-normal uppercase tracking-[0.18em];
-    color: rgb(var(--color-primary-600));
+    @apply text-xs font-medium uppercase tracking-widest;
+    color: rgb(var(--color-primary-500));
   }
   .dark .eyebrow {
-    color: #c8822a;
+    color: rgb(var(--color-primary-400));
   }
 
   /* Glass card */
   .glass {
     @apply bg-white/80 border border-white/60 backdrop-blur-xl;
-    @apply dark:bg-[rgba(14,14,14,0.9)] dark:border-[rgba(255,255,255,0.07)];
+    @apply dark:bg-[rgba(17,17,17,0.9)] dark:border-[rgba(255,255,255,0.07)];
   }
 
   /* Gradient mesh background */
@@ -255,7 +242,7 @@ html, body {
 
   /* Product grid */
   .product-grid {
-    @apply grid grid-cols-1 gap-px min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4;
+    @apply grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4;
   }
 
   /* Admin sidebar link */
@@ -277,7 +264,7 @@ html, body {
       box-shadow var(--transition-smooth),
       border-color var(--transition-smooth);
   }
-  .hover-card:hover { transform: translateY(-3px); }
+  .hover-card:hover { transform: translateY(-4px); }
 
   /* Skeleton shimmer */
   .skeleton {
@@ -295,12 +282,12 @@ html, body {
   .nav-progress {
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(
       90deg,
-      rgb(var(--color-primary-600)),
+      rgb(var(--color-primary-500)),
       rgb(var(--color-accent)),
-      rgb(var(--color-primary-600))
+      rgb(var(--color-primary-500))
     );
     background-size: 200% 100%;
     z-index: 9999;
@@ -315,46 +302,54 @@ html, body {
     animation: ticker 22s linear infinite;
     width: max-content;
   }
-}
 
-/* ============================================================
-   LIGHT MODE SECTION VARIETY
-   Make non-home pages feel less stark-white
-   ============================================================ */
+  /* VITRAPRO Red CTA Button */
+  .btn-vitrapro {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white rounded-full;
+    background-color: rgb(var(--color-primary-500));
+    transition: all 0.2s ease;
+  }
+  .btn-vitrapro:hover {
+    background-color: rgb(var(--color-primary-600));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(185,28,28,0.3);
+  }
 
-/* Alternating section backgrounds in light mode */
-:not(.dark) .min-h-screen.pt-20,
-:not(.dark) .min-h-screen.pt-24 {
-  background: linear-gradient(180deg,
-    rgb(var(--color-surface)) 0%,
-    rgb(var(--section-alt-bg)) 100%
-  );
-}
+  /* Outlined pill button */
+  .btn-pill-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium rounded-full border-2;
+    border-color: rgb(var(--color-primary-500));
+    color: rgb(var(--color-primary-500));
+    transition: all 0.2s ease;
+  }
+  .btn-pill-outline:hover {
+    background-color: rgb(var(--color-primary-500));
+    color: white;
+  }
 
-/* Light mode cards get a subtle blue tint instead of pure white */
-:not(.dark) .rounded-card,
-:not(.dark) [class*="rounded-card"] {
-  background-color: rgba(255,255,255,0.92);
-  border-color: rgba(37,99,235,.08);
-}
+  /* Product card VITRAPRO style */
+  .product-card-vitrapro {
+    @apply relative bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden transition-all duration-300;
+  }
+  .product-card-vitrapro:hover {
+    @apply shadow-lg;
+    transform: translateY(-4px);
+  }
 
-/* Page headers in light mode get a gentle gradient */
-:not(.dark) .container-page > div:first-child,
-:not(.dark) .container-page > motion\.div:first-child {
-  background: transparent;
-}
+  /* Countdown box */
+  .countdown-box {
+    @apply flex flex-col items-center justify-center w-16 h-16 bg-white dark:bg-gray-800 rounded-lg;
+  }
+  .countdown-box .number {
+    @apply text-xl font-bold text-gray-900 dark:text-white;
+  }
+  .countdown-box .label {
+    @apply text-[10px] text-gray-500 dark:text-gray-400 uppercase;
+  }
 
-/* Light mode: bg-surface gets a slight blue tint */
-:not(.dark) .bg-surface {
-  background-color: rgb(250 251 255);
-}
-
-/* Light mode section alt coloring */
-:not(.dark) .bg-surface-overlay {
-  background-color: rgb(235 241 255);
-}
-:not(.dark) .bg-surface-raised {
-  background-color: rgb(243 246 255);
+  /* No scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
 /* ============================================================
@@ -404,16 +399,25 @@ html, body {
 .animate-text-shimmer {
   background: linear-gradient(
     90deg,
-    rgb(var(--color-primary-700)) 0%,
+    rgb(var(--color-primary-500)) 0%,
     rgb(var(--color-accent)) 30%,
-    rgb(var(--color-primary-500)) 60%,
-    rgb(var(--color-primary-600)) 100%
+    rgb(var(--color-primary-400)) 60%,
+    rgb(var(--color-primary-500)) 100%
   );
   background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: text-shimmer 4s linear infinite;
+}
+
+@keyframes countdown-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+.animate-countdown {
+  animation: countdown-pulse 2s ease-in-out infinite;
 }
 
 /* Stagger helpers */
@@ -454,22 +458,36 @@ html, body {
 
 /* Glow */
 .glow-gold {
-  box-shadow: 0 0 0 0 rgba(37,99,235,0.3);
+  box-shadow: 0 0 0 0 rgba(185,28,28,0.3);
   animation: glow-ring 2.8s ease-in-out infinite;
 }
 .dark .glow-gold {
-  box-shadow: 0 0 0 0 rgba(200,130,42,0.35);
+  box-shadow: 0 0 0 0 rgba(239,68,68,0.35);
 }
 
 @keyframes glow-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.3); }
-  50%       { box-shadow: 0 0 0 8px rgba(37,99,235,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(185,28,28,0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(185,28,28,0); }
 }
 
 .dark .glow-ring-dark {
   animation: glow-ring-dark 2.8s ease-in-out infinite;
 }
 @keyframes glow-ring-dark {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(200,130,42,0.35); }
-  50%       { box-shadow: 0 0 0 8px rgba(200,130,42,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+}
+
+/* ============================================================
+   HERO GRADIENT
+   ============================================================ */
+.hero-dark-gradient {
+  background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 40%, #1a0505 70%, #0a0a0a 100%);
+}
+
+/* ============================================================
+   ANNOUNCEMENT BAR
+   ============================================================ */
+.announcement-bar {
+  @apply bg-gray-900 dark:bg-gray-950 text-white text-xs py-2;
 }

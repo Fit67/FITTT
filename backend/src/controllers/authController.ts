@@ -19,6 +19,10 @@ export async function register(req: Request, res: Response, next: NextFunction) 
       return next(new AppError('Email already registered', 409))
     }
 
+    if (!password || password.length < 6) {
+      return next(new AppError('Password must be at least 6 characters', 400))
+    }
+
     const user         = await User.create({ name, email, password, phone })
     const accessToken  = signAccessToken(user._id.toString(), user.role)
     const refreshToken = signRefreshToken(user._id.toString())
@@ -37,9 +41,12 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const { email, password } = req.body as { email: string; password: string }
 
-    const user = await User.findOne({ email, isActive: true }).select('+password').populate('wishlist')
-    if (!user || !(await user.comparePassword(password))) {
+    const user = await User.findOne({ email, isActive: true }).select('+password +authProvider').populate('wishlist')
+    if (!user || !user.password || !(await user.comparePassword(password))) {
       return next(new AppError('Invalid email or password', 401))
+    }
+    if (user.authProvider === 'google') {
+      return next(new AppError('This account uses Google sign-in. Please sign in with Google.', 401))
     }
 
     const accessToken  = signAccessToken(user._id.toString(), user.role)
@@ -145,6 +152,10 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
 
     if (!user) return next(new AppError('Token is invalid or has expired', 400))
 
+    if (!password || password.length < 6) {
+      return next(new AppError('Password must be at least 6 characters', 400))
+    }
+
     user.password             = password
     user.resetPasswordToken   = undefined
     user.resetPasswordExpires = undefined
@@ -198,6 +209,58 @@ export async function deleteAddress(req: Request, res: Response, next: NextFunct
     user.addresses.splice(0, user.addresses.length, ...filtered)
     await user.save()
     res.json({ success: true, data: user })
+  } catch (err) { next(err) }
+}
+
+// ─── Google OAuth ──────────────────────────────────────────────
+export async function googleAuth(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { credential } = req.body as { credential: string }
+    if (!credential) return next(new AppError('Google credential is required', 400))
+
+    // Decode the JWT payload from Google (verify with Google's public keys)
+    const { OAuth2Client } = await import('google-auth-library')
+    const clientId = process.env.GOOGLE_CLIENT_ID
+    if (!clientId) return next(new AppError('Google OAuth is not configured', 500))
+
+    const client  = new OAuth2Client(clientId)
+    const ticket  = await client.verifyIdToken({ idToken: credential, audience: clientId })
+    const payload = ticket.getPayload()
+    if (!payload?.email) return next(new AppError('Invalid Google credential', 401))
+
+    const { sub: googleId, email, name = 'Google User', picture: avatar } = payload
+
+    // Find existing user by googleId or email
+    let user = await User.findOne({ $or: [{ googleId }, { email }] }).select('+googleId')
+
+    if (!user) {
+      // New user — create with Google provider
+      user = await User.create({
+        name,
+        email,
+        avatar,
+        googleId,
+        authProvider: 'google',
+        isVerified:   true,
+        isActive:     true,
+      })
+    } else if (!user.googleId) {
+      // Existing local user — link Google account
+      await User.findByIdAndUpdate(user._id, { googleId, authProvider: 'google', isVerified: true, ...(avatar ? { avatar } : {}) })
+    }
+
+    if (!user.isActive) return next(new AppError('Your account has been deactivated', 403))
+
+    const accessToken  = signAccessToken(user._id.toString(), user.role)
+    const refreshToken = signRefreshToken(user._id.toString())
+    setRefreshCookie(res, refreshToken)
+
+    const userData = await User.findById(user._id).populate('wishlist')
+    res.json({
+      success: true,
+      data:    { user: userData, accessToken },
+      message: 'Google login successful',
+    })
   } catch (err) { next(err) }
 }
 

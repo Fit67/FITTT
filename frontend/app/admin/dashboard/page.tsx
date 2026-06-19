@@ -72,7 +72,7 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Welcome back. Here's what's happening.
+          Welcome back. Here&apos;s what&apos;s happening.
         </p>
       </div>
 
@@ -197,10 +197,10 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-3">
               {[
-                { label: 'Pending',    value: stats?.orders.pending ?? 0,  color: 'bg-amber-400' },
-                { label: 'Processing', value: Math.round((stats?.orders.total ?? 0) * 0.15), color: 'bg-violet-400' },
-                { label: 'Delivered',  value: Math.round((stats?.orders.total ?? 0) * 0.70), color: 'bg-emerald-400' },
-                { label: 'Cancelled',  value: Math.round((stats?.orders.total ?? 0) * 0.05), color: 'bg-red-400' },
+                { label: 'Pending',    value: stats?.orders.byStatus?.pending    ?? 0, color: 'bg-amber-400' },
+                { label: 'Processing', value: (stats?.orders.byStatus?.processing ?? 0) + (stats?.orders.byStatus?.confirmed ?? 0), color: 'bg-violet-400' },
+                { label: 'Delivered',  value: stats?.orders.byStatus?.delivered   ?? 0, color: 'bg-emerald-400' },
+                { label: 'Cancelled',  value: stats?.orders.byStatus?.cancelled   ?? 0, color: 'bg-red-400' },
               ].map(item => {
                 const pct = stats ? (item.value / stats.orders.total) * 100 : 0
                 return (

@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import colors from 'tailwindcss/colors'
 
 const config: Config = {
   darkMode: 'class',
@@ -11,6 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        gray: colors.neutral,
         primary: {
           50:  'rgb(var(--color-primary-50) / <alpha-value>)',
           100: 'rgb(var(--color-primary-100) / <alpha-value>)',
@@ -34,8 +36,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Instrument Serif', 'Georgia', 'serif'],
-        body:    ['var(--font-body)', 'DM Sans', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Outfit', 'Inter', 'system-ui', 'sans-serif'],
+        body:    ['var(--font-body)', 'Inter', 'system-ui', 'sans-serif'],
         mono:    ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       borderRadius: {
@@ -74,12 +76,17 @@ const config: Config = {
           from: { transform: 'translateX(0)' },
           to:   { transform: 'translateX(-50%)' },
         },
+        'countdown-pulse': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%':      { transform: 'scale(1.05)' },
+        },
       },
       animation: {
         'slide-up':  'slide-up 0.4s ease-out forwards',
         'fade-in':   'fade-in 0.3s ease-out forwards',
         shimmer:     'shimmer 2s infinite linear',
         ticker:      'ticker 22s linear infinite',
+        'countdown': 'countdown-pulse 2s ease-in-out infinite',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

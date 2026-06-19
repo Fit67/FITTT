@@ -205,7 +205,7 @@ function BannerForm({
         await bannerService.update(banner._id, payload)
         toast.success('Banner updated!')
       } else {
-        await bannerService.create(payload as unknown as FormData)
+        await bannerService.create(payload)
         toast.success('Banner created!')
       }
       onSuccess()

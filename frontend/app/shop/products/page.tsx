@@ -65,7 +65,7 @@ export default function ProductsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-20">
+      <main className="min-h-screen pt-6">
         <div className="container-page py-8">
 
           {/* ── Page Header ──────────────────────────────────── */}
@@ -89,7 +89,7 @@ export default function ProductsPage() {
                 <select
                   value={filters.sortBy ?? 'popular'}
                   onChange={e => setParams({ sortBy: e.target.value })}
-                  className="appearance-none rounded-button border border-gray-200 bg-surface px-4 py-2 pr-8 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-surface-raised dark:text-gray-300 outline-none cursor-pointer"
+                  className="appearance-none rounded-full border border-gray-200 bg-white px-4 py-2 pr-8 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 outline-none cursor-pointer"
                 >
                   {SORT_OPTIONS.map(o => (
                     <option key={o.value} value={o.value}>{o.label}</option>
@@ -99,7 +99,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Grid toggle */}
-              <div className="hidden md:flex gap-1 rounded-button border border-gray-200 dark:border-gray-700 p-1">
+              <div className="hidden md:flex gap-1 rounded-full border border-gray-200 dark:border-gray-700 p-1">
                 {([3, 4] as const).map(n => (
                   <button
                     key={n}
@@ -107,7 +107,7 @@ export default function ProductsPage() {
                     className={cn(
                       'flex h-7 w-7 items-center justify-center rounded-md transition-colors',
                       gridCols === n
-                        ? 'bg-primary-600 text-white'
+                        ? 'bg-red-600 text-white'
                         : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800',
                     )}
                   >
@@ -304,7 +304,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
             className={cn(
               'w-full text-left rounded-lg px-3 py-2 text-sm transition-colors',
               !localCategory
-                ? 'bg-primary-50 font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
+                ? 'bg-red-50 font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400'
                 : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
             )}
           >
@@ -317,7 +317,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
               className={cn(
                 'w-full text-left rounded-lg px-3 py-2 text-sm transition-colors',
                 localCategory === cat.slug
-                  ? 'bg-primary-50 font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
+                  ? 'bg-red-50 font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400'
                   : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
               )}
             >
@@ -337,7 +337,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
             placeholder="Min"
             value={priceMin}
             onChange={e => setPriceMin(e.target.value)}
-            className="w-full rounded-button border border-gray-200 dark:border-gray-700 bg-surface dark:bg-surface-raised px-3 py-2 text-sm outline-none focus:border-primary-500"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:border-red-500"
           />
           <span className="text-gray-400 text-sm">–</span>
           <input
@@ -346,7 +346,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
             placeholder="Max"
             value={priceMax}
             onChange={e => setPriceMax(e.target.value)}
-            className="w-full rounded-button border border-gray-200 dark:border-gray-700 bg-surface dark:bg-surface-raised px-3 py-2 text-sm outline-none focus:border-primary-500"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:border-red-500"
           />
         </div>
       </div>
@@ -364,7 +364,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
                 type="checkbox"
                 checked={state}
                 onChange={e => setState(e.target.checked)}
-                className="h-4 w-4 rounded accent-primary-600"
+                className="h-4 w-4 rounded accent-red-600"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
             </label>
@@ -390,7 +390,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
 
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="flex items-center gap-1.5 rounded-full bg-primary-100 dark:bg-primary-900/30 px-3 py-1 text-xs font-medium text-primary-700 dark:text-primary-400">
+    <span className="flex items-center gap-1.5 rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-medium text-red-700 dark:text-red-400">
       {label}
       <button onClick={onRemove} className="hover:text-red-500 transition-colors">
         <X size={12} />
@@ -409,7 +409,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       <div className="mb-4 text-6xl">🔍</div>
       <h3 className="font-display text-xl font-semibold text-gray-900 dark:text-white">No products found</h3>
       <p className="mt-2 text-gray-500 dark:text-gray-400 max-w-xs">
-        Try adjusting your filters or search terms to find what you're looking for.
+        Try adjusting your filters or search terms to find what you&apos;re looking for.
       </p>
       <Button variant="outline" className="mt-6" onClick={onReset}>
         Clear Filters

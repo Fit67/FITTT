@@ -3,8 +3,14 @@ import type { Request, Response, NextFunction } from 'express'
 import { AppError } from './errorHandler'
 
 // ─── Constants ─────────────────────────────────────────────────
-const ACCESS_SECRET  = process.env.JWT_ACCESS_SECRET  ?? 'access-secret-change-me-in-production'
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? 'refresh-secret-change-me-in-production'
+const ACCESS_SECRET  = process.env.JWT_ACCESS_SECRET  ?? ''
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? ''
+
+function assertSecrets() {
+  if (!ACCESS_SECRET || !REFRESH_SECRET) {
+    throw new Error('FATAL: JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be set in environment variables')
+  }
+}
 
 // ─── Extend Express Request type ───────────────────────────────
 export interface AuthUser {
@@ -22,18 +28,22 @@ declare global {
 
 // ─── Token helpers ─────────────────────────────────────────────
 export function signAccessToken(userId: string, role: string): string {
+  assertSecrets()
   return jwt.sign({ sub: userId, role }, ACCESS_SECRET, { expiresIn: '15m' })
 }
 
 export function signRefreshToken(userId: string): string {
+  assertSecrets()
   return jwt.sign({ sub: userId }, REFRESH_SECRET, { expiresIn: '7d' })
 }
 
 export function verifyAccessToken(token: string): { sub: string; role: string } {
+  assertSecrets()
   return jwt.verify(token, ACCESS_SECRET) as { sub: string; role: string }
 }
 
 export function verifyRefreshToken(token: string): { sub: string } {
+  assertSecrets()
   return jwt.verify(token, REFRESH_SECRET) as { sub: string }
 }
 
@@ -42,14 +52,18 @@ export function setRefreshCookie(res: Response, token: string): void {
   res.cookie('refreshToken', token, {
     httpOnly: true,
     secure:   process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge:   7 * 24 * 60 * 60 * 1000,
     path:     '/api/auth',
   })
 }
 
 export function clearRefreshCookie(res: Response): void {
-  res.clearCookie('refreshToken', { path: '/api/auth' })
+  res.clearCookie('refreshToken', {
+    path:     '/api/auth',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure:   process.env.NODE_ENV === 'production',
+  })
 }
 
 // ─── Guard: asserts req.user exists (throws if not) ────────────
@@ -80,13 +94,26 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
 
 // ─── authorize middleware (role-based) ────────────────────────
 export function authorize(...roles: string[]) {
-  return (req: Request, _res: Response, next: NextFunction): void => {
+  return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     if (!req.user) {
       next(new AppError('Authentication required', 401))
       return
     }
-    if (!roles.includes(req.user.role)) {
-      next(new AppError('You do not have permission to perform this action', 403))
+    try {
+      // Always fetch role from DB — prevents stale JWT role after demotion
+      const { User } = await import('../models/User')
+      const user = await User.findById(req.user.id).select('role isActive').lean()
+      if (!user || !user.isActive) {
+        next(new AppError('Account not found or deactivated', 403))
+        return
+      }
+      req.user.role = user.role  // update req.user with live role
+      if (!roles.includes(user.role)) {
+        next(new AppError('You do not have permission to perform this action', 403))
+        return
+      }
+    } catch {
+      next(new AppError('Authorization check failed', 500))
       return
     }
     next()

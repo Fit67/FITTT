@@ -167,3 +167,19 @@ const BannerSchema = new Schema<IBanner>(
 )
 BannerSchema.index({ position: 1, isActive: 1, sortOrder: 1 })
 export const Banner = mongoose.model<IBanner>('Banner', BannerSchema)
+
+// ─── Setting ────────────────────────────────────────────────────
+export interface ISetting extends Document {
+  key:   string
+  value: unknown
+}
+
+const SettingSchema = new Schema<ISetting>(
+  {
+    key:   { type: String, required: true, unique: true },
+    value: { type: Schema.Types.Mixed },
+  },
+  { timestamps: true },
+)
+SettingSchema.index({ key: 1 })
+export const Setting = mongoose.model<ISetting>('Setting', SettingSchema)

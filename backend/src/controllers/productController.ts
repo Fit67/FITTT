@@ -243,6 +243,63 @@ export async function getRelatedProducts(req: Request, res: Response, next: Next
   } catch (err) { next(err) }
 }
 
+// ─── Admin: List all products (including archived/draft) ───────
+export async function adminGetProducts(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page   = Number(req.query.page  ?? 1)
+    const limit  = Number(req.query.limit ?? 50)
+    const skip   = (page - 1) * limit
+    const search = req.query.search as string | undefined
+    const status = req.query.status as string | undefined
+
+    const filter: Record<string, unknown> = {}
+    if (status) filter.status = status
+    if (search) filter.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { sku:  { $regex: search, $options: 'i' } },
+    ]
+
+    const [total, products] = await Promise.all([
+      Product.countDocuments(filter),
+      Product.find(filter)
+        .populate('category', 'name slug')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+    ])
+
+    res.json({
+      success: true,
+      data:    products,
+      pagination: {
+        page, limit, total,
+        pages:   Math.ceil(total / limit),
+        hasNext: skip + products.length < total,
+        hasPrev: page > 1,
+      },
+    })
+  } catch (err) { next(err) }
+}
+
+// ─── Admin: Toggle product visibility (active ↔ draft) ─────────
+export async function toggleProductVisibility(req: Request, res: Response, next: NextFunction) {
+  try {
+    const product = await Product.findById(req.params.id)
+    if (!product) return next(new AppError('Product not found', 404))
+
+    const newStatus = product.status === 'active' ? 'draft' : 'active'
+    product.status  = newStatus
+    await product.save()
+
+    res.json({
+      success: true,
+      data:    { id: product._id, status: newStatus },
+      message: `Product ${newStatus === 'active' ? 'shown' : 'hidden'} successfully`,
+    })
+  } catch (err) { next(err) }
+}
+
 // ─── Admin: Create product ─────────────────────────────────────
 export async function createProduct(req: Request, res: Response, next: NextFunction) {
   try {

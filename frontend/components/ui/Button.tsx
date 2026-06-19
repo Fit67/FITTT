@@ -18,38 +18,38 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   children?:  React.ReactNode
 }
 
-// Editorial flat buttons — no border-radius, clean uppercase tracking
+// VITRAPRO pill buttons — rounded-full, red-600 primary, clean uppercase
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-primary-600 text-white hover:opacity-90 active:opacity-80 ' +
-    'dark:bg-[#c8822a] dark:hover:opacity-90 ' +
-    'transition-opacity duration-200',
+    'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 ' +
+    'shadow-sm hover:shadow-md hover:shadow-red-600/20 ' +
+    'transition-all duration-200',
   secondary:
     'bg-gray-100 text-gray-800 hover:bg-gray-200 ' +
-    'dark:bg-[#1e1e1e] dark:text-[#ccc] dark:hover:bg-[#2a2a2a] ' +
+    'dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 ' +
     'transition-colors duration-200',
   outline:
-    'border border-current text-primary-600 hover:bg-primary-50 active:bg-primary-100 ' +
-    'dark:text-[#c8822a] dark:hover:bg-[#1e1e1e] ' +
+    'border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 hover:bg-red-50 ' +
+    'dark:border-gray-600 dark:text-gray-300 dark:hover:border-red-500 dark:hover:text-red-400 dark:hover:bg-red-900/20 ' +
     'transition-colors duration-200',
   ghost:
     'text-gray-600 hover:text-gray-900 hover:bg-gray-100 ' +
-    'dark:text-[#888] dark:hover:text-[#e8e0d4] dark:hover:bg-[#1e1e1e] ' +
+    'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 ' +
     'transition-colors duration-200',
   danger:
-    'bg-red-600 text-white hover:opacity-90 ' +
-    'transition-opacity duration-200',
+    'bg-red-600 text-white hover:bg-red-700 ' +
+    'transition-colors duration-200',
   success:
-    'bg-emerald-600 text-white hover:opacity-90 ' +
-    'transition-opacity duration-200',
+    'bg-emerald-600 text-white hover:bg-emerald-700 ' +
+    'transition-colors duration-200',
 }
 
 const sizeClasses: Record<Size, string> = {
-  xs:  'h-7  px-3   text-[9px]  gap-1   tracking-[0.1em] uppercase',
-  sm:  'h-8  px-3.5 text-[10px] gap-1.5 tracking-[0.1em] uppercase',
-  md:  'h-10 px-4   text-[11px] gap-2   tracking-[0.1em] uppercase',
-  lg:  'h-11 px-5   text-[11px] gap-2   tracking-[0.12em] uppercase',
-  xl:  'h-12 px-6   text-[12px] gap-2.5 tracking-[0.12em] uppercase',
+  xs:  'h-7  px-3   text-[10px] gap-1   tracking-wide uppercase rounded-full',
+  sm:  'h-8  px-4   text-xs     gap-1.5 tracking-wide uppercase rounded-full',
+  md:  'h-10 px-5   text-sm     gap-2   font-semibold rounded-full',
+  lg:  'h-11 px-6   text-sm     gap-2   font-bold     rounded-full',
+  xl:  'h-12 px-8   text-sm     gap-2.5 font-bold     rounded-full',
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

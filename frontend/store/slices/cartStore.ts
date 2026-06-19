@@ -35,7 +35,12 @@ function sanitizeItems(items: unknown = []) {
 
 function calcTotals(items: unknown, coupon?: Coupon) {
   const safeItems = sanitizeItems(items)
-  const subtotal = safeItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+  const subtotal = safeItems.reduce((sum, i) => {
+    const price = (i.variant?.price != null && Number.isFinite(i.variant.price))
+      ? i.variant.price
+      : i.product.price
+    return sum + price * i.quantity
+  }, 0)
   const { freeDeliveryThreshold, standardDeliveryFee } = storeConfig.delivery
   const rawDelivery = subtotal >= freeDeliveryThreshold || subtotal === 0 ? 0 : standardDeliveryFee
 
@@ -47,7 +52,7 @@ function calcTotals(items: unknown, coupon?: Coupon) {
   }
 
   const deliveryFee = coupon?.type === 'free_shipping' ? 0 : rawDelivery
-  const tax         = 0
+  const tax         = Math.round((subtotal - discount) * 0.08 * 100) / 100
   const total       = Math.max(subtotal - discount + deliveryFee + tax, 0)
 
   return { subtotal, deliveryFee, discount, tax, total }
@@ -110,6 +115,9 @@ export const useCartStore = create<CartStore>()(
 
       addItem(product, variant, qty = 1) {
         if (!product?._id || !Number.isFinite(product.price) || !Number.isFinite(qty)) return
+        const maxStock = variant
+          ? (variant.inventory ?? 999)
+          : (product.inventory?.quantity ?? 999)
         set(state => {
           const key      = itemKey(product._id, variant?._id)
           state.items = sanitizeItems(state.items) as typeof state.items
@@ -117,9 +125,9 @@ export const useCartStore = create<CartStore>()(
             i => itemKey(i.product._id, i.variant?._id) === key,
           )
           if (existing) {
-            existing.quantity = Math.min(existing.quantity + qty, 99)
+            existing.quantity = Math.min(existing.quantity + qty, maxStock)
           } else {
-            state.items.push({ product, variant, quantity: qty } as CartItem)
+            state.items.push({ product, variant, quantity: Math.min(qty, maxStock) } as CartItem)
           }
           const totals    = calcTotals(state.items, state.coupon)
           Object.assign(state, totals)
@@ -147,7 +155,12 @@ export const useCartStore = create<CartStore>()(
           const item = state.items.find(
             i => itemKey(i.product._id, i.variant?._id) === key,
           )
-          if (item) item.quantity = Math.min(quantity, 99)
+          if (item) {
+            const maxStock = item.variant
+              ? (item.variant.inventory ?? 999)
+              : (item.product.inventory?.quantity ?? 999)
+            item.quantity = Math.min(quantity, maxStock)
+          }
           const totals    = calcTotals(state.items, state.coupon)
           Object.assign(state, totals)
           state.itemCount = state.items.reduce((n, i) => n + i.quantity, 0)

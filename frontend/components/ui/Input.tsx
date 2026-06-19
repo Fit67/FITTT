@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-// ─── Input — editorial flat style ─────────────────────────────
+// ─── Input — VITRAPRO rounded style ─────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?:    string
   hint?:     string
@@ -22,7 +22,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-500 dark:text-[#666]"
+            className="text-xs font-medium text-gray-600 dark:text-gray-400"
           >
             {label}
             {props.required && <span className="ml-1 text-red-500">*</span>}
@@ -31,7 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center">
           {leading && (
-            <span className="pointer-events-none absolute left-3 text-gray-400 dark:text-[#555]">
+            <span className="pointer-events-none absolute left-3 text-gray-400 dark:text-gray-500">
               {leading}
             </span>
           )}
@@ -39,13 +39,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full border bg-transparent px-3.5 py-2.5',
-              'font-body text-[13px] font-light text-gray-900 placeholder:text-gray-300',
-              'dark:text-[#ccc] dark:placeholder:text-[#3a3a3a]',
+              'w-full rounded-lg border bg-transparent px-3.5 py-2.5',
+              'font-body text-sm text-gray-900 placeholder:text-gray-400',
+              'dark:text-gray-100 dark:placeholder:text-gray-600',
               'outline-none transition-colors duration-150',
               error
                 ? 'border-red-400 focus:border-red-500'
-                : 'border-gray-200 dark:border-[#2a2a2a] focus:border-primary-500 dark:focus:border-[#c8822a]',
+                : 'border-gray-200 dark:border-gray-700 focus:border-red-500 dark:focus:border-red-500',
               leading  && 'pl-10',
               trailing && 'pr-10',
               className,
@@ -53,12 +53,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {trailing && (
-            <span className="absolute right-3 text-gray-400 dark:text-[#555]">{trailing}</span>
+            <span className="absolute right-3 text-gray-400 dark:text-gray-500">{trailing}</span>
           )}
         </div>
 
         {(hint || error) && (
-          <p className={cn('text-[11px] font-light', error ? 'text-red-500' : 'text-gray-400 dark:text-[#555]')}>
+          <p className={cn('text-xs', error ? 'text-red-500' : 'text-gray-400 dark:text-gray-500')}>
             {error ?? hint}
           </p>
         )}
@@ -85,7 +85,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={selectId} className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-500 dark:text-[#666]">
+          <label htmlFor={selectId} className="text-xs font-medium text-gray-600 dark:text-gray-400">
             {label}
             {props.required && <span className="ml-1 text-red-500">*</span>}
           </label>
@@ -94,13 +94,13 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full border bg-transparent px-3.5 py-2.5 pr-9',
-            'font-body text-[13px] font-light text-gray-900 dark:text-[#ccc]',
+            'w-full rounded-lg border bg-transparent px-3.5 py-2.5 pr-9',
+            'font-body text-sm text-gray-900 dark:text-gray-100',
             'outline-none appearance-none transition-colors duration-150',
-            'dark:bg-[#0e0e0e]',
+            'dark:bg-gray-900',
             error
               ? 'border-red-400 focus:border-red-500'
-              : 'border-gray-200 dark:border-[#2a2a2a] focus:border-primary-500 dark:focus:border-[#c8822a]',
+              : 'border-gray-200 dark:border-gray-700 focus:border-red-500 dark:focus:border-red-500',
             className,
           )}
           {...props}
@@ -136,7 +136,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={textId} className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-500 dark:text-[#666]">
+          <label htmlFor={textId} className="text-xs font-medium text-gray-600 dark:text-gray-400">
             {label}
           </label>
         )}
@@ -146,18 +146,18 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           rows={4}
           className={cn(
             'w-full resize-none border bg-transparent px-3.5 py-2.5',
-            'font-body text-[13px] font-light text-gray-900 placeholder:text-gray-300',
-            'dark:text-[#ccc] dark:placeholder:text-[#3a3a3a]',
+            'font-body text-sm text-gray-900 placeholder:text-gray-400',
+            'dark:text-gray-100 dark:placeholder:text-gray-600',
             'outline-none transition-colors duration-150',
             error
               ? 'border-red-400 focus:border-red-500'
-              : 'border-gray-200 dark:border-[#2a2a2a] focus:border-primary-500 dark:focus:border-[#c8822a]',
+              : 'border-gray-200 dark:border-gray-700 focus:border-red-500 dark:focus:border-red-500',
             className,
           )}
           {...props}
         />
         {(hint || error) && (
-          <p className={cn('text-[11px] font-light', error ? 'text-red-500' : 'text-gray-400')}>
+          <p className={cn('text-xs', error ? 'text-red-500' : 'text-gray-400 dark:text-gray-500')}>
             {error ?? hint}
           </p>
         )}
@@ -186,7 +186,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           id={checkId}
           className={cn(
             'mt-0.5 h-4 w-4 shrink-0 cursor-pointer border-gray-300',
-            'accent-primary-600 dark:accent-[#c8822a]',
+            'accent-red-600 dark:accent-red-500',
             className,
           )}
           {...props}
@@ -194,10 +194,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         {(label || description) && (
           <label htmlFor={checkId} className="cursor-pointer">
             {label && (
-              <span className="block text-[13px] font-light text-gray-800 dark:text-[#ccc]">{label}</span>
+              <span className="block text-sm text-gray-800 dark:text-gray-200">{label}</span>
             )}
             {description && (
-              <span className="block text-[11px] font-light text-gray-500 dark:text-[#555]">{description}</span>
+              <span className="block text-xs text-gray-500 dark:text-gray-400">{description}</span>
             )}
           </label>
         )}

@@ -241,9 +241,9 @@ export default function AdminOrdersPage() {
               <div className="space-y-3">
                 {selected.items.map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <img src={item.product?.images?.[0]?.url || '/images/placeholder.png'} alt={item.product?.name || 'Product'} className="h-12 w-12 rounded-lg object-cover" />
+                    <img src={item.image || '/images/placeholder.png'} alt={item.name || 'Product'} className="h-12 w-12 rounded-lg object-cover" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.product?.name || 'Unknown Product'}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.name || 'Unknown Product'}</p>
                       <p className="text-xs text-gray-400">Qty: {item.quantity} × {formatPrice(item.price)}</p>
                     </div>
                     <p className="font-semibold text-gray-900 dark:text-gray-100">{formatPrice(item.total)}</p>

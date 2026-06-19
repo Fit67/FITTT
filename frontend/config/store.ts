@@ -24,8 +24,8 @@ export const storeConfig: StoreConfig = {
   // ─── Theme ─────────────────────────────────────────────────
   // Corresponds to a file in /themes/
   theme: 'default',
-  primaryColor: '#d97706',   // login orange / amber-600
-  accentColor: '#f59e0b',    // login orange / amber-500
+  primaryColor: '#b91c1c',   // VITRAPRO crimson red
+  accentColor: '#dc2626',    // VITRAPRO bright red
 
   // ─── Hero Section ──────────────────────────────────────────
   // Options: 'fullscreen' | 'split' | 'minimal' | 'video' | 'carousel'
@@ -39,10 +39,10 @@ export const storeConfig: StoreConfig = {
 
   // ─── Delivery ──────────────────────────────────────────────
   delivery: {
-    minOrderAmount: 10,
+    minOrderAmount: 100,
     freeDeliveryThreshold: 2000,
     standardDeliveryFee: 80,
-    expressDeliveryFee: 120,
+    expressDeliveryFee: 150,
     estimatedTime: { min: 30, max: 60, unit: 'min' },
     zones: ['Downtown', 'Uptown', 'Suburbs', 'North District'],
     cashOnDelivery: true,

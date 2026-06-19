@@ -17,14 +17,14 @@ export default function OrdersPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16">
+      <main className="min-h-screen pb-16 pt-6">
         <div className="container-page max-w-3xl">
           <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-8">My Orders</h1>
 
           {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 rounded-card" />
+                <Skeleton key={i} className="h-28 rounded-xl" />
               ))}
             </div>
           ) : !data?.data.length ? (
@@ -36,7 +36,7 @@ export default function OrdersPage() {
               <Package size={56} className="text-gray-200 dark:text-gray-700 mb-4" />
               <h3 className="font-display text-xl font-semibold text-gray-900 dark:text-white">No orders yet</h3>
               <p className="mt-2 text-gray-500 dark:text-gray-400">When you place an order, it will appear here.</p>
-              <Link href="/shop/products" className="mt-6 text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline">
+              <Link href="/shop/products" className="mt-6 text-sm font-medium text-red-600 dark:text-red-400 hover:underline">
                 Start Shopping →
               </Link>
             </motion.div>
@@ -51,15 +51,15 @@ export default function OrdersPage() {
                 >
                   <Link
                     href={`/shop/orders/${order._id}`}
-                    className="flex items-center gap-4 rounded-card border border-gray-100 bg-surface p-5 shadow-card hover:shadow-card-hover dark:border-gray-800 dark:bg-surface-raised transition-shadow group"
+                    className="flex items-center gap-4 rounded-xl border border-gray-100 bg-white p-5 shadow-card hover:shadow-card-hover dark:border-gray-800 dark:bg-gray-900 transition-shadow group"
                   >
                     {/* Order image preview */}
                     <div className="flex -space-x-2 shrink-0">
                       {order.items.slice(0, 3).map((item, j) => (
                         <img
                           key={j}
-                          src={item.product?.images?.[0]?.url || '/images/placeholder.png'}
-                          alt={item.product?.name || 'Product'}
+                          src={item.image || '/images/placeholder.png'}
+                          alt={item.name || 'Product'}
                           className="h-12 w-12 rounded-lg object-cover border-2 border-white dark:border-gray-800"
                         />
                       ))}
@@ -89,7 +89,7 @@ export default function OrdersPage() {
 
                     <div className="text-right shrink-0">
                       <p className="font-bold text-gray-900 dark:text-gray-100">{formatPrice(order.total)}</p>
-                      <ChevronRight size={16} className="ml-auto mt-1 text-gray-300 dark:text-gray-600 group-hover:text-primary-500 transition-colors" />
+                      <ChevronRight size={16} className="ml-auto mt-1 text-gray-300 dark:text-gray-600 group-hover:text-red-500 transition-colors" />
                     </div>
                   </Link>
                 </motion.div>

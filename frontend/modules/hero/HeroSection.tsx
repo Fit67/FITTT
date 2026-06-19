@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ShoppingBag, Truck, Shield } from 'lucide-react'
 import { storeConfig } from '@/config/store'
@@ -19,7 +19,7 @@ const stagger = {
   },
 }
 
-// ─── Products data (from design direction) ─────────────────────
+// ─── Fallback data ─────────────────────────────────────────
 export function getTopSellers(t: any) {
   return [
     { num: '01', name: t('productWhey'),   price: '480 ج.م.' },
@@ -38,180 +38,111 @@ export function getMetrics(t: any) {
 }
 
 export function HeroSection() {
-  return <EditorialHero />
+  return <VITRAPROHero />
 }
 
-function EditorialHero() {
+function VITRAPROHero() {
   const { t } = useTranslation()
 
-  const { data: featuredData, isLoading } = useQuery({
-    queryKey: ['top-sellers'],
-    queryFn: () => productService.getTopSellers(4),
-  })
-  
-  const products = Array.isArray(featuredData) ? featuredData : []
-
   return (
-    <section className="relative pt-[62px] overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+    <section className="relative overflow-hidden">
+      {/* ── Dark gradient background ── */}
+      <div className="hero-dark-gradient min-h-[calc(100vh-36px)] md:h-[calc(100vh-36px)] relative">
+        {/* Subtle red glow */}
+        <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-red-900/20 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-1/3 h-1/2 bg-gradient-to-t from-red-900/10 to-transparent pointer-events-none" />
 
-      {/* ── Subtle grid background ── */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-      {/* Dark mode grid */}
-      <div className="absolute inset-0 pointer-events-none hidden dark:block"
-        style={{
-          backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
+        <div className="relative max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center h-full px-6 md:px-8 pt-24 md:pt-28 pb-8 md:pb-12">
 
-      {/* ── Two-column hero ── */}
-      <div className="relative max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 min-h-[520px] md:min-h-[480px]">
-
-        {/* LEFT: Headline + CTAs */}
-        <motion.div
-          variants={stagger.container}
-          initial="initial"
-          animate="animate"
-          className="flex flex-col justify-between px-6 md:px-8 py-14 md:py-16 md:border-r border-b border-gray-100 dark:border-[#1e1e1e]"
-        >
-          <div>
-            {/* Eyebrow */}
-            <motion.div variants={stagger.item} className="flex items-center gap-2.5 mb-8">
-              <div className="h-px w-6 bg-gray-300 dark:bg-[#555]" />
-              <span className="text-[11px] font-light uppercase tracking-[0.14em] text-gray-400 dark:text-[#555]">
-                {t('heroEyebrow')}
+          {/* LEFT: Headline + CTAs */}
+          <motion.div
+            variants={stagger.container}
+            initial="initial"
+            animate="animate"
+            className="py-4 md:py-6 z-10"
+          >
+            {/* Eyebrow pill */}
+            <motion.div variants={stagger.item}>
+              <span className="inline-block px-4 py-1.5 text-xs font-semibold bg-red-600/20 text-red-400 rounded-full border border-red-600/30 mb-6">
+                Pure Protein
               </span>
             </motion.div>
 
             {/* Headline */}
             <motion.h1
               variants={stagger.item}
-              className="font-display text-[clamp(44px,6vw,68px)] font-normal leading-[1.0] text-gray-900 dark:text-[#e8e0d4] tracking-[-0.02em] mb-0"
+              className="font-display text-[clamp(36px,5.5vw,56px)] font-extrabold leading-[1.05] text-white tracking-tight mb-4"
             >
-              {t('heroHeadlineFuel')}<br />
-              <em className="italic text-primary-600 dark:text-[#c8822a]">{t('heroHeadlineWork')}</em>
-              <span className="block ml-8 md:ml-10">{t('heroHeadlineMatters')}</span>
+              Everyday Performance<br />
+              Begins With <span className="text-red-500">Protein</span>
             </motion.h1>
-          </div>
 
-          {/* Subtext */}
-          <motion.p
-            variants={stagger.item}
-            className="text-[13px] font-light text-gray-500 dark:text-[#666] leading-[1.8] max-w-[280px] border-l-2 border-primary-500 dark:border-[#c8822a] pl-4 mt-8"
-          >
-            {t('heroSubtext2')}
-          </motion.p>
+            {/* Subtext */}
+            <motion.p
+              variants={stagger.item}
+              className="text-base text-gray-400 leading-relaxed max-w-[380px] mb-8"
+            >
+              Training Or Competing, Protein Plays A Key Role In Powering Performance.
+            </motion.p>
 
-          {/* CTAs */}
-          <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-5 mt-8">
-            <Link href="/shop/products">
-              <button className="text-[11px] font-medium uppercase tracking-[0.12em] bg-primary-600 dark:bg-[#c8822a] text-white px-6 py-3 hover:opacity-90 transition-opacity">
-                {t('shopNow')}
-              </button>
-            </Link>
-            <Link href="/shop/products?onSale=true" className="flex items-center gap-2 text-[11px] font-light uppercase tracking-[0.12em] text-gray-500 dark:text-[#666] hover:text-gray-900 dark:hover:text-[#e8e0d4] transition-colors">
-              {t('todaysDeals')}
-              <span className="text-primary-600 dark:text-[#c8822a]">→</span>
-            </Link>
-          </motion.div>
-
-          {/* Trust line */}
-          <motion.div variants={stagger.item} className="flex flex-wrap gap-6 mt-8 pt-8 border-t border-gray-100 dark:border-[#1e1e1e]">
-            {[
-              { icon: Truck,   label: t('freeShipping') },
-              { icon: Shield,  label: t('qualityGuarantee') },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 text-[12px] text-gray-400 dark:text-[#555]">
-                <Icon size={14} className="text-primary-500 dark:text-[#c8822a] shrink-0" />
-                {label}
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* RIGHT: Products + Metrics */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.65, ease: EASE, delay: 0.2 }}
-          className="flex flex-col justify-between px-6 md:px-8 py-14 md:py-16 border-b border-gray-100 dark:border-[#1e1e1e]"
-        >
-          {/* Tag */}
-          <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-primary-600 dark:text-[#c8822a] mb-6">
-            {t('heroFeaturedThisWeek')}
-          </div>
-
-          {/* Product stack */}
-          <div className="flex-1">
-            <div className="text-[10px] uppercase tracking-[0.12em] text-gray-400 dark:text-[#444] mb-3 font-light">
-              {t('heroWhatsSelling')}
-            </div>
-
-            {isLoading && (
-              <div className="text-gray-400 text-xs py-4 font-light tracking-wide animate-pulse">Loading products...</div>
-            )}
-
-            {!isLoading && products.length > 0 && products.slice(0, 4).map((product, i) => (
-              <Link href={`/shop/products/${product.slug}`} key={product._id} className="block">
-                <motion.div
-                  initial={{ opacity: 0, x: 12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + i * 0.07, ease: EASE, duration: 0.4 }}
-                  className="flex items-center justify-between py-[14px] border-b border-gray-100 dark:border-[#1e1e1e] group cursor-pointer first:border-t"
-                >
-                  <span className="text-[10px] text-gray-300 dark:text-[#444] font-light w-6">0{i + 1}</span>
-                  <span className="flex-1 text-[13px] font-light text-gray-500 dark:text-[#888] group-hover:text-gray-900 dark:group-hover:text-[#e8e0d4] transition-colors tracking-[0.01em]">
-                    {product.name}
-                  </span>
-                  <span className="font-display text-[14px] italic text-primary-600 dark:text-[#c8822a]">
-                    {formatPrice(product.price)}
-                  </span>
-                </motion.div>
+            {/* CTA Button */}
+            <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-4">
+              <Link href="/shop/products">
+                <button className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-red-600/30 uppercase tracking-wide">
+                  Buy Now
+                </button>
               </Link>
-            ))}
+              <Link href="/shop/products?onSale=true" className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                {t('todaysDeals')}
+                <span className="text-red-400">→</span>
+              </Link>
+            </motion.div>
 
-            {!isLoading && products.length === 0 && getTopSellers(t).map((item, i) => (
-              <motion.div
-                key={item.num}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + i * 0.07, ease: EASE, duration: 0.4 }}
-                className="flex items-center justify-between py-[14px] border-b border-gray-100 dark:border-[#1e1e1e] group cursor-pointer first:border-t"
-              >
-                <span className="text-[10px] text-gray-300 dark:text-[#444] font-light w-6">{item.num}</span>
-                <span className="flex-1 text-[13px] font-light text-gray-500 dark:text-[#888] group-hover:text-gray-900 dark:group-hover:text-[#e8e0d4] transition-colors tracking-[0.01em]">
-                  {item.name}
-                </span>
-                <span className="font-display text-[14px] italic text-primary-600 dark:text-[#c8822a]">
-                  {item.price}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Metrics row */}
-          <div className="flex items-end justify-between pt-7 border-t border-gray-100 dark:border-[#1e1e1e] mt-6">
-            {getMetrics(t).map(({ val, label }) => (
-              <div key={label} className="flex flex-col gap-1">
-                <span className="font-display text-[28px] italic text-gray-900 dark:text-[#e8e0d4] leading-none">
-                  {val}
-                </span>
-                <span className="text-[10px] font-light uppercase tracking-[0.1em] text-gray-400 dark:text-[#555]">
+            {/* Trust line */}
+            <motion.div variants={stagger.item} className="flex flex-wrap gap-6 mt-10 pt-6 border-t border-white/10">
+              {[
+                { icon: Truck,   label: t('freeShipping') },
+                { icon: Shield,  label: t('qualityGuarantee') },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label} className="flex items-center gap-2 text-sm text-gray-400">
+                  <Icon size={16} className="text-red-400 shrink-0" />
                   {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* RIGHT: Product hero image */}
+          <motion.div
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+            className="relative hidden md:flex items-center justify-center py-4 h-full"
+          >
+            <motion.img
+              src="/images/home/clipsnap-edit-6-19-2026.png"
+              alt="Premium Protein & Creatine Supplements"
+              className="w-full max-w-[640px] max-h-[60vh] lg:max-h-[72vh] object-contain drop-shadow-2xl"
+              animate={{
+                y: [0, -18, 0],
+                x: [0, 10, -10, 0],
+                rotate: [0, 1.5, -1.5, 0],
+              }}
+              transition={{
+                duration: 6,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            />
+            {/* Glow behind products */}
+            <div className="absolute inset-0 bg-gradient-radial from-red-600/10 via-transparent to-transparent pointer-events-none" />
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Ticker ── */}
-      <div className="border-t border-b border-gray-100 dark:border-[#1e1e1e] py-[10px] overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 py-3 overflow-hidden">
         <div className="ticker-track">
           {[
             t('freeShipping'),
@@ -227,9 +158,9 @@ function EditorialHero() {
           ].map((item, i) => (
             <span
               key={i}
-              className="text-[11px] font-light uppercase tracking-[0.1em] text-gray-400 dark:text-[#555] whitespace-nowrap flex items-center gap-3"
+              className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap flex items-center gap-3"
             >
-              <span className="text-primary-500 dark:text-[#c8822a] text-[8px]">✦</span>
+              <span className="text-red-500 text-[8px]">✦</span>
               {item}
             </span>
           ))}

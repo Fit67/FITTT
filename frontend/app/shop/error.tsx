@@ -29,7 +29,7 @@ export default function ShopError({ error, reset }: ErrorPageProps) {
   }, [error])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center bg-surface pt-16">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center bg-white dark:bg-gray-950 pt-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

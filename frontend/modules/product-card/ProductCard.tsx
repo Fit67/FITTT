@@ -34,13 +34,15 @@ export function ProductCard({
   const inCart       = hasItem(product._id)
   const wishlisted   = inWishlist(product._id)
   const discountPct  = calcDiscountPercent(product.price, product.comparePrice ?? 0)
-  const outOfStock   = product.inventory.quantity === 0
+  const availableStock = Math.max(0, (product.inventory?.quantity ?? 0) - (product.inventory?.reserved ?? 0))
+  const outOfStock   = availableStock === 0
+  const lowStock     = !outOfStock && availableStock <= (product.inventory?.lowStockThreshold ?? 5)
   const businessType = storeConfig.businessType
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault()
     if (outOfStock) return
-    addItem(product)
+    addItem(product, undefined, 1)
     toast.success('Added to cart', product.name)
   }
 
@@ -60,12 +62,12 @@ export function ProductCard({
       variants={scalePop}
       className={cn(
         'group relative flex flex-col overflow-hidden cursor-pointer',
-        // Editorial card: flat, sharp-edged
-        'bg-white dark:bg-[#0e0e0e]',
-        'border border-gray-100 dark:border-[#1a1a1a]',
-        'hover:border-primary-200 dark:hover:border-[#2a2a2a]',
-        'transition-[border-color,box-shadow] duration-300',
-        'hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)] dark:hover:shadow-[0_8px_24px_rgba(200,130,42,0.1)]',
+        'bg-gray-50 dark:bg-gray-900',
+        'rounded-xl',
+        'border border-gray-100 dark:border-gray-800',
+        'hover:border-red-200 dark:hover:border-red-900/50',
+        'transition-all duration-300',
+        'hover:shadow-lg hover:-translate-y-1',
         variant === 'compact' && 'text-sm',
         variant === 'featured' && 'md:col-span-2 md:flex-row',
         className,
@@ -73,14 +75,15 @@ export function ProductCard({
     >
       {/* ── Image ── */}
       <Link href={`/shop/products/${product.slug}`} className={cn(
-        'relative overflow-hidden bg-gray-50 dark:bg-[#111]',
-        variant === 'featured' ? 'md:w-1/2 h-60 md:h-auto' : 'aspect-square',
+        'relative overflow-hidden bg-gray-100 dark:bg-gray-800',
+        'rounded-t-xl',
+        variant === 'featured' ? 'md:w-1/2 h-60 md:h-auto md:rounded-l-xl md:rounded-tr-none' : 'aspect-square',
       )}>
         {/* Skeleton */}
         <div className={cn(
           'absolute inset-0 transition-opacity duration-500',
           imgLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100',
-          'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-[#111] dark:via-[#1a1a1a] dark:to-[#111]',
+          'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800',
           'bg-[length:200%_100%]',
           !imgLoaded && 'animate-[shimmer_1.6s_ease-in-out_infinite]',
         )} />
@@ -96,24 +99,26 @@ export function ProductCard({
           )}
         />
 
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-        {/* Badges — editorial flat style */}
-        <div className="absolute left-0 top-0 flex flex-col">
+        {/* Badges — VITRAPRO rounded pill style */}
+        <div className="absolute left-3 top-3 flex flex-col gap-2">
           {discountPct > 0 && (
-            <span className="text-[9px] font-medium uppercase tracking-[0.12em] px-2.5 py-1.5 bg-primary-600 dark:bg-[#c8822a] text-white">
-              −{discountPct}%
+            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-red-600 text-white rounded-full">
+              {discountPct}% Off
             </span>
           )}
           {product.isNew && !discountPct && (
-            <span className="text-[9px] font-medium uppercase tracking-[0.12em] px-2.5 py-1.5 border border-gray-300 dark:border-[#444] text-gray-500 dark:text-[#888]">
-              New in
+            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
+              New
             </span>
           )}
           {outOfStock && (
-            <span className="text-[9px] font-medium uppercase tracking-[0.12em] px-2.5 py-1.5 bg-gray-200 dark:bg-[#2a2a2a] text-gray-500 dark:text-[#888]">
-              Sold out
+            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full">
+              Sold Out
+            </span>
+          )}
+          {lowStock && (
+            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full">
+              {availableStock === 1 ? 'Last piece' : `Only ${availableStock} left`}
             </span>
           )}
         </div>
@@ -125,18 +130,18 @@ export function ProductCard({
             initial={false}
             animate={wishlisted ? { opacity: 1 } : { opacity: 0 }}
             className={cn(
-              'absolute right-2 top-2 p-2',
-              'bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-sm',
-              'border border-gray-200 dark:border-[#2a2a2a]',
+              'absolute right-3 top-3 p-2',
+              'bg-white/90 dark:bg-black/70 backdrop-blur-sm',
+              'rounded-full shadow-sm',
               !wishlisted && 'group-hover:opacity-100',
             )}
             style={{ willChange: 'opacity' }}
           >
             <Heart
-              size={14}
+              size={16}
               className={cn(
                 'transition-colors duration-200',
-                wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500 dark:text-[#666]',
+                wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500 dark:text-gray-400',
               )}
             />
           </motion.button>
@@ -144,10 +149,10 @@ export function ProductCard({
       </Link>
 
       {/* ── Content ── */}
-      <div className={cn('flex flex-1 flex-col gap-2 p-4', variant === 'featured' && 'md:p-6')}>
-        {/* Brand / Category */}
+      <div className={cn('flex flex-1 flex-col gap-1.5 p-4', variant === 'featured' && 'md:p-6')}>
+        {/* Category */}
         {product.category?.name && (
-          <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-gray-400 dark:text-[#555]">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
             {product.category.name}
           </span>
         )}
@@ -155,15 +160,15 @@ export function ProductCard({
         {/* Product name */}
         <Link
           href={`/shop/products/${product.slug}`}
-          className="text-[13px] font-light text-gray-800 dark:text-[#ccc] line-clamp-2 hover:text-primary-600 dark:hover:text-[#e8e0d4] transition-colors leading-[1.4]"
+          className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2 hover:text-red-600 dark:hover:text-red-400 transition-colors leading-snug"
         >
           {product.name}
         </Link>
 
         {/* Business metadata */}
         {businessType === 'gym' && product.metadata?.servingSize && (
-          <span className="text-xs text-gray-400 dark:text-[#555]">
-            <Zap size={10} className="inline mr-1 text-primary-500 dark:text-[#c8822a]" />
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            <Zap size={10} className="inline mr-1 text-red-500" />
             {product.metadata.servingSize} per serving
           </span>
         )}
@@ -171,11 +176,11 @@ export function ProductCard({
         {/* Rating */}
         {storeConfig.enableReviews && product.ratings.count > 0 && (
           <div className="flex items-center gap-1">
-            <Star size={11} className="fill-amber-400 text-amber-400" />
-            <span className="text-[11px] font-medium text-gray-600 dark:text-[#888]">
+            <Star size={12} className="fill-amber-400 text-amber-400" />
+            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
               {product.ratings.average.toFixed(1)}
             </span>
-            <span className="text-[11px] text-gray-400 dark:text-[#555]">({product.ratings.count})</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">({product.ratings.count})</span>
           </div>
         )}
 
@@ -183,15 +188,15 @@ export function ProductCard({
 
         {/* Price + CTA */}
         <div className="flex items-end justify-between gap-2 pt-2">
-          <div className="flex flex-col">
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-bold text-gray-900 dark:text-white">
+              {formatPrice(product.price)}
+            </span>
             {product.comparePrice && product.comparePrice > product.price && (
-              <span className="text-[10px] text-gray-400 dark:text-[#444] line-through leading-none mb-1">
+              <span className="text-xs text-gray-400 dark:text-gray-500 line-through">
                 {formatPrice(product.comparePrice)}
               </span>
             )}
-            <span className="font-display text-[18px] italic text-gray-900 dark:text-[#e8e0d4] leading-none">
-              {formatPrice(product.price)}
-            </span>
           </div>
 
           <motion.button
@@ -201,12 +206,12 @@ export function ProductCard({
             whileHover={outOfStock ? undefined : { scale: 1.06 }}
             transition={{ type: 'spring', stiffness: 500, damping: 28 }}
             className={cn(
-              'flex h-8 w-8 shrink-0 items-center justify-center',
-              'transition-[background-color,border-color,color] duration-200',
+              'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
+              'transition-all duration-200',
               'disabled:opacity-40 disabled:cursor-not-allowed',
               inCart
-                ? 'bg-primary-600 dark:bg-[#c8822a] text-white border border-transparent'
-                : 'bg-transparent text-gray-400 dark:text-[#555] border border-gray-200 dark:border-[#2a2a2a] hover:border-primary-600 dark:hover:border-[#c8822a] hover:text-primary-600 dark:hover:text-[#c8822a]',
+                ? 'bg-red-600 dark:bg-red-500 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-500',
             )}
             aria-label="Add to cart"
           >
@@ -227,21 +232,21 @@ function HorizontalCard({ product }: { product: Product }) {
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-      className="flex gap-4 border border-gray-100 dark:border-[#1e1e1e] p-4 bg-white dark:bg-[#0e0e0e]"
+      className="flex gap-4 border border-gray-100 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 rounded-xl"
     >
       <Link href={`/shop/products/${product.slug}`} className="shrink-0">
         <img
           src={image}
           alt={product.name}
-          className="h-16 w-16 object-cover transition-transform duration-300 hover:scale-105"
+          className="h-16 w-16 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
         />
       </Link>
       <div className="flex flex-1 flex-col justify-between">
         <Link href={`/shop/products/${product.slug}`}
-          className="text-sm font-light text-gray-800 dark:text-[#ccc] line-clamp-1 hover:text-primary-600 dark:hover:text-[#e8e0d4] transition-colors">
+          className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-1 hover:text-red-600 dark:hover:text-red-400 transition-colors">
           {product.name}
         </Link>
-        <span className="font-display italic text-[16px] text-gray-900 dark:text-[#e8e0d4]">
+        <span className="text-base font-bold text-gray-900 dark:text-white">
           {formatPrice(product.price)}
         </span>
       </div>
@@ -253,17 +258,17 @@ function HorizontalCard({ product }: { product: Product }) {
 export function ProductCardSkeleton({ index = 0 }: { index?: number }) {
   return (
     <div
-      className="flex flex-col overflow-hidden border border-gray-100 dark:border-[#1a1a1a] bg-white dark:bg-[#0e0e0e]"
+      className="flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-xl"
       style={{ animationDelay: `${index * 0.06}s` }}
     >
-      <div className="aspect-square skeleton" />
+      <div className="aspect-square skeleton rounded-t-xl" />
       <div className="p-4 space-y-2.5">
-        <div className="h-2.5 w-14 skeleton" style={{ animationDelay: `${index * 0.06 + 0.1}s` }} />
-        <div className="h-3.5 w-full skeleton" style={{ animationDelay: `${index * 0.06 + 0.15}s` }} />
-        <div className="h-3.5 w-3/4 skeleton" style={{ animationDelay: `${index * 0.06 + 0.2}s` }} />
+        <div className="h-2.5 w-14 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.1}s` }} />
+        <div className="h-3.5 w-full skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.15}s` }} />
+        <div className="h-3.5 w-3/4 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.2}s` }} />
         <div className="flex justify-between pt-1">
-          <div className="h-5 w-14 skeleton" style={{ animationDelay: `${index * 0.06 + 0.25}s` }} />
-          <div className="h-8 w-8 skeleton" style={{ animationDelay: `${index * 0.06 + 0.3}s` }} />
+          <div className="h-5 w-14 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.25}s` }} />
+          <div className="h-9 w-9 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.3}s` }} />
         </div>
       </div>
     </div>

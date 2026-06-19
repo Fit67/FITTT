@@ -2,18 +2,18 @@
 
 import * as React from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Search, Pencil, Trash2, Eye, Package, AlertCircle } from 'lucide-react'
-import { useProducts, useCategories } from '@/hooks/useQueries'
+import { Plus, Search, Pencil, Trash2, Eye, EyeOff, Package, AlertCircle } from 'lucide-react'
+import { useCategories } from '@/hooks/useQueries'
 import { productService, categoryService } from '@/services'
-import { useQueryClient } from '@tanstack/react-query'
 import { QK } from '@/hooks/useQueries'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/Input'
 import { Badge, Skeleton } from '@/components/ui/primitives'
 import { Modal } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import { formatPrice, getProductImage } from '@/lib/utils'
-import type { Product } from '@/types'
+import type { Product, PaginatedResponse } from '@/types'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -23,17 +23,31 @@ export default function AdminProductsPage() {
   const [page,       setPage]       = React.useState(1)
   const [modal,      setModal]      = React.useState<{ type: 'create' | 'edit' | 'delete'; product?: Product } | null>(null)
 
-  const { data, isLoading } = useProducts({ search: search || undefined, page, limit: 20 })
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-products', search, status, page] as const,
+    queryFn:  (): Promise<PaginatedResponse<Product>> =>
+      productService.adminGetAll({ search: search || undefined, status: status || undefined, page, limit: 20 }),
+  })
   const { data: categories } = useCategories()
   const toast = useToast()
   const qc    = useQueryClient()
+
+  async function handleToggle(product: Product) {
+    try {
+      await productService.toggle(product._id)
+      const next = product.status === 'active' ? 'hidden' : 'visible'
+      toast.success(`Product ${next}`, product.name)
+      qc.invalidateQueries({ queryKey: ['admin-products'] })
+    } catch {
+      toast.error('Failed to update product visibility')
+    }
+  }
 
   async function handleDelete(product: Product) {
     try {
       await productService.delete(product._id)
       toast.success('Product archived', product.name)
-      qc.invalidateQueries({ queryKey: ['products'] })
-      qc.invalidateQueries({ queryKey: ['featured'] })
+      qc.invalidateQueries({ queryKey: ['admin-products'] })
       setModal(null)
     } catch {
       toast.error('Failed to delete product')
@@ -187,6 +201,18 @@ export default function AdminProductsPage() {
                             </button>
                           </Link>
                           <button
+                            onClick={() => handleToggle(product)}
+                            title={product.status === 'active' ? 'Hide product' : 'Show product'}
+                            className={cn(
+                              'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+                              product.status === 'active'
+                                ? 'text-gray-400 hover:bg-amber-50 hover:text-amber-500 dark:hover:bg-amber-900/20'
+                                : 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20',
+                            )}
+                          >
+                            {product.status === 'active' ? <EyeOff size={15} /> : <Eye size={15} />}
+                          </button>
+                          <button
                             onClick={() => setModal({ type: 'edit', product })}
                             className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-primary-900/20 dark:hover:text-primary-400 transition-colors"
                           >
@@ -250,7 +276,7 @@ export default function AdminProductsPage() {
       >
         <p className="text-gray-600 dark:text-gray-400">
           Are you sure you want to archive{' '}
-          <strong className="text-gray-900 dark:text-gray-100">"{modal?.product?.name}"</strong>?
+          <strong className="text-gray-900 dark:text-gray-100">&quot;{modal?.product?.name}&quot;</strong>?
           It will no longer appear in the store.
         </p>
       </Modal>
@@ -335,9 +361,12 @@ function ProductForm({
       } else {
         throw new Error('Invalid response from server')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      const msg = err?.response?.data?.error || err?.response?.data?.message || err?.message || 'Failed to create category'
+      const msg = (err as { response?: { data?: { error?: string; message?: string } }; message?: string })?.response?.data?.error
+        || (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+        || (err as { message?: string })?.message
+        || 'Failed to create category'
       toast.error(msg)
     } finally {
       setCreatingCat(false)
@@ -363,9 +392,12 @@ function ProductForm({
         await productService.create(fd)
       }
       onSuccess()
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      const msg = err?.response?.data?.error || err?.response?.data?.message || err?.message || 'Failed to save product'
+      const msg = (err as { response?: { data?: { error?: string; message?: string } }; message?: string })?.response?.data?.error
+        || (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+        || (err as { message?: string })?.message
+        || 'Failed to save product'
       toast.error(msg)
     } finally {
       setSaving(false)
@@ -453,7 +485,7 @@ function ProductForm({
         </div>
         <div className="sm:col-span-2 flex items-center gap-2">
           <input type="checkbox" id="topSeller" checked={form.isTopSeller} onChange={e => set('isTopSeller', e.target.checked)} className="h-4 w-4 rounded accent-primary-600" />
-          <label htmlFor="topSeller" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">What's Selling (Hero Section)</label>
+          <label htmlFor="topSeller" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">What&apos;s Selling (Hero Section)</label>
         </div>
         <div className="sm:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
           <Button variant="outline" type="button" onClick={onClose}>Cancel</Button>

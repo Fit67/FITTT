@@ -80,7 +80,7 @@ export default function OrderDetailPage({ params }: Props) {
             <div className="text-center py-16">
               <Package size={48} className="mx-auto mb-4 text-gray-200 dark:text-gray-700" />
               <h2 className="font-display text-xl font-bold text-gray-900 dark:text-white">Order not found</h2>
-              <Link href="/shop/orders" className="mt-4 inline-block text-primary-600 dark:text-primary-400 hover:underline">
+              <Link href="/shop/orders" className="mt-4 inline-block text-red-600 dark:text-red-400 hover:underline">
                 ← Back to orders
               </Link>
             </div>
@@ -121,7 +121,7 @@ export default function OrderDetailPage({ params }: Props) {
                     {/* Connector line */}
                     <div className="absolute top-4 left-4 right-4 h-0.5 bg-gray-100 dark:bg-gray-800" />
                     <div
-                      className="absolute top-4 left-4 h-0.5 bg-primary-500 transition-all duration-700"
+                      className="absolute top-4 left-4 h-0.5 bg-red-600 transition-all duration-700"
                       style={{
                         width: `${(timelineSteps.indexOf(order.status as OrderStatus) / (timelineSteps.length - 1)) * 100}%`,
                       }}
@@ -137,15 +137,15 @@ export default function OrderDetailPage({ params }: Props) {
                         <div key={step} className="relative flex flex-col items-center gap-2 flex-1">
                           <div className={cn(
                             'relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all',
-                            isPast    ? 'border-primary-500 bg-primary-500 text-white' :
-                            isCurrent ? 'border-primary-500 bg-white dark:bg-gray-900 text-primary-600 dark:text-primary-400' :
+                            isPast    ? 'border-red-600 bg-red-600 text-white' :
+                            isCurrent ? 'border-red-600 bg-white dark:bg-gray-900 text-red-600 dark:text-red-400' :
                                         'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 text-gray-300 dark:text-gray-600',
                           )}>
                             {isPast ? <CheckCircle2 size={16} /> : <Icon size={14} />}
                           </div>
                           <span className={cn(
                             'text-[10px] font-medium text-center capitalize hidden sm:block',
-                            isCurrent ? 'text-primary-600 dark:text-primary-400' :
+                            isCurrent ? 'text-red-600 dark:text-red-400' :
                             isPast    ? 'text-gray-500 dark:text-gray-400' :
                                         'text-gray-300 dark:text-gray-600',
                           )}>
@@ -168,12 +168,12 @@ export default function OrderDetailPage({ params }: Props) {
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center gap-4">
                         <img
-                          src={item.product?.images?.[0]?.url || '/images/placeholder.png'}
-                          alt={item.product?.name || 'Product'}
+                          src={item.image || '/images/placeholder.png'}
+                          alt={item.name || 'Product'}
                           className="h-14 w-14 rounded-lg object-cover shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{item.product?.name || 'Unknown Product'}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{item.name || 'Unknown Product'}</p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
                         </div>
                         <p className="font-semibold text-gray-900 dark:text-gray-100 shrink-0">
@@ -208,7 +208,7 @@ export default function OrderDetailPage({ params }: Props) {
                   {/* Delivery address */}
                   <div className="rounded-card border border-gray-100 bg-surface p-5 shadow-card dark:border-gray-800 dark:bg-surface-raised">
                     <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                      <MapPin size={15} className="text-primary-500" /> Delivery Address
+                      <MapPin size={15} className="text-red-650" /> Delivery Address
                     </h3>
                     <address className="not-italic text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                       {order.shippingAddress.fullName}<br />
@@ -222,7 +222,7 @@ export default function OrderDetailPage({ params }: Props) {
                   {/* Payment */}
                   <div className="rounded-card border border-gray-100 bg-surface p-5 shadow-card dark:border-gray-800 dark:bg-surface-raised">
                     <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                      <CreditCard size={15} className="text-primary-500" /> Payment
+                      <CreditCard size={15} className="text-red-650" /> Payment
                     </h3>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600 dark:text-gray-400 capitalize">
@@ -244,7 +244,7 @@ export default function OrderDetailPage({ params }: Props) {
                       {[...order.timeline].reverse().map((event, i) => (
                         <div key={i} className="flex gap-3">
                           <div className="flex flex-col items-center shrink-0">
-                            <div className="h-2 w-2 mt-1.5 rounded-full bg-primary-400" />
+                            <div className="h-2 w-2 mt-1.5 rounded-full bg-red-400" />
                             {i < order.timeline.length - 1 && (
                               <div className="w-px flex-1 bg-gray-100 dark:bg-gray-800 my-1" />
                             )}

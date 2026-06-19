@@ -311,8 +311,10 @@ export interface Order {
 }
 
 export interface OrderItem {
-  product: Pick<Product, '_id' | 'name' | 'images' | 'slug'>
+  product?: Pick<Product, '_id' | 'name' | 'images' | 'slug'> | string
   variant?: string
+  name?: string
+  image?: string
   quantity: number
   price: number
   total: number
@@ -419,12 +421,14 @@ export interface ProductFilters {
 // ─── Analytics ─────────────────────────────────────────────────
 export interface DashboardStats {
   revenue:   { total: number; growth: number; chartData: ChartPoint[] }
-  orders:    { total: number; growth: number; pending: number; chartData: ChartPoint[] }
+  orders:    {
+    total: number; growth: number; pending: number
+    byStatus: Record<string, number>
+  }
   customers: { total: number; growth: number; newToday: number }
-  products: { total: number; lowStock: number; outOfStock: number }
+  products:  { total: number; lowStock: number; outOfStock: number }
   topProducts: TopProduct[]
   recentOrders: Order[]
-  salesByCategory: CategorySales[]
 }
 
 export interface ChartPoint {

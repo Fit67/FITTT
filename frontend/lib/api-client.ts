@@ -74,10 +74,10 @@ apiClient.interceptors.response.use(
       isRefreshing     = true
 
       try {
-        const { data } = await apiClient.post<{ accessToken: string }>(
+        const { data } = await apiClient.post<{ success: boolean; data: { accessToken: string } }>(
           '/auth/refresh-token',
         )
-        const newToken = data.accessToken
+        const newToken = data.data.accessToken
         try { sessionStorage.setItem('accessToken', newToken) } catch { /* fail silently */ }
         apiClient.defaults.headers.common.Authorization = `Bearer ${newToken}`
         processQueue(null, newToken)

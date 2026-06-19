@@ -170,6 +170,6 @@ export function useUpdateOrderStatus() {
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
       orderService.updateStatus(id, status),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-orders'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-orders'], exact: false }),
   })
 }

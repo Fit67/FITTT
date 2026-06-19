@@ -26,6 +26,8 @@ export interface IUser extends Document {
   loyaltyPoints: number
   isVerified:    boolean
   isActive:      boolean
+  googleId?:     string
+  authProvider:  'local' | 'google'
   resetPasswordToken?:   string
   resetPasswordExpires?: Date
   comparePassword(candidate: string): Promise<boolean>
@@ -56,7 +58,7 @@ const UserSchema = new Schema<IUser>(
       trim:      true,
       match:     [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email'],
     },
-    password:      { type: String, required: true, minlength: 6, select: false },
+    password:      { type: String, required: false, minlength: 6, select: false },
     phone:         { type: String, trim: true },
     avatar:        { type: String },
     role:          { type: String, enum: ['customer', 'admin', 'manager', 'staff'], default: 'customer' },
@@ -65,6 +67,8 @@ const UserSchema = new Schema<IUser>(
     loyaltyPoints: { type: Number, default: 0, min: 0 },
     isVerified:    { type: Boolean, default: false },
     isActive:      { type: Boolean, default: true },
+    googleId:      { type: String, select: false },
+    authProvider:  { type: String, enum: ['local', 'google'], default: 'local' },
     resetPasswordToken:   { type: String, select: false },
     resetPasswordExpires: { type: Date,   select: false },
   },
@@ -85,7 +89,7 @@ const UserSchema = new Schema<IUser>(
 
 // ─── Hash password before save ─────────────────────────────────
 UserSchema.pre('save', async function (this: mongoose.Document & IUser, next: (err?: Error) => void) {
-  if (!this.isModified('password')) return next()
+  if (!this.isModified('password') || !this.password) return next()
   this.password = await bcrypt.hash(this.password, 12)
   next()
 })
