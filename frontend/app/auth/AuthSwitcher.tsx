@@ -350,7 +350,7 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
             <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
           </div>
           <div className="flex justify-center w-full">
-            <div ref={googleBtnRef} className={`w-full ${googleLoading ? 'pointer-events-none opacity-60' : ''}`} />
+            <div ref={googleBtnRef} style={{ colorScheme: 'light' }} className={`w-full ${googleLoading ? 'pointer-events-none opacity-60' : ''}`} />
           </div>
         </div>
       )}
