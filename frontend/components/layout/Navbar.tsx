@@ -96,7 +96,9 @@ export function Navbar() {
           'left-0 right-0 z-50 bg-transparent transition-all duration-300',
           scrolled
             ? 'fixed top-0'
-            : 'absolute top-9'
+            : pathname === '/'
+              ? 'absolute top-9'
+              : 'relative'
         )}
       >
         {/* Floating pill container wrapper */}
