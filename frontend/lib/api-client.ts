@@ -23,6 +23,9 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== 'undefined') {
+      if (window.location.hostname !== 'localhost' && config.baseURL?.includes('localhost:5000')) {
+        config.baseURL = `${window.location.origin}/_/backend/api`
+      }
       try {
         const token = sessionStorage.getItem('accessToken')
         if (token) config.headers.Authorization = `Bearer ${token}`
@@ -59,6 +62,8 @@ apiClient.interceptors.response.use(
       error.response?.status === 401 &&
       !original._retry &&
       original.url !== '/auth/login' &&
+      original.url !== '/auth/google' &&
+      original.url !== '/auth/register' &&
       original.url !== '/auth/refresh-token'
     ) {
       if (isRefreshing) {

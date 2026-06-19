@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, ShoppingBag, Package, Users,
   Tag, Image, Settings, LogOut, Menu, X,
-  ChevronRight, Sun, Moon, Bell,
+  ChevronRight, Sun, Moon, Bell, Layers,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/slices/authStore'
 import { useTheme } from 'next-themes'
@@ -22,6 +22,7 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard',  href: '/admin/dashboard' },
   { icon: ShoppingBag,     label: 'Orders',     href: '/admin/orders',   badge: 'pending' },
   { icon: Package,         label: 'Products',   href: '/admin/products'  },
+  { icon: Layers,          label: 'Categories', href: '/admin/categories' },
   { icon: Users,           label: 'Customers',  href: '/admin/users'     },
   { icon: Tag,             label: 'Coupons',    href: '/admin/coupons'   },
   { icon: Image,           label: 'Banners',    href: '/admin/banners'   },

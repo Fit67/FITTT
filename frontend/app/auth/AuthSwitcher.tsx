@@ -62,7 +62,8 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
       toast.success('Welcome back!', 'You have been signed in.')
       router.push('/')
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Invalid email or password.'
+      const data = (err as { response?: { data?: { error?: string; message?: string } } })?.response?.data
+      const msg = data?.error || data?.message || 'Invalid email or password.'
       toast.error('Sign in failed', msg)
     }
   }
@@ -73,7 +74,8 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
       toast.success('Account created!', 'Welcome to ' + storeConfig.name)
       router.push('/')
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Something went wrong.'
+      const data = (err as { response?: { data?: { error?: string; message?: string } } })?.response?.data
+      const msg = data?.error || data?.message || 'Something went wrong.'
       toast.error('Registration failed', msg)
     }
   }
@@ -84,7 +86,8 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
       toast.success('Welcome!', 'Signed in with Google.')
       router.push('/')
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Google sign-in failed.'
+      const data = (err as { response?: { data?: { error?: string; message?: string } } })?.response?.data
+      const msg = data?.error || data?.message || 'Google sign-in failed.'
       toast.error('Sign in failed', msg)
     }
   }
@@ -328,26 +331,26 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
         <Button type="submit" fullWidth size="lg" loading={isSubmitting} className="mt-2">
           {t('signIn')}
         </Button>
-
-        {/* Google Sign-In */}
-        {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
-          <>
-            <div className="relative flex items-center gap-3 py-1">
-              <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
-              <span className="text-xs text-gray-400 dark:text-gray-500">or</span>
-              <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
-            </div>
-            <div ref={googleBtnRef} className={googleLoading ? 'pointer-events-none opacity-60' : ''} />
-          </>
-        )}
-
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400 lg:hidden">
-          Don&apos;t have an account?{' '}
-          <button type="button" onClick={onSwitch} className="font-medium text-red-600 dark:text-red-400 hover:underline">
-            Sign up
-          </button>
-        </p>
       </form>
+
+      {/* Google Sign-In (moved outside form to prevent submit triggers) */}
+      {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+        <div className="space-y-4 mt-6">
+          <div className="relative flex items-center gap-3 py-1">
+            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+            <span className="text-xs text-gray-400 dark:text-gray-500">or</span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div ref={googleBtnRef} className={googleLoading ? 'pointer-events-none opacity-60' : ''} />
+        </div>
+      )}
+
+      <p className="text-center text-sm text-gray-500 dark:text-gray-400 lg:hidden mt-6">
+        Don&apos;t have an account?{' '}
+        <button type="button" onClick={onSwitch} className="font-medium text-red-600 dark:text-red-400 hover:underline">
+          Sign up
+        </button>
+      </p>
     </motion.div>
   )
 }
