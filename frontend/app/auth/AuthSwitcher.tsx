@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { storeConfig } from '@/config/store'
 import { type TranslationKey, useTranslation } from '@/hooks/useTranslation'
+import { useTheme } from 'next-themes'
 
 type AuthMode = 'login' | 'register'
 
@@ -258,6 +259,7 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
   onSwitch: () => void
   onGoogleLogin: (credential: string) => Promise<void>
 }) {
+  const { resolvedTheme } = useTheme()
   const { register, handleSubmit, formState: { errors, isSubmitting } } = form
   const [googleLoading, setGoogleLoading] = React.useState(false)
   const googleBtnRef = React.useRef<HTMLDivElement>(null)
@@ -276,8 +278,14 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
           finally { setGoogleLoading(false) }
         },
       })
+      const parentWidth = googleBtnRef.current?.offsetWidth || 380
+      const btnWidth = Math.min(400, Math.max(250, parentWidth))
       g.accounts.id.renderButton(googleBtnRef.current!, {
-        theme: 'outline', size: 'large', width: '100%', text: 'signin_with',
+        theme: resolvedTheme === 'dark' ? 'filled_black' : 'outline',
+        size: 'large',
+        width: btnWidth,
+        shape: 'pill',
+        text: 'signin_with',
       })
     }
     if ((window as unknown as { google?: unknown }).google) {
@@ -287,7 +295,7 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
       script?.addEventListener('load', initGoogle)
       return () => script?.removeEventListener('load', initGoogle)
     }
-  }, [onGoogleLogin])
+  }, [onGoogleLogin, resolvedTheme])
 
   return (
     <motion.div {...fadeUp} className="w-full max-w-[380px]">
@@ -341,7 +349,9 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
             <span className="text-xs text-gray-400 dark:text-gray-500">or</span>
             <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
           </div>
-          <div ref={googleBtnRef} className={googleLoading ? 'pointer-events-none opacity-60' : ''} />
+          <div className="flex justify-center w-full">
+            <div ref={googleBtnRef} className={`w-full ${googleLoading ? 'pointer-events-none opacity-60' : ''}`} />
+          </div>
         </div>
       )}
 
