@@ -120,6 +120,8 @@ export async function changePassword(req: Request, res: Response, next: NextFunc
   } catch (err) { next(err) }
 }
 
+import { sendEmail } from '../utils/sendEmail'
+
 // ─── Forgot password ───────────────────────────────────────────
 export async function forgotPassword(req: Request, res: Response, next: NextFunction) {
   try {
@@ -133,10 +135,39 @@ export async function forgotPassword(req: Request, res: Response, next: NextFunc
     user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000)
     await user.save({ validateBeforeSave: false })
 
-    // TODO: send email — for dev, log token to console
-    console.log(`[DEV] Password reset token for ${user.email}: ${token}`)
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/reset-password?token=${token}`
 
-    res.json({ success: true, message: 'If that email exists, a reset link was sent.' })
+    const message = `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n` +
+      `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
+      `${resetUrl}\n\n` +
+      `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+
+    const html = `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+      <h2 style="color: #dc2626; margin-top: 0;">Reset Your Password</h2>
+      <p style="color: #333; font-size: 16px; line-height: 1.5;">You are receiving this because you (or someone else) requested a password reset for your account. Click the button below to set a new password:</p>
+      <div style="margin: 30px 0; text-align: center;">
+        <a href="${resetUrl}" style="background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Reset Password</a>
+      </div>
+      <p style="color: #666; font-size: 14px;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+      <p style="color: #999; font-size: 12px;">If the button above doesn't work, copy and paste this link into your browser:</p>
+      <p style="color: #999; font-size: 12px; word-break: break-all;">${resetUrl}</p>
+    </div>`
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'DoctorFit Password Reset Request',
+        message,
+        html,
+      })
+      res.json({ success: true, message: 'If that email exists, a reset link was sent.' })
+    } catch (err) {
+      user.resetPasswordToken = undefined
+      user.resetPasswordExpires = undefined
+      await user.save({ validateBeforeSave: false })
+      return next(new AppError('Email could not be sent. Please try again later.', 500))
+    }
   } catch (err) { next(err) }
 }
 
