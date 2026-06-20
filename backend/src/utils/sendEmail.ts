@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer'
+import fs from 'fs'
+import path from 'path'
 
 interface SendEmailOptions {
   email:   string
@@ -14,8 +16,28 @@ export async function sendEmail(options: SendEmailOptions) {
   const pass = process.env.SMTP_PASS?.replace(/\s+/g, '')
   const from = process.env.SMTP_FROM ?? `"DoctorFit" <noreply@doctorfit.com>`
 
+  const logPath = path.resolve(process.cwd(), 'email-debug.log')
+  const timestamp = new Date().toISOString()
+
+  const logMessage = (msg: string) => {
+    console.log(msg)
+    try {
+      fs.appendFileSync(logPath, `[${timestamp}] ${msg}\n`)
+    } catch (err) {
+      // ignore log write errors
+    }
+  }
+
+  logMessage(`--- Email Send Attempt ---`)
+  logMessage(`Recipient: ${options.email}`)
+  logMessage(`Subject: ${options.subject}`)
+  logMessage(`SMTP_HOST: ${host}`)
+  logMessage(`SMTP_PORT: ${port}`)
+  logMessage(`SMTP_USER: ${user}`)
+  logMessage(`SMTP_PASS Length: ${pass?.length ?? 0}`)
+
   if (!host || !user || !pass) {
-    console.log('\n✉️  [SMTP NOT CONFIGURED] Creating temporary test email account...')
+    logMessage('✉️  [SMTP NOT CONFIGURED] Creating temporary test email account...')
     try {
       const testAccount = await nodemailer.createTestAccount()
       const testTransporter = nodemailer.createTransport({
@@ -34,33 +56,42 @@ export async function sendEmail(options: SendEmailOptions) {
         text:    options.message,
         html:    options.html,
       })
-      console.log('✉️  Test email sent successfully!')
-      console.log('Preview URL:', nodemailer.getTestMessageUrl(info))
-      console.log('--------------------------------------------------\n')
+      const previewUrl = nodemailer.getTestMessageUrl(info)
+      logMessage('✅ Test email sent successfully!')
+      logMessage(`Preview URL: ${previewUrl}`)
+      logMessage('--------------------------------------------------\n')
       return
     } catch (err) {
-      console.error('Failed to send test email through Ethereal:', err)
-      console.log('\n✉️  [FALLBACK] Email would be sent to:', options.email)
-      console.log('Subject:', options.subject)
-      console.log('Message:', options.message)
-      if (options.html) console.log('HTML:', options.html)
-      console.log('--------------------------------------------------\n')
+      logMessage(`❌ Failed to send test email through Ethereal: ${(err as Error).message}`)
+      logMessage(`✉️  [FALLBACK] Email would be sent to: ${options.email}`)
+      logMessage('--------------------------------------------------\n')
       return
     }
   }
 
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465, // true for 465, false for other ports
-    auth: { user, pass },
-  })
+  try {
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465, // true for 465, false for other ports
+      auth: { user, pass },
+      connectionTimeout: 10000, // 10s timeout
+      greetingTimeout: 10000,
+    })
 
-  await transporter.sendMail({
-    from,
-    to:      options.email,
-    subject: options.subject,
-    text:    options.message,
-    html:    options.html,
-  })
+    logMessage('Connecting and sending email via Nodemailer...')
+    const info = await transporter.sendMail({
+      from,
+      to:      options.email,
+      subject: options.subject,
+      text:    options.message,
+      html:    options.html,
+    })
+    logMessage(`✅ Email sent successfully! MessageId: ${info.messageId}`)
+    logMessage('--------------------------------------------------\n')
+  } catch (err) {
+    logMessage(`❌ Failed to send email via real SMTP: ${(err as Error).message}`)
+    throw err
+  }
 }
+

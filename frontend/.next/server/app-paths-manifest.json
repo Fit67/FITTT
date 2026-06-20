@@ -1,7 +1,6 @@
 {
+  "/auth/reset-password/page": "app/auth/reset-password/page.js",
+  "/auth/forgot-password/page": "app/auth/forgot-password/page.js",
   "/page": "app/page.js",
-  "/admin/dashboard/page": "app/admin/dashboard/page.js",
-  "/admin/settings/page": "app/admin/settings/page.js",
-  "/admin/products/page": "app/admin/products/page.js",
-  "/admin/categories/page": "app/admin/categories/page.js"
+  "/auth/login/page": "app/auth/login/page.js"
 }

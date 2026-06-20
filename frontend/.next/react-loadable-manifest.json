@@ -1,7 +1,9 @@
 {
-  "app\\admin\\products\\page.tsx -> @/services": {
-    "id": "app\\admin\\products\\page.tsx -> @/services",
-    "files": []
+  "app\\auth\\forgot-password\\page.tsx -> @/services": {
+    "id": "app\\auth\\forgot-password\\page.tsx -> @/services",
+    "files": [
+      "static/chunks/_app-pages-browser_services_index_ts.js"
+    ]
   },
   "node_modules\\@tanstack\\query-devtools\\build\\dev.js -> ./DevtoolsComponent/I4EE2JD6.js": {
     "id": "node_modules\\@tanstack\\query-devtools\\build\\dev.js -> ./DevtoolsComponent/I4EE2JD6.js",

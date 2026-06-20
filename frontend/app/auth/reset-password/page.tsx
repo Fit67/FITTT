@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -24,7 +25,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
@@ -166,3 +167,21 @@ export default function ResetPasswordPage() {
     </div>
   )
 }
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
+        <div className="w-full max-w-md space-y-4 animate-pulse">
+          <div className="h-9 w-36 bg-surface-raised rounded" />
+          <div className="h-8 w-64 bg-surface-raised rounded" />
+          <div className="h-12 bg-surface-raised rounded" />
+          <div className="h-12 bg-surface-raised rounded" />
+        </div>
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
+  )
+}
+

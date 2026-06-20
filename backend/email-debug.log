@@ -1,0 +1,11 @@
+[2026-06-20T09:26:57.234Z] --- Email Send Attempt ---
+[2026-06-20T09:26:57.234Z] Recipient: janazaapp1@gmail.com
+[2026-06-20T09:26:57.234Z] Subject: DoctorFit Password Reset Request
+[2026-06-20T09:26:57.234Z] SMTP_HOST: smtp.gmail.com
+[2026-06-20T09:26:57.234Z] SMTP_PORT: 587
+[2026-06-20T09:26:57.234Z] SMTP_USER: doctorfit2026@gmail.com
+[2026-06-20T09:26:57.234Z] SMTP_PASS Length: 16
+[2026-06-20T09:26:57.234Z] Connecting and sending email via Nodemailer...
+[2026-06-20T09:26:57.234Z] ✅ Email sent successfully! MessageId: <5be47a00-2682-abbe-5f6d-ed8e26579380@gmail.com>
+[2026-06-20T09:26:57.234Z] --------------------------------------------------
+

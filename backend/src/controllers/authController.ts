@@ -125,8 +125,19 @@ import { sendEmail } from '../utils/sendEmail'
 // ─── Forgot password ───────────────────────────────────────────
 export async function forgotPassword(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await User.findOne({ email: (req.body as { email: string }).email })
+    const { email } = req.body as { email: string }
+    const user = await User.findOne({ email })
+    
     if (!user) {
+      console.log(`[Forgot Password] No user found with email: "${email}"`)
+      const logPath = require('path').resolve(process.cwd(), 'email-debug.log')
+      const timestamp = new Date().toISOString()
+      try {
+        require('fs').appendFileSync(
+          logPath,
+          `[${timestamp}] ⚠️ Forgot Password requested for UNREGISTERED email: "${email}". No email sent.\n`
+        )
+      } catch (err) {}
       return res.json({ success: true, message: 'If that email exists, a reset link was sent.' })
     }
 
