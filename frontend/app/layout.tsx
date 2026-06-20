@@ -5,6 +5,7 @@ import { ToastContainer } from '@/components/ui/Toast'
 import { SearchModal } from '@/modules/search/SearchModal'
 import { NavigationProgress } from '@/components/ui/NavigationProgress'
 import { storeConfig } from '@/config/store'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <NavigationProgress />
               </Suspense>
               {children}
+              <Analytics />
               <ToastContainer />
               <SearchModal />
             </QueryProvider>
@@ -62,3 +64,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
+
