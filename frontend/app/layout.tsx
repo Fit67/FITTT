@@ -6,6 +6,7 @@ import { SearchModal } from '@/modules/search/SearchModal'
 import { NavigationProgress } from '@/components/ui/NavigationProgress'
 import { storeConfig } from '@/config/store'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Suspense>
               {children}
               <Analytics />
+              <SpeedInsights />
               <ToastContainer />
               <SearchModal />
             </QueryProvider>
