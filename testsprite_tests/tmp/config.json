@@ -1,0 +1,17 @@
+{
+  "status": "init",
+  "executionArgs": {
+    "projectName": "ecommerce-platform",
+    "projectPath": "c:/Users/2M/Downloads/ecommerce-platform-fixed/ecommerce-platform",
+    "testIds": [],
+    "additionalInstruction": "Use 'example@gmail.com' and 'password123' as login credentials. All login page routes are '/auth/login'. The frontend web application is hosted at http://localhost:3000. Do not use port 5173 or http://localhost:5173. All route checks, login verification, settings navigation, and test executions must use http://localhost:3000. The checkout process requires uploading a payment proof screenshot before clicking 'Place Order'. Make sure you select the mock image file at the relative path './fixtures/mock_proof.png' or 'fixtures/mock_proof.png' in the file input on the payment step of checkout. Do not use absolute Windows paths. To search for products, you must click the Search button in the header to open the Search Modal, locate the input field in the modal, enter the search query, and submit. On registration success, the app displays a success toast containing 'Account created!' and redirects to '/'. When opening the shopping cart, always click the link with the name 'Shopping Cart' (do not locate it by the badge number or name '1').",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-kovzCdqXTvajEPHVb_N-BKsaR4HriXSdKYvSKDgE-rQix2XJ024ZZntTAQg_Uf-8e4u0JyUPipt-nATXJ555hQ1B6ufh9SPzJourHAGz5V-ZSK7mLTpbJJspszybtNwbgK0"
+    }
+  },
+  "scope": "codebase",
+  "type": "frontend",
+  "localEndpoint": "http://localhost:3000/",
+  "serverPort": 61652
+}

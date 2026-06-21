@@ -20,21 +20,26 @@ export function SearchModal() {
   const [results, setResults] = React.useState<Product[]>([])
   const [loading, setLoading] = React.useState(false)
   const [recent,  setRecent]  = React.useState<string[]>([])
+  const [mounted, setMounted] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const router   = useRouter()
   const debouncedQuery = useDebounce(query, 300)
 
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   // Focus input when opened
   React.useEffect(() => {
-    if (isSearchOpen) {
+    if (isSearchOpen && mounted) {
       setTimeout(() => inputRef.current?.focus(), 100)
       const stored = JSON.parse(localStorage.getItem('recentSearches') ?? '[]') as string[]
       setRecent(stored)
-    } else {
+    } else if (!isSearchOpen) {
       setQuery('')
       setResults([])
     }
-  }, [isSearchOpen])
+  }, [isSearchOpen, mounted])
 
   // Live search
   React.useEffect(() => {
@@ -49,9 +54,9 @@ export function SearchModal() {
   // Keyboard close
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => e.key === 'Escape' && closeSearch()
-    if (isSearchOpen) window.addEventListener('keydown', handler)
+    if (isSearchOpen && mounted) window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isSearchOpen, closeSearch])
+  }, [isSearchOpen, closeSearch, mounted])
 
   function commit(q: string) {
     if (!q.trim()) return
@@ -67,7 +72,7 @@ export function SearchModal() {
     commit(query)
   }
 
-  if (typeof window === 'undefined') return null
+  if (!mounted) return null
 
   return createPortal(
     <AnimatePresence>

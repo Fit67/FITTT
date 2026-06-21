@@ -39,12 +39,14 @@ export function CategoriesGrid() {
   const { t } = useTranslation()
   const { data: categories, isLoading } = useCategories()
 
-  const categoryImages = [
-    '/images/home/category-protein.png',
-    '/images/home/category-creatine.png',
-    '/images/home/category-preworkout.png',
-    '/images/home/category-vitamins.png',
-  ]
+  const getCategoryImage = (slug: string) => {
+    const s = slug.toLowerCase()
+    if (s.includes('protein')) return '/images/home/category-protein.png'
+    if (s.includes('creatine')) return '/images/home/category-creatine.png'
+    if (s.includes('preworkout') || s.includes('pre-workout') || s.includes('pre workout')) return '/images/home/category-preworkout.png'
+    if (s.includes('vitamin') || s.includes('health') || s.includes('bar')) return '/images/home/category-vitamins.png'
+    return '/images/home/category-protein.png'
+  }
 
   return (
     <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a]">
@@ -69,7 +71,7 @@ export function CategoriesGrid() {
                     className="group block relative overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 aspect-[3/4] hover:shadow-lg transition-all duration-300"
                   >
                     <img
-                      src={categoryImages[i % categoryImages.length]}
+                      src={getCategoryImage(cat.slug)}
                       alt={cat.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
@@ -163,7 +165,7 @@ export function PremiumExperience() {
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
               Proteins Are Essential Nutrients That Support Tissue Repair, Hormone Production, Enzyme Function, And Overall Health.
             </p>
-            <Link href="/shop/products">
+            <Link href="/shop/products?category=whey-protein">
               <button className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-red-600/30">
                 Grab Yours
               </button>

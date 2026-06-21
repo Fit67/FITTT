@@ -1,0 +1,76 @@
+version: "2"
+type: frontend
+tech_stack:
+  - TypeScript
+  - Next.js (App Router)
+  - Tailwind CSS
+  - React Query
+  - Zustand
+routes:
+  - path: /
+    file: app/page.tsx
+    auth_required: false
+    description: Homepage showing promo banners, categories grid, featured products, and testimonials.
+  - path: /auth/login
+    file: app/auth/login/page.tsx
+    auth_required: false
+    description: User login page.
+  - path: /auth/register
+    file: app/auth/register/page.tsx
+    auth_required: false
+    description: User registration page.
+  - path: /shop/products
+    file: app/shop/products/page.tsx
+    auth_required: false
+    description: Product listings page with filters.
+  - path: /shop/cart
+    file: app/shop/cart/page.tsx
+    auth_required: false
+    description: Shopping cart review page.
+  - path: /shop/checkout
+    file: app/shop/checkout/page.tsx
+    auth_required: true
+    description: Checkout page for entering shipping details and payment.
+features:
+  - name: Browse Products
+    description: Users can view products on the homepage and filter products on the shop page.
+    files:
+      - app/page.tsx
+      - app/shop/products/page.tsx
+    entry_route: /
+    user_interactions:
+      - Open homepage
+      - Click category card to filter products
+      - Change search input or price filters
+    api_calls:
+      - method: GET
+        endpoint: /api/products
+    auth_required: false
+  - name: Shopping Cart
+    description: Users can add products to cart, update quantities, and view cart subtotal.
+    files:
+      - store/slices/cartStore.ts
+      - app/shop/cart/page.tsx
+    entry_route: /shop/cart
+    user_interactions:
+      - Click Add to Cart button on product card
+      - Open cart page
+      - Modify quantity using + or - buttons
+      - Remove item from cart
+    api_calls: []
+    auth_required: false
+  - name: User Authentication
+    description: Login, registration, and logout operations.
+    files:
+      - app/auth/login/page.tsx
+      - store/slices/authStore.ts
+    entry_route: /auth/login
+    user_interactions:
+      - Open login page
+      - Fill email and password input fields
+      - Click login button
+    api_calls:
+      - method: POST
+        endpoint: /api/auth/login
+    auth_required: false
+known_limitations: []

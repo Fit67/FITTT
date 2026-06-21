@@ -1,0 +1,657 @@
+[
+  {
+    "id": "TC001",
+    "title": "Complete checkout as a signed-in customer",
+    "description": "This verifies an authenticated shopper can move from cart to checkout, place an order, and see a confirmation.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Click add to cart on a product card"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart page"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping details"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the payment details"
+      },
+      {
+        "type": "action",
+        "description": "Submit the order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an order confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the completed order is acknowledged"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Complete checkout from cart to confirmation",
+    "description": "This test verifies that an authenticated shopper can move from the cart to checkout, enter shipping and payment details, submit the order, and see an order confirmation.",
+    "category": "Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the cart review link"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping name field with Jordan Rivera"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping address field with 123 Main Street"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping city field with Austin"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping postal code field with 78701"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the payment details field with a valid card number and billing information"
+      },
+      {
+        "type": "action",
+        "description": "Submit the order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an order confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Add a product to the cart from the listing page",
+    "description": "This verifies a shopper can add a product from the listing page and see it reflected in the cart.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Click add to cart on a product card"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the added item is shown in the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a cart subtotal is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Submit checkout with valid shipping details",
+    "description": "This test verifies that an authenticated shopper can complete checkout after entering valid shipping information and payment details.",
+    "category": "Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the cart review link"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping name field with Jordan Rivera"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping address field with 123 Main Street"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping city field with Austin"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping postal code field with 78701"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the payment details field with a valid card number and billing information"
+      },
+      {
+        "type": "action",
+        "description": "Submit the order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the order is completed successfully"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Browse featured products from the homepage",
+    "description": "This verifies a guest shopper can start on the homepage and reach a browsable product listing with featured products available.",
+    "category": "Browse Products",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to view the product listing"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify products are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify product filtering controls are available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Review cart contents after navigating from products",
+    "description": "This verifies a shopper can open the cart after adding items and review the selected products before checkout.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Click add to cart on a product card"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify cart items are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the subtotal reflects the cart contents"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Filter products by category from the homepage",
+    "description": "This verifies a guest shopper can use a homepage category card to see products narrowed to that category.",
+    "category": "Browse Products",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click a category card"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify products are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product list is narrowed to a category"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Update cart quantity and see the subtotal recalculate",
+    "description": "This verifies a shopper can increase or decrease cart quantity and see the subtotal update accordingly.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Click add to cart on a product card"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart page"
+      },
+      {
+        "type": "action",
+        "description": "Increase the item quantity"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart quantity changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the subtotal updates"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Log in with valid credentials",
+    "description": "This verifies a registered customer can sign in and begin an authenticated session.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is signed in"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify authenticated account access is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Search and price filter products on the listing page",
+    "description": "This verifies a shopper can refine the product list on the product page using search and price controls and see the results update.",
+    "category": "Browse Products",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the search field with a product name"
+      },
+      {
+        "type": "action",
+        "description": "Adjust the price filter to a valid range"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product list updates to match the filters"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify filtered products are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Show checkout fields for a signed-in shopper",
+    "description": "This test verifies that an authenticated shopper can open checkout from the cart and see the shipping and payment entry form.",
+    "category": "Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the cart review link"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the shipping details form is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the payment information form is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Register a new account",
+    "description": "This verifies a guest can complete the registration form and see that the account was created.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with a new user name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a new email address"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an account created confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Keep checkout accessible after signing in",
+    "description": "This test verifies that a shopper who signs in can reach checkout from the cart without being blocked and can see the active session state.",
+    "category": "Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the cart review link"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated checkout page is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user session is active"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Remove an item from the cart",
+    "description": "This verifies a shopper can remove a cart item and the cart updates to reflect the removal.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Click add to cart on a product card"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart page"
+      },
+      {
+        "type": "action",
+        "description": "Remove the item from the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the item is removed from the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart subtotal is updated"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC015",
+    "title": "See an empty cart state",
+    "description": "This verifies a shopper opening an empty cart sees an empty state instead of cart items.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state message is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no cart items are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC016",
+    "title": "Show an empty result when filters remove all products",
+    "description": "This verifies a shopper sees an empty state when search or price filters eliminate all matching products.",
+    "category": "Browse Products",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/products"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the search field with a unique non-matching value"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state message is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no products are displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC017",
+    "title": "Block checkout for guests",
+    "description": "This verifies an unauthenticated shopper cannot access checkout and is redirected to sign in or prompted to authenticate.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/checkout"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to checkout is blocked"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a sign-in prompt or redirect is shown"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC018",
+    "title": "Require authentication before checkout access",
+    "description": "This test verifies that an unauthenticated shopper is redirected away from checkout and prompted to log in instead of reaching the checkout form.",
+    "category": "Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop/checkout"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login prompt or sign-in screen is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the checkout form is not visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC019",
+    "title": "Show login validation feedback for invalid input",
+    "description": "This verifies the login form shows validation feedback when the user enters invalid credentials format.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with an invalid email format"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a short password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login validation feedback is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the form is not submitted"
+      }
+    ],
+    "priority": "Low"
+  }
+]
