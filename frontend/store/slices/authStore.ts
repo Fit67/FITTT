@@ -3,6 +3,28 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import type { AuthState, User, LoginPayload, RegisterPayload } from '@/types'
 import apiClient from '@/lib/api-client'
 import { useWishlistStore } from './uiStore'
+import Cookies from 'js-cookie'
+
+// ─── Cookie sync helpers ───────────────────────────────────────
+// The Edge middleware reads this cookie to fast-gate /admin routes.
+// It is NOT used for API authentication (Bearer token from sessionStorage is).
+function syncTokenCookie(token: string) {
+  if (typeof window === 'undefined') return
+  try {
+    Cookies.set('accessToken', token, {
+      sameSite: 'strict',
+      secure:   window.location.protocol === 'https:',
+      path:     '/',
+    })
+  } catch { /* fail silently */ }
+}
+
+function removeTokenCookie() {
+  if (typeof window === 'undefined') return
+  try {
+    Cookies.remove('accessToken', { path: '/' })
+  } catch { /* fail silently */ }
+}
 
 interface AuthStore extends AuthState {
   login:       (payload: LoginPayload) => Promise<void>
@@ -76,6 +98,7 @@ export const useAuthStore = create<AuthStore>()(
 
           const { user, accessToken } = data.data
           ssrSafeSessionStorage.setItem('accessToken', accessToken)
+          syncTokenCookie(accessToken)
 
           if (user.wishlist) {
             useWishlistStore.getState().setItems(user.wishlist as any)
@@ -98,6 +121,7 @@ export const useAuthStore = create<AuthStore>()(
 
           const { user, accessToken } = data.data
           ssrSafeSessionStorage.setItem('accessToken', accessToken)
+          syncTokenCookie(accessToken)
 
           if (user.wishlist) {
             useWishlistStore.getState().setItems(user.wishlist as any)
@@ -120,6 +144,7 @@ export const useAuthStore = create<AuthStore>()(
 
           const { user, accessToken } = data.data
           ssrSafeSessionStorage.setItem('accessToken', accessToken)
+          syncTokenCookie(accessToken)
 
           if (user.wishlist) {
             useWishlistStore.getState().setItems(user.wishlist as any)
@@ -139,6 +164,7 @@ export const useAuthStore = create<AuthStore>()(
           // Proceed even if backend logout fails
         } finally {
           ssrSafeSessionStorage.removeItem('accessToken')
+          removeTokenCookie()
           useWishlistStore.getState().clear()
           set({ user: null, accessToken: null, isAuthenticated: false })
         }
@@ -161,6 +187,7 @@ export const useAuthStore = create<AuthStore>()(
 
       setToken(token) {
         ssrSafeSessionStorage.setItem('accessToken', token)
+        syncTokenCookie(token)
         set({ accessToken: token, isAuthenticated: true })
       },
     }),
@@ -177,6 +204,13 @@ export const useAuthStore = create<AuthStore>()(
         state.accessToken = safeState.accessToken
         state.isAuthenticated = safeState.isAuthenticated
         state.isLoading = false
+
+        // Sync cookie on rehydration so middleware stays in sync
+        if (safeState.accessToken) {
+          syncTokenCookie(safeState.accessToken)
+        } else {
+          removeTokenCookie()
+        }
       },
     },
   ),

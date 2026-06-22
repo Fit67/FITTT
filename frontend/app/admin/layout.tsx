@@ -2,12 +2,13 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, ShoppingBag, Package, Users,
   Tag, Image, Settings, LogOut, Menu, X,
   ChevronRight, Sun, Moon, Bell, Layers,
+  Loader2,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/slices/authStore'
 import { useTheme } from 'next-themes'
@@ -17,6 +18,8 @@ import { useQuery } from '@tanstack/react-query'
 import apiClient from '@/lib/api-client'
 import { storeConfig } from '@/config/store'
 import { ThemeApplier } from '@/components/providers/ThemeApplier'
+
+const ALLOWED_ROLES = ['admin', 'manager'] as const
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard',  href: '/admin/dashboard' },
@@ -29,6 +32,25 @@ const navItems = [
   { icon: Settings,        label: 'Settings',   href: '/admin/settings'  },
 ]
 
+// ─── Auth loading screen ──────────────────────────────────────
+// Shown during auth verification. Branded, minimal, no admin UI leaked.
+function AdminAuthLoading() {
+  return (
+    <div className="flex h-screen w-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-lg">
+          <span className="text-lg font-bold text-white">{storeConfig.name.charAt(0)}</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <Loader2 size={16} className="animate-spin" />
+          <span>Verifying access…</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Sidebar ───────────────────────────────────────────────────
 function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const pathname = usePathname()
   const { user, logout } = useAuthStore()
@@ -123,7 +145,64 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
   )
 }
 
+// ─── Admin Layout with Auth Gate ───────────────────────────────
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+  const { user, isAuthenticated } = useAuthStore()
+  const [authChecked, setAuthChecked] = React.useState(false)
+
+  // ── Auth gate: runs on mount, waits for Zustand hydration ──
+  React.useEffect(() => {
+    const unsubscribe = useAuthStore.persist.onFinishHydration(() => {
+      const state = useAuthStore.getState()
+
+      if (!state.isAuthenticated || !state.user) {
+        router.replace('/auth/login')
+        return
+      }
+
+      if (!ALLOWED_ROLES.includes(state.user.role as typeof ALLOWED_ROLES[number])) {
+        router.replace('/')
+        return
+      }
+
+      setAuthChecked(true)
+    })
+
+    // Check immediately in case hydration already completed
+    const hasHydrated = (useAuthStore.persist as any)?.hasHydrated?.() ?? false
+    if (hasHydrated) {
+      const state = useAuthStore.getState()
+      if (!state.isAuthenticated || !state.user) {
+        router.replace('/auth/login')
+      } else if (!ALLOWED_ROLES.includes(state.user.role as typeof ALLOWED_ROLES[number])) {
+        router.replace('/')
+      } else {
+        setAuthChecked(true)
+      }
+    }
+
+    return () => { unsubscribe() }
+  }, [router])
+
+  // ── Watch for logout while on admin pages ──
+  React.useEffect(() => {
+    if (authChecked && (!isAuthenticated || !user)) {
+      router.replace('/auth/login')
+    }
+  }, [isAuthenticated, user, authChecked, router])
+
+  // ── While checking auth, show branded loading screen ──
+  if (!authChecked) {
+    return <AdminAuthLoading />
+  }
+
+  // ── Auth confirmed — render the full admin layout ──
+  return <AuthenticatedAdminLayout>{children}</AuthenticatedAdminLayout>
+}
+
+// ─── The actual admin layout (only rendered for verified admins) ──
+function AuthenticatedAdminLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed]     = React.useState(false)
   const [mobileOpen, setMobileOpen]   = React.useState(false)
   const [notifOpen, setNotifOpen]     = React.useState(false)
