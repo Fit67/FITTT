@@ -1,0 +1,18 @@
+ ⨯ TypeError: Cannot read properties of undefined (reading 'clientModules')
+    at C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:39:24764
+    at C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\lib\trace\tracer.js:191:62
+    at C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\lib\trace\tracer.js:191:31
+    at r2 (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:41:1673)
+    at async doRender (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\base-server.js:1433:30)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\frontend\node_modules\next\dist\server\base-server.js:1594:28) {
+  page: '/'
+}

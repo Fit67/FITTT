@@ -1,0 +1,41 @@
+(node:4128) [MONGOOSE] Warning: Duplicate schema index on {"slug":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4128) [MONGOOSE] Warning: Duplicate schema index on {"code":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:4128) [MONGOOSE] Warning: Duplicate schema index on {"slug":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:4128) [MONGOOSE] Warning: Duplicate schema index on {"key":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:4128) [MONGOOSE] Warning: Duplicate schema index on {"orderNumber":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:4128) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+[ERROR] AppError: Invalid email or password
+    at login (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\controllers\authController.ts:46:19) {
+  statusCode: 401,
+  isOperational: true
+}
+(node:13048) [MONGOOSE] Warning: Duplicate schema index on {"orderNumber":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13048) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}

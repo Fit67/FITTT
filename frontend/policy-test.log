@@ -1,0 +1,29 @@
+
+> ecommerce-frontend@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.0
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 3.6s (1610 modules)
+ ✓ Compiled in 728ms (753 modules)
+ GET / 200 in 4419ms
+ ✓ Compiled /shipping-policy in 482ms (1600 modules)
+ GET /shipping-policy 200 in 685ms
+ ✓ Compiled /return-refund-policy in 268ms (1602 modules)
+ GET /return-refund-policy 200 in 375ms
+ ✓ Compiled /privacy-policy in 286ms (1606 modules)
+ GET /privacy-policy 200 in 395ms
+ ✓ Compiled /terms in 262ms (1585 modules)
+ GET /terms 200 in 384ms
+ ✓ Compiled / in 234ms (860 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1318ms (1824 modules)
+ GET / 500 in 2195ms
+ ✓ Compiled /_not-found in 231ms (1825 modules)
+ GET /_next/static/css/css-app_globals_css.css?v=1782389018864 404 in 434ms
+ GET /_next/static/css/css-app_globals_css.css?v=1782389018864 404 in 67ms

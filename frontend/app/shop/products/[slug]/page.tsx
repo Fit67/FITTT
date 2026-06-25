@@ -163,11 +163,11 @@ export default function ProductPage({ params }: Props) {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-20">
-        <div className="container-page py-10">
+      <main className="min-h-screen pt-4 sm:pt-20">
+        <div className="container-page py-5 sm:py-10">
 
           {/* Breadcrumb */}
-          <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400 sm:mb-8 sm:text-sm">
             <Link href="/" className="hover:text-red-600 dark:hover:text-red-400 transition-colors">Home</Link>
             <span>/</span>
             <Link href="/shop/products" className="hover:text-red-600 dark:hover:text-red-400 transition-colors">Products</Link>
@@ -189,7 +189,7 @@ export default function ProductPage({ params }: Props) {
           </nav>
 
           {/* Product Layout */}
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:gap-16">
+          <div className="grid grid-cols-1 gap-6 sm:gap-10 lg:grid-cols-2 xl:gap-16">
 
             {/* Image Gallery */}
             <div className="flex flex-col gap-4">
@@ -211,7 +211,7 @@ export default function ProductPage({ params }: Props) {
                   />
                 </AnimatePresence>
 
-                <div className="absolute left-4 top-4 flex flex-col gap-2">
+                <div className="absolute left-3 top-3 flex flex-col gap-2 sm:left-4 sm:top-4">
                   {discountPct > 0  && <Badge variant="error">−{discountPct}%</Badge>}
                   {product.isNew    && <Badge variant="primary">New</Badge>}
                   {outOfStock       && <Badge variant="neutral">{storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock'}</Badge>}
@@ -221,13 +221,13 @@ export default function ProductPage({ params }: Props) {
                   <>
                     <button
                       onClick={() => setSelectedImg(i => (i - 1 + images.length) % images.length)}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md text-gray-700 hover:bg-white dark:bg-gray-900/90 dark:text-gray-300 transition-colors"
+                      className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-md transition-colors hover:bg-white sm:left-3 dark:bg-gray-900/90 dark:text-gray-300"
                     >
                       <ChevronLeft size={18} />
                     </button>
                     <button
                       onClick={() => setSelectedImg(i => (i + 1) % images.length)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md text-gray-700 hover:bg-white dark:bg-gray-900/90 dark:text-gray-300 transition-colors"
+                      className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-md transition-colors hover:bg-white sm:right-3 dark:bg-gray-900/90 dark:text-gray-300"
                     >
                       <ChevronRight size={18} />
                     </button>
@@ -236,13 +236,13 @@ export default function ProductPage({ params }: Props) {
               </div>
 
               {images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-1">
+                <div className="flex gap-2 overflow-x-auto pb-1 sm:gap-3">
                   {images.map((img, i) => (
                     <button
                       key={i}
                       onClick={() => setSelectedImg(i)}
                       className={cn(
-                        'h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all',
+                        'h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-all sm:h-20 sm:w-20',
                         selectedImg === i
                           ? 'border-red-500 shadow-sm ring-2 ring-red-200 dark:ring-red-800'
                           : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600',
@@ -271,7 +271,7 @@ export default function ProductPage({ params }: Props) {
                     {product.category.name}
                   </Link>
                 )}
-                <h1 className="mt-1 font-display text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                <h1 className="mt-1 font-display text-2xl font-bold leading-tight text-gray-900 sm:text-3xl dark:text-white">
                   {product.name}
                 </h1>
               </div>
@@ -288,8 +288,8 @@ export default function ProductPage({ params }: Props) {
                 </div>
               )}
 
-              <div className="flex items-end gap-3">
-                <span className="font-display text-4xl font-bold text-gray-900 dark:text-white">
+              <div className="flex flex-wrap items-end gap-2 sm:gap-3">
+                <span className="font-display text-3xl font-bold text-gray-900 sm:text-4xl dark:text-white">
                   {formatPrice(effectivePrice)}
                 </span>
                 {product.comparePrice && product.comparePrice > effectivePrice && (
@@ -359,7 +359,7 @@ export default function ProductPage({ params }: Props) {
               )}
 
               {/* Quantity + CTA */}
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center rounded-full border border-gray-200 dark:border-gray-700">
                   <button
                     onClick={() => setQty(q => Math.max(1, q - 1))}
@@ -385,6 +385,7 @@ export default function ProductPage({ params }: Props) {
                   disabled={outOfStock}
                   icon={<ShoppingCart size={18} />}
                   onClick={handleAddToCart}
+                  className="order-2 basis-full sm:order-none sm:basis-auto"
                 >
                   {outOfStock ? (storeConfig.language === 'ar' ? 'نفذت الكمية' : 'Out of Stock') : 'Add to Cart'}
                 </Button>
@@ -420,13 +421,13 @@ export default function ProductPage({ params }: Props) {
               )}
 
               {/* Trust badges */}
-              <div className="grid grid-cols-3 gap-3 border-t border-gray-100 dark:border-gray-800 pt-5">
+              <div className="grid grid-cols-1 gap-2 border-t border-gray-100 pt-5 min-[420px]:grid-cols-3 sm:gap-3 dark:border-gray-800">
                 {[
                   { icon: Truck,     text: 'Fast delivery', sub: 'within 3 days' },
                   { icon: Shield,    text: 'Quality assured', sub: '100% fresh' },
                   { icon: RotateCcw, text: 'Easy returns', sub: 'Within 24h' },
                 ].map(({ icon: Icon, text, sub }) => (
-                  <div key={text} className="flex flex-col items-center gap-1.5 text-center rounded-xl bg-gray-50 dark:bg-gray-800 p-3">
+                  <div key={text} className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 text-left min-[420px]:flex-col min-[420px]:gap-1.5 min-[420px]:text-center dark:bg-gray-800">
                     <Icon size={18} className="text-red-600 dark:text-red-400" />
                     <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">{text}</p>
                     <p className="text-[10px] text-gray-400">{sub}</p>
@@ -534,7 +535,7 @@ export default function ProductPage({ params }: Props) {
               <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white mb-6">
                 You might also like
               </h2>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
                 {related.map(p => <ProductCard key={p._id} product={p} />)}
               </div>
             </section>

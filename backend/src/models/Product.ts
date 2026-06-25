@@ -147,7 +147,6 @@ const ProductSchema = new Schema<IProduct>(
 )
 
 // ─── Indexes ───────────────────────────────────────────────────
-ProductSchema.index({ slug:       1 })
 ProductSchema.index({ category:   1 })
 ProductSchema.index({ status:     1 })
 ProductSchema.index({ isFeatured: 1 })

@@ -1,0 +1,61 @@
+
+> ecommerce-backend@1.0.0 dev
+> nodemon --exec "ts-node --transpile-only src/index.ts"
+
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src\**\*[39m
+[33m[nodemon] watching extensions: ts,json[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+
+🚀  API running on :5050  [development]
+📦  Synced productCount for 4 cat[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+ir-force [33m404[0m 60.272 ms - 310[0m
+[0mPOST /api/auth/register [32m201[0m 359.597 ms - 613[0m
+[0mOPTIONS /api/auth/login [32m204[0m 0.529 ms - 0[0m
+[0mPOST /api/auth/login [32m200[0m 304.163 ms - 601[0m
+[0mOPTIONS /api/categories [32m204[0m 0.240 ms - 0[0m
+[0mOPTIONS /api/products/featured?limit=10 [32m204[0m 0.188 ms - 0[0m
+[0mOPTIONS /api/products?limit=10&sortBy=newest [32m204[0m 0.148 ms - 0[0m
+[0mOPTIONS /api/banners [32m204[0m 0.134 ms - 0[0m
+[0mGET /api/categories [36m304[0m 56.219 ms - -[0m
+[0mGET /api/banners [36m304[0m 57.197 ms - -[0m
+[0mGET /api/products/featured?limit=10 [36m304[0m 112.904 ms - -[0m
+[0mGET /api/products?limit=10&sortBy=newest [36m304[0m 112.464 ms - -[0m
+[0mOPTIONS /api/auth/logout [32m204[0m 0.210 ms - 0[0m
+[0mPOST /api/auth/logout [32m200[0m 0.701 ms - 52[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+
+🚀  API running on :5050  [development]
+📦  Synced productCount for 4 categories
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node --transpile-only src/index.ts`[39m
+✅  MongoDB connected: ac-cvb7rga-shard-00-00.a5sc0rp.mongodb.net
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m

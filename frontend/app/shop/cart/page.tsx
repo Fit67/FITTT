@@ -77,18 +77,18 @@ export default function CartPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pb-16 pt-6">
+      <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
         <div className="container-page">
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.0, 0.0, 0.2, 1.0] }}
-            className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-8">
+            className="mb-5 font-display text-2xl font-bold text-gray-900 dark:text-white sm:mb-8 sm:text-3xl">
             Your Cart
             <Badge variant="primary" className="ml-3 translate-y-[-2px]">{items.length}</Badge>
           </motion.h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-3">
 
             {/* ── Cart Items ─────────────────────────────────── */}
             <div className="lg:col-span-2 space-y-4">
@@ -101,14 +101,14 @@ export default function CartPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -80, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                    className="flex gap-4 rounded-xl border border-gray-100 bg-white p-4 shadow-card hover:shadow-card-hover transition-all dark:border-gray-800 dark:bg-gray-900"
+                    className="flex flex-col gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-card transition-all hover:shadow-card-hover min-[420px]:flex-row sm:gap-4 sm:p-4 dark:border-gray-800 dark:bg-gray-900"
                   >
                     {/* Image */}
                     <Link href={`/shop/products/${item.product.slug}`} className="shrink-0">
                       <img
                         src={getProductImage(item.product.images ?? [])}
                         alt={item.product.name}
-                        className="h-20 w-20 rounded-lg object-cover sm:h-24 sm:w-24 transition-transform duration-300 hover:scale-105"
+                        className="h-24 w-full rounded-lg object-cover transition-transform duration-300 hover:scale-105 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24"
                         onError={(e) => { ;(e.target as HTMLImageElement).src = '/images/placeholder.png' }}
                       />
                     </Link>
@@ -132,7 +132,7 @@ export default function CartPage() {
                         </p>
                       )}
 
-                      <div className="mt-auto flex items-center justify-between gap-4">
+                      <div className="mt-auto flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                         {/* Quantity */}
                         <div className="flex items-center gap-1 rounded-full border border-gray-200 dark:border-gray-700">
                           <button
@@ -171,7 +171,7 @@ export default function CartPage() {
                         })()}
 
                         {/* Price + delete */}
-                        <div className="flex items-center gap-3">
+                        <div className="ml-auto flex items-center gap-3">
                           <span className="font-bold text-gray-900 dark:text-gray-100">
                             {formatPrice(((item.variant?.price != null && Number.isFinite(item.variant.price)) ? item.variant.price : item.product.price) * item.quantity)}
                           </span>
@@ -189,7 +189,7 @@ export default function CartPage() {
                 ))}
               </AnimatePresence>
 
-              <div className="flex justify-between pt-2">
+              <div className="flex flex-col gap-2 pt-2 min-[420px]:flex-row min-[420px]:justify-between">
                 <Link href="/shop/products">
                   <Button variant="ghost" size="sm">Continue Shopping</Button>
                 </Link>
@@ -211,7 +211,7 @@ export default function CartPage() {
               transition={{ duration: 0.38, ease: [0.0, 0.0, 0.2, 1.0], delay: 0.08 }}
               className="space-y-4"
             >
-              <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-card dark:border-gray-800 dark:bg-gray-900">
+              <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card sm:p-6 dark:border-gray-800 dark:bg-gray-900">
                 <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   Order Summary
                 </h2>
@@ -251,7 +251,7 @@ export default function CartPage() {
 
               {/* Coupon — no <form> tag to avoid hydration mismatch */}
               {storeConfig.enableCoupons && (
-                <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-card dark:border-gray-800 dark:bg-gray-900">
+                <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card sm:p-5 dark:border-gray-800 dark:bg-gray-900">
                   <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
                     <Tag size={14} /> Coupon Code
                   </h3>
@@ -269,7 +269,7 @@ export default function CartPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 min-[420px]:flex-row">
                       <input
                         value={couponCode}
                         onChange={e => setCouponCode(e.target.value.toUpperCase())}

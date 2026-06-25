@@ -210,9 +210,9 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-20 pb-16 sm:pt-24">
+      <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
         <div className="container-page">
-          <nav className="mb-6 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+          <nav className="mb-5 flex max-w-full items-center gap-1.5 overflow-x-auto whitespace-nowrap pb-1 text-xs text-gray-500 dark:text-gray-400 sm:mb-6 sm:text-sm">
             <span>Cart</span>
             <ChevronRight size={14} />
             <span className={step === 'address' ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>Address</span>
@@ -222,13 +222,13 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
             <span className={step === 'review'  ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>Review</span>
           </nav>
 
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <AnimatePresence mode="wait">
                 {step === 'address' && (
                   <motion.div key="address" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+                    <h2 className="mb-4 flex items-center gap-2 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">
                       <MapPin size={18} className="text-red-600" /> Delivery Address
                     </h2>
                     {hasSavedAddresses && (
@@ -240,7 +240,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                                 ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                                 : 'border-gray-200 hover:border-gray-300 dark:border-gray-700')}>
                             <p className="font-medium text-gray-900 dark:text-gray-100">{a.fullName}</p>
-                            <p className="text-gray-500 dark:text-gray-400">{a.street}, {a.city}, {a.country}</p>
+                            <p className="break-words text-gray-500 dark:text-gray-400">{a.street}, {a.city}, {a.country}</p>
                           </button>
                         ))}
                         <button onClick={() => setUseNewAddress(true)}
@@ -262,7 +262,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                         <Input label="Zip Code"  {...register('zipCode')}  error={errors.zipCode?.message} />
                       </div>
                     )}
-                    <Button fullWidth className="mt-6" onClick={() => {
+                    <Button fullWidth className="mt-5 sm:mt-6" onClick={() => {
                       if (isUsingNewAddress) {
                         handleSubmit(() => setStep('payment'), () => {
                           toast.error('Please fill in all address fields')
@@ -299,7 +299,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                           className={cn('flex w-full items-start gap-3 rounded-xl border-2 p-3 text-left transition-colors sm:items-center sm:gap-4 sm:p-4',
                             paymentMethod === m.id ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                                                    : 'border-gray-200 hover:border-gray-300 dark:border-gray-700')}>
-                          <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl',
+                          <div className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-10 sm:w-10',
                             paymentMethod === m.id ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 dark:bg-gray-800')}>
                             <m.icon size={18} />
                           </div>
@@ -307,7 +307,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                             <p className="break-words font-medium leading-relaxed text-gray-900 dark:text-gray-100">{m.label}</p>
                             <p className="break-words text-xs leading-relaxed text-gray-500 dark:text-gray-400">{m.sub}</p>
                           </div>
-                          {paymentMethod === m.id && <Check size={16} className="text-red-600" />}
+                          {paymentMethod === m.id && <Check size={16} className="shrink-0 text-red-600" />}
                         </button>
                       ))}
                     </div>
@@ -331,7 +331,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3" dir="rtl">
                           <div className="rounded-lg bg-purple-600 px-3 py-2 text-sm font-bold text-white">InstaPay</div>
                           <div className="rounded-lg bg-red-600 px-3 py-2 text-sm font-bold text-white">Vodafone Cash</div>
-                          <div className="font-mono text-sm font-bold text-gray-900 dark:text-gray-100 sm:text-base" dir="ltr">{TRANSFER_NUMBER}</div>
+                          <div className="w-full font-mono text-sm font-bold text-gray-900 dark:text-gray-100 sm:w-auto sm:text-base" dir="ltr">{TRANSFER_NUMBER}</div>
                         </div>
                         <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100" dir="rtl">كل التحويلات يجب ان تكون علي هذا الرقم</p>
                       </div>
@@ -347,12 +347,12 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                           ? 'Upload screenshot of the delivery fee transfer before submitting.'
                           : 'Upload a screenshot confirming your payment transfer.'}
                       </p>
-                      <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-5 text-center transition-colors hover:border-red-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-red-700">
+                      <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-4 text-center transition-colors hover:border-red-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-red-700 sm:p-5">
                         <input type="file" accept="image/*" className="sr-only" onChange={handleProofChange} />
                         {proofPreview ? (
                           <div className="w-full">
                             <img src={proofPreview} alt="Payment screenshot preview" className="mx-auto max-h-56 rounded-lg object-contain" />
-                            <p className="mt-3 text-sm font-medium text-gray-900 dark:text-gray-100">{proofFile?.name}</p>
+                            <p className="mt-3 break-words text-sm font-medium text-gray-900 dark:text-gray-100">{proofFile?.name}</p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">Click to replace screenshot</p>
                           </div>
                         ) : (
@@ -374,12 +374,12 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                 {step === 'review' && (
                   <motion.div key="review" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-5">Review Your Order</h2>
+                    <h2 className="mb-4 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">Review Your Order</h2>
                     <div className="space-y-3 mb-6">
                       {safeItems.map(item => (
                         <div key={item.product._id} className="flex gap-3 sm:gap-4">
                           <img src={getProductImage(item.product.images)} alt={item.product.name} className="h-14 w-14 rounded-lg object-cover" />
-                          <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                          <div className="flex min-w-0 flex-1 flex-col gap-1 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between min-[420px]:gap-3">
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-1">{item.product.name}</p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
@@ -402,7 +402,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                     )}
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <Button variant="outline" onClick={() => setStep('payment')}>Back</Button>
-                      <Button fullWidth loading={isPending || stripeProcessing} onClick={placeOrder} size="lg">
+                      <Button fullWidth loading={isPending || stripeProcessing} onClick={placeOrder} size="lg" className="px-4">
                         Place Order — {formatPrice(total)}
                       </Button>
                     </div>
@@ -411,7 +411,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
               </AnimatePresence>
             </div>
 
-            <div className="lg:sticky lg:top-24 h-fit">
+            <div className="h-fit lg:sticky lg:top-24">
               <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
                 <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">Order Summary</h3>
                 <div className="space-y-2.5 text-sm">
@@ -434,7 +434,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                     </div>
                   )}
                   <div className="h-px bg-gray-100 dark:bg-gray-800" />
-                  <div className="flex justify-between font-bold text-base text-gray-900 dark:text-gray-100">
+                  <div className="flex justify-between gap-4 text-base font-bold text-gray-900 dark:text-gray-100">
                     <span>Total</span><span className="shrink-0">{formatPrice(total)}</span>
                   </div>
                 </div>
@@ -472,13 +472,13 @@ function OrderSuccess({ orderNumber }: { orderNumber: string }) {
   return (
     <>
       <Navbar />
-      <main className="flex min-h-screen items-center justify-center px-4 pt-20 pb-10 sm:pt-24 sm:pb-16">
+      <main className="flex min-h-screen items-center justify-center px-3 pb-10 pt-4 sm:px-4 sm:pb-16 sm:pt-6">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
           className="w-full max-w-md rounded-xl border border-gray-100 bg-white p-6 text-center shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-8">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
             <Check size={30} />
           </div>
-          <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">Thank you for your order</h1>
+          <h1 className="font-display text-xl font-bold text-gray-900 dark:text-white sm:text-3xl">Thank you for your order</h1>
           {orderNumber && (
             <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
               Order <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">{orderNumber}</span> is confirmed.
@@ -496,11 +496,11 @@ function CheckoutSkeleton() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16">
+      <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
         <div className="container-page">
-          <div className="h-9 w-40 skeleton rounded-full mb-8" />
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2 rounded-xl border border-gray-100 bg-white p-6 shadow-card dark:border-gray-800 dark:bg-gray-900">
+          <div className="mb-5 h-8 w-36 skeleton rounded-full sm:mb-8 sm:w-40" />
+          <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-3">
+            <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6 lg:col-span-2">
               <div className="h-6 w-48 skeleton rounded-full mb-5" />
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {Array.from({ length: 6 }).map((_, i) => (

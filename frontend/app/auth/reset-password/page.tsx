@@ -12,8 +12,8 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { storeConfig } from '@/config/store'
 import { authService } from '@/services'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 const schema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -74,15 +74,8 @@ function ResetPasswordForm() {
         className="w-full max-w-md"
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 mb-8">
-          <div className="flex h-9 w-9 items-center justify-center bg-primary-600 rounded-lg">
-            <span className="font-display font-bold text-white">
-              {storeConfig.name.charAt(0)}
-            </span>
-          </div>
-          <span className="font-display text-lg font-bold text-gray-900 dark:text-white">
-            {storeConfig.name}
-          </span>
+        <Link href="/" className="mb-8 flex items-center">
+          <BrandLogo imageClassName="h-20 max-w-[200px]" />
         </Link>
 
         {!success ? (
@@ -184,4 +177,3 @@ export default function ResetPasswordPage() {
     </Suspense>
   )
 }
-

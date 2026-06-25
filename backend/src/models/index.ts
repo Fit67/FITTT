@@ -30,7 +30,6 @@ const CouponSchema = new Schema<ICoupon>(
   },
   { timestamps: true },
 )
-CouponSchema.index({ code: 1 })
 export const Coupon = mongoose.model<ICoupon>('Coupon', CouponSchema)
 
 // ─── Review ────────────────────────────────────────────────────
@@ -130,7 +129,6 @@ CategorySchema.virtual('children', {
   localField:   '_id',
   foreignField: 'parent',
 })
-CategorySchema.index({ slug: 1 })
 CategorySchema.index({ sortOrder: 1 })
 export const Category = mongoose.model<ICategory>('Category', CategorySchema)
 
@@ -181,5 +179,4 @@ const SettingSchema = new Schema<ISetting>(
   },
   { timestamps: true },
 )
-SettingSchema.index({ key: 1 })
 export const Setting = mongoose.model<ISetting>('Setting', SettingSchema)

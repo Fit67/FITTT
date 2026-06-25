@@ -1,0 +1,88 @@
+(node:5336) [MONGOOSE] Warning: Duplicate schema index on {"slug":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5336) [MONGOOSE] Warning: Duplicate schema index on {"code":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:5336) [MONGOOSE] Warning: Duplicate schema index on {"slug":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:5336) [MONGOOSE] Warning: Duplicate schema index on {"key":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:5336) [MONGOOSE] Warning: Duplicate schema index on {"orderNumber":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:5336) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+[ERROR] AppError: Authentication required
+    at authenticate (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\middleware\auth.ts:81:10)
+    at Layer.handle [as handle_request] (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (node:18824) [MONGOOSE] Warning: Duplicate schema index on {"slug":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18824) [MONGOOSE] Warning: Duplicate schema index on {"code":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:18824) [MONGOOSE] Warning: Duplicate schema index on {"slug":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:18824) [MONGOOSE] Warning: Duplicate schema index on {"key":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:18824) [MONGOOSE] Warning: Duplicate schema index on {"orderNumber":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:18824) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}
+(node:11416) [MONGOOSE] Warning: Duplicate schema index on {"orderNumber":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11416) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}
+6032) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}
+Error: listen EADDRINUSE: address already in use :::5050
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\node_modules\express\lib\application.js:635:24)
+    at start (C:\Users\2M\Downloads\ecommerce-platform-fixed\ecommerce-platform\backend\src\index.ts:109:7)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5050
+}

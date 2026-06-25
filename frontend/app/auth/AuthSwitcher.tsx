@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/Input'
 import { storeConfig } from '@/config/store'
 import { type TranslationKey, useTranslation } from '@/hooks/useTranslation'
 import { useTheme } from 'next-themes'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 type AuthMode = 'login' | 'register'
 
@@ -176,13 +177,8 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
 
           <div className="relative z-10 flex flex-col justify-between h-full px-12 py-16">
             {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 flex items-center justify-center bg-red-600 rounded-lg">
-                <span className="text-white font-display font-bold text-base">D</span>
-              </div>
-              <span className="font-display text-xl font-bold text-white tracking-wider">
-                DoctorFit
-              </span>
+            <div className="flex items-center">
+              <BrandLogo imageClassName="h-24 max-w-[230px]" />
             </div>
 
             {/* Centre copy */}
@@ -426,14 +422,7 @@ function RegisterFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch }: {
 function MobileLogo() {
   return (
     <div className="mb-10 flex justify-center lg:hidden">
-      <div className="flex items-center gap-2">
-        <div className="h-10 w-10 flex items-center justify-center bg-red-600 rounded-lg">
-          <span className="font-display text-lg font-bold text-white">D</span>
-        </div>
-        <span className="font-display text-xl font-bold text-gray-900 dark:text-white tracking-wider">
-          DoctorFit
-        </span>
-      </div>
+      <BrandLogo imageClassName="h-20 max-w-[200px]" />
     </div>
   )
 }

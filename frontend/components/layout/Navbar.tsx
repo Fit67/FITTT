@@ -17,6 +17,7 @@ import { Avatar } from '@/components/ui/primitives'
 import { storeConfig } from '@/config/store'
 import { useTheme } from 'next-themes'
 import { useTranslation } from '@/hooks/useTranslation'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 const SPRING = { type: 'spring' as const, stiffness: 400, damping: 30, mass: 0.7 }
 
@@ -56,6 +57,11 @@ export function Navbar() {
     { label: lang === 'en' ? 'Lab Tests' : 'التحاليل',       href: '/shop/products?category=vitamins' },
     { label: lang === 'en' ? 'Contact Us' : 'اتصل بنا',     href: storeConfig.social.whatsapp || '/shop/products' },
   ]
+
+  async function handleMobileLogout() {
+    setMenuOpen(false)
+    await logout()
+  }
 
   return (
     <>
@@ -102,12 +108,12 @@ export function Navbar() {
         )}
       >
         {/* Floating pill container wrapper */}
-        <div className="mx-auto max-w-7xl px-4 md:px-6 pt-4">
-          <div className="flex h-[72px] items-center justify-between px-6 rounded-full bg-black/85 dark:bg-black/90 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+        <div className="mx-auto max-w-7xl px-2 pt-2 sm:px-4 md:px-6 md:pt-4">
+          <div className="flex h-14 items-center justify-between rounded-full border border-white/10 bg-black/90 px-3 shadow-[0_4px_30px_rgba(0,0,0,0.3)] backdrop-blur-md sm:h-[72px] sm:px-6 dark:bg-black/90">
             
             {/* Logo */}
-            <Link href="/" className="font-display font-extrabold text-xl text-white tracking-wider shrink-0">
-              DoctorFit
+            <Link href="/" className="flex shrink-0 items-center">
+              <BrandLogo imageClassName="h-11 max-w-[94px] sm:h-14 sm:max-w-[150px]" />
             </Link>
 
             {/* Desktop Navigation Links */}
@@ -156,7 +162,7 @@ export function Navbar() {
                 <Link href="/shop/wishlist">
                   <motion.div
                     whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} transition={SPRING}
-                    className="relative flex h-9 w-9 items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer rounded-full hover:bg-white/10"
+                    className="relative hidden h-9 w-9 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-white/10 hover:text-white min-[380px]:flex"
                   >
                     <Heart size={16} />
                     <AnimatePresence>
@@ -313,9 +319,9 @@ export function Navbar() {
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.24, ease: [0.0, 0.0, 0.2, 1.0] }}
-                className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl md:hidden"
+                className="mt-2 max-h-[calc(100dvh-112px)] overflow-y-auto rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl md:hidden"
               >
-                <div className="flex flex-col px-4 py-4 gap-1">
+                <div className="flex flex-col gap-1 px-3 py-3">
                   {navLinks.map((link, i) => (
                     <motion.div
                       key={link.label}
@@ -337,7 +343,45 @@ export function Navbar() {
                     </motion.div>
                   ))}
 
-                  <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-4">
+                  {isAuthenticated ? (
+                    <div className="mt-3 border-t border-white/10 pt-3">
+                      <div className="mb-2 flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3">
+                        <Avatar src={user?.avatar} name={user?.name ?? storeConfig.name} size="sm" />
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-white">{user?.name ?? 'Account'}</p>
+                          <p className="truncate text-xs text-gray-400">{user?.email ?? 'Signed in'}</p>
+                        </div>
+                      </div>
+                      {user?.role === 'admin' && (
+                        <Link
+                          href="/admin/dashboard"
+                          className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
+                        >
+                          <LayoutDashboard size={16} /> Dashboard
+                        </Link>
+                      )}
+                      <Link
+                        href="/shop/profile"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
+                      >
+                        <User size={16} /> {t('profile')}
+                      </Link>
+                      <Link
+                        href="/shop/orders"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
+                      >
+                        <Package size={16} /> {t('myOrders')}
+                      </Link>
+                      <button
+                        onClick={handleMobileLogout}
+                        className="mt-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-semibold text-red-400 transition-colors hover:bg-red-950/30"
+                      >
+                        <LogOut size={16} /> {t('logout')}
+                      </button>
+                    </div>
+                  ) : null}
+
+                  <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
                     {mounted && (
                       <button
                         onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}

@@ -8,8 +8,8 @@ import type { StoreConfig } from '@/types'
 export const storeConfig: StoreConfig = {
   name: 'DoctorFit',
   tagline: 'Premium fitness products, delivered fast.',
-  logo: '/images/logo.svg',
-  favicon: '/favicon.ico',
+  logo: '/images/doctorfit-logo.png',
+  favicon: '/images/doctorfit-favicon.png',
 
   // ─── Business Type ─────────────────────────────────────────
   // Options: 'supermarket' | 'pharmacy' | 'restaurant' | 'gym'
@@ -71,7 +71,7 @@ export const storeConfig: StoreConfig = {
     title: 'DoctorFit - Premium Fitness Products',
     description: 'Shop premium supplements and fitness essentials with fast delivery to your door.',
     keywords: ['fitness', 'supplements', 'gym', 'protein', 'online shopping'],
-    ogImage: '/images/og-image.jpg',
+    ogImage: '/images/doctorfit-logo.png',
   },
 }
 

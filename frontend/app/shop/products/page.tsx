@@ -65,13 +65,13 @@ export default function ProductsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-6">
-        <div className="container-page py-8">
+      <main className="min-h-screen pt-4 sm:pt-6">
+        <div className="container-page py-5 sm:py-8">
 
           {/* ── Page Header ──────────────────────────────────── */}
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <div>
-              <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
+              <h1 className="truncate font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
                 {filters.search ? `Results for "${filters.search}"` :
                  filters.category ? (categories?.find(c => c.slug === filters.category)?.name ?? 'Products') :
                  'All Products'}
@@ -83,7 +83,7 @@ export default function ProductsPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center justify-between gap-2 sm:shrink-0 sm:justify-start">
               {/* Sort */}
               <div className="relative hidden sm:block">
                 <select
@@ -174,7 +174,7 @@ export default function ProductsPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className={cn('grid gap-4', gridCols === 3 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-4')}
+                    className={cn('grid gap-3 sm:gap-4', gridCols === 3 ? 'grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3' : 'grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4')}
                   >
                     {Array.from({ length: 12 }).map((_, i) => <ProductCardSkeleton key={i} />)}
                   </motion.div>
@@ -185,7 +185,7 @@ export default function ProductsPage() {
                     key="grid"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className={cn('grid gap-4', gridCols === 3 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-4')}
+                    className={cn('grid gap-3 sm:gap-4', gridCols === 3 ? 'grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3' : 'grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4')}
                   >
                     {data?.data.map((product, i) => (
                       <ProductCard key={product._id} product={product} priority={i < 4} />
@@ -196,7 +196,7 @@ export default function ProductsPage() {
 
               {/* Pagination */}
               {data && data.pagination.pages > 1 && (
-                <div className="mt-10 flex justify-center gap-2">
+                <div className="mt-8 flex flex-wrap justify-center gap-2 sm:mt-10">
                   <Button
                     variant="outline" size="sm"
                     disabled={!data.pagination.hasPrev}
@@ -204,7 +204,7 @@ export default function ProductsPage() {
                   >
                     Previous
                   </Button>
-                  <span className="flex items-center px-4 text-sm text-gray-600 dark:text-gray-400">
+                  <span className="flex items-center px-2 text-sm text-gray-600 dark:text-gray-400 sm:px-4">
                     Page {data.pagination.page} of {data.pagination.pages}
                   </span>
                   <Button
@@ -237,7 +237,7 @@ export default function ProductsPage() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-              className="relative z-10 w-72 h-full overflow-y-auto bg-surface dark:bg-surface-raised p-5"
+              className="relative z-10 h-full w-[min(88vw,20rem)] overflow-y-auto bg-surface p-4 dark:bg-surface-raised sm:p-5"
             >
               <div className="flex items-center justify-between mb-5">
                 <h2 className="font-semibold text-gray-900 dark:text-white">Filters</h2>

@@ -10,8 +10,8 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { storeConfig } from '@/config/store'
 import { useTranslation } from '@/hooks/useTranslation'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 const schema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -81,15 +81,8 @@ export default function ForgotPasswordPage() {
         className="w-full max-w-md"
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 mb-8">
-          <div className="flex h-9 w-9 items-center justify-center bg-primary-600">
-            <span className="font-display font-bold text-white">
-              {storeConfig.name.charAt(0)}
-            </span>
-          </div>
-          <span className="font-display text-lg font-bold text-gray-900 dark:text-white">
-            {storeConfig.name}
-          </span>
+        <Link href="/" className="mb-8 flex items-center">
+          <BrandLogo imageClassName="h-20 max-w-[200px]" />
         </Link>
 
         {!sent ? (

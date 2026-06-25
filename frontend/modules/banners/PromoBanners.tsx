@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Star } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { useFeaturedProducts, useCategories, useBanners, useProducts } from '@/hooks/useQueries'
 import { ProductCard, ProductCardSkeleton } from '@/modules/product-card/ProductCard'
@@ -384,52 +384,6 @@ export function DeliveryStripeBanner() {
 }
 
 // ─── Testimonials ──────────────────────────────────────────────
-const TESTIMONIALS = [
-  { name: 'Ahmed M.',  role: 'Regular customer',   body: 'I\'ve Been Using This Protein Powder For Over Three Months Now, And The Results Have Been Amazing! My Muscle Recovery Has Improved.', rating: 5, avatar: 'AM' },
-  { name: 'Sarah K.',  role: 'Monthly subscriber', body: 'Incredible selection and the app makes it so easy to reorder my favorites. Quality supplements delivered fast.',             rating: 5, avatar: 'SK' },
-  { name: 'Omar L.',  role: 'New customer',        body: 'Fast delivery, everything was exactly as pictured. Will definitely order again. Best supplement store in Cairo.',         rating: 5, avatar: 'OL' },
-  { name: 'Daniel R.', role: 'Weekly shopper',      body: 'The quality is consistently great and the prices are very competitive. Highly recommend DoctorFit.',                  rating: 5, avatar: 'DR' },
-]
-
 export function TestimonialsSection() {
-  const { t } = useTranslation()
-
-  return (
-    <section className="py-16 md:py-24 bg-gray-50 dark:bg-[#111]">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <SectionHeader label="Testimonials" title="FUELLED BY YOUR STORIES" />
-
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {TESTIMONIALS.map((item, i) => (
-            <motion.div
-              key={item.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300"
-            >
-              <div className="flex gap-0.5 mb-4">
-                {Array.from({ length: item.rating }).map((_, j) => (
-                  <Star key={j} size={16} className="fill-red-500 text-red-500" />
-                ))}
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
-                &ldquo;{item.body}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-red-100 dark:bg-red-900/30 rounded-full">
-                  <span className="text-xs font-bold text-red-700 dark:text-red-400">{item.avatar}</span>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{item.role}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
+  return null
 }

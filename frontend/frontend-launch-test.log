@@ -1,0 +1,29 @@
+
+> ecommerce-frontend@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.0
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.7s
+ ○ Compiling / ...
+ ✓ Compiled / in 5.8s (1610 modules)
+ ✓ Compiled in 800ms (753 modules)
+ GET / 200 in 6602ms
+ ○ Compiling /shop/products ...
+ ✓ Compiled /shop/products in 2.5s (1621 modules)
+ GET /shop/products 200 in 2740ms
+ ✓ Compiled /shop/products/[slug] in 344ms (1635 modules)
+ GET /shop/products/nike-air-force 200 in 921ms
+ ✓ Compiled /shop/cart in 324ms (1647 modules)
+ GET /shop/cart 200 in 433ms
+ ✓ Compiled /middleware in 143ms (71 modules)
+ ○ Compiling /auth/login ...
+ ✓ Compiled /auth/login in 938ms (1692 modules)
+ GET /auth/login?redirect=%2Fadmin%2Fdashboard 200 in 1091ms
+ GET /auth/login 200 in 56ms
+ ✓ Compiled in 1383ms (1735 modules)
+ ✓ Compiled in 1153ms (1678 modules)
+[?25h

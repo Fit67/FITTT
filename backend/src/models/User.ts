@@ -100,7 +100,6 @@ UserSchema.methods.comparePassword = async function (candidate: string): Promise
 }
 
 // ─── Indexes ───────────────────────────────────────────────────
-UserSchema.index({ email: 1 })
 UserSchema.index({ role:  1 })
 UserSchema.index({ createdAt: -1 })
 

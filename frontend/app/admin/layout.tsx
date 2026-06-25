@@ -16,8 +16,8 @@ import { Avatar, Badge } from '@/components/ui/primitives'
 import { cn } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import apiClient from '@/lib/api-client'
-import { storeConfig } from '@/config/store'
 import { ThemeApplier } from '@/components/providers/ThemeApplier'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 const ALLOWED_ROLES = ['admin', 'manager'] as const
 
@@ -38,9 +38,7 @@ function AdminAuthLoading() {
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
       <div className="flex flex-col items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-lg">
-          <span className="text-lg font-bold text-white">{storeConfig.name.charAt(0)}</span>
-        </div>
+        <BrandLogo variant="mark" imageClassName="h-14 w-14" />
         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <Loader2 size={16} className="animate-spin" />
           <span>Verifying access…</span>
@@ -65,13 +63,8 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-4 border-b border-gray-100 dark:border-gray-800 shrink-0">
         {!collapsed && (
-          <Link href="/admin/dashboard" className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-600">
-              <span className="text-xs font-bold text-white">{storeConfig.name.charAt(0)}</span>
-            </div>
-            <span className="font-display text-sm font-bold text-gray-900 dark:text-white truncate">
-              {storeConfig.name}
-            </span>
+          <Link href="/admin/dashboard" className="flex min-w-0 items-center">
+            <BrandLogo imageClassName="h-11 max-w-[145px]" />
           </Link>
         )}
         <button
