@@ -27,3 +27,22 @@
  ✓ Compiled /_not-found in 231ms (1825 modules)
  GET /_next/static/css/css-app_globals_css.css?v=1782389018864 404 in 434ms
  GET /_next/static/css/css-app_globals_css.css?v=1782389018864 404 in 67ms
+ ✓ Compiled in 1777ms (1813 modules)
+ ✓ Compiled /_not-found in 204ms (877 modules)
+ GET /terms 200 in 302ms
+ ✓ Compiled in 526ms (937 modules)
+ GET /_next/static/webpack/c16a0463143a8904.webpack.hot-update.json 404 in 100ms
+ GET /terms 200 in 88ms
+ ✓ Compiled in 474ms (937 modules)
+ GET /_next/static/webpack/cb92ef13e17c3c89.webpack.hot-update.json 404 in 60ms
+ GET /terms 404 in 105ms
+ ✓ Compiled / in 225ms (900 modules)
+ GET / 200 in 484ms
+ ○ Compiling /shop/cart ...
+ ✓ Compiled /shop/cart in 908ms (1848 modules)
+ GET /_next/static/webpack/5ec7898d2745f1a5.webpack.hot-update.json 404 in 278ms
+ GET /_next/static/webpack/5ec7898d2745f1a5.webpack.hot-update.json 404 in 281ms
+ GET /shop/cart 200 in 134ms
+ GET /terms 200 in 155ms
+ ○ Compiling /shop/checkout ...
+ ✓ Compiled /shop/checkout in 725ms (1922 modules)

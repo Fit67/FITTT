@@ -157,7 +157,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
     }
 
     const deliveryFee = (subtotal >= 2000 || couponDoc?.type === 'free_shipping') ? 0 : 80
-    const tax         = (subtotal - discountAmt) * 0.08
+    const tax         = 0
     const total       = Math.max(subtotal - discountAmt + deliveryFee + tax, 0)
 
     const order = await Order.create({

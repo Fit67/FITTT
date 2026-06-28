@@ -36,7 +36,7 @@ import { cn } from '@/lib/utils'
 
 export default function CartPage() {
   const {
-    items: rawItems, subtotal, discount, deliveryFee, tax, total,
+    items: rawItems, subtotal, discount, deliveryFee, total,
     coupon, updateQty, removeItem, applyCoupon, removeCoupon, clearCart,
   } = useCartStore()
 

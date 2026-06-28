@@ -52,7 +52,7 @@ function calcTotals(items: unknown, coupon?: Coupon) {
   }
 
   const deliveryFee = coupon?.type === 'free_shipping' ? 0 : rawDelivery
-  const tax         = Math.round((subtotal - discount) * 0.08 * 100) / 100
+  const tax         = 0
   const total       = Math.max(subtotal - discount + deliveryFee + tax, 0)
 
   return { subtotal, deliveryFee, discount, tax, total }

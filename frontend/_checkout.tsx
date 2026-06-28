@@ -56,7 +56,7 @@ function fileToDataUrl(file: File): Promise<string> {
 // ─── Inner checkout (always inside Elements or standalone) ─────
 function CheckoutInner() {
   const router = useRouter()
-  const { items, subtotal, discount, deliveryFee, tax, total, coupon, clearCart } = useCartStore()
+  const { items, subtotal, discount, deliveryFee, total, coupon, clearCart } = useCartStore()
   const { user } = useAuthStore()
   const { mutateAsync: createOrder, isPending } = useCreateOrder()
   const toast   = useToast()
@@ -379,11 +379,6 @@ function CheckoutInner() {
                     <span>Delivery</span>
                     <span className="shrink-0">{deliveryFee === 0 ? 'Free' : formatPrice(deliveryFee)}</span>
                   </div>
-                  {tax > 0 && (
-                    <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                      <span>Tax (8%)</span><span className="shrink-0">{formatPrice(tax)}</span>
-                    </div>
-                  )}
                   <div className="h-px bg-gray-100 dark:bg-gray-800" />
                   <div className="flex justify-between font-bold text-base text-gray-900 dark:text-gray-100">
                     <span>Total</span><span className="shrink-0">{formatPrice(total)}</span>

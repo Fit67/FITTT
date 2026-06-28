@@ -1,4 +1,10 @@
 {
+  "app\\shop\\checkout\\page.tsx -> ./_checkout": {
+    "id": "app\\shop\\checkout\\page.tsx -> ./_checkout",
+    "files": [
+      "static/chunks/_app-pages-browser_app_shop_checkout__checkout_tsx.js"
+    ]
+  },
   "node_modules\\@tanstack\\query-devtools\\build\\dev.js -> ./DevtoolsComponent/I4EE2JD6.js": {
     "id": "node_modules\\@tanstack\\query-devtools\\build\\dev.js -> ./DevtoolsComponent/I4EE2JD6.js",
     "files": [

@@ -1,8 +1,7 @@
 {
-  "/auth/login/page": "app/auth/login/page.js",
+  "/terms/page": "app/terms/page.js",
   "/page": "app/page.js",
-  "/shop/profile/page": "app/shop/profile/page.js",
-  "/return-refund-policy/page": "app/return-refund-policy/page.js",
-  "/shop/orders/page": "app/shop/orders/page.js",
-  "/privacy-policy/page": "app/privacy-policy/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/shop/cart/page": "app/shop/cart/page.js",
+  "/shop/checkout/page": "app/shop/checkout/page.js"
 }
