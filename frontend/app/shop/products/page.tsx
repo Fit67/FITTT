@@ -12,22 +12,24 @@ import { Badge } from '@/components/ui/primitives'
 import { useProducts } from '@/hooks/useQueries'
 import { useCategories } from '@/hooks/useQueries'
 import { cn, formatPrice } from '@/lib/utils'
+import { useTranslation } from '@/hooks/useTranslation'
 import type { ProductFilters } from '@/types'
-
-const SORT_OPTIONS = [
-  { value: 'popular',    label: 'Most Popular' },
-  { value: 'newest',     label: 'Newest First' },
-  { value: 'price_asc',  label: 'Price: Low → High' },
-  { value: 'price_desc', label: 'Price: High → Low' },
-  { value: 'rating',     label: 'Highest Rated' },
-]
 
 export default function ProductsPage() {
   const searchParams  = useSearchParams()
   const router        = useRouter()
   const pathname      = usePathname()
+  const { t, dir }    = useTranslation()
   const [gridCols, setGridCols]     = React.useState<3 | 4>(4)
   const [sidebarOpen, setSidebar]   = React.useState(false)
+
+  const SORT_OPTIONS = [
+    { value: 'popular',    label: t('productsSortPopular') },
+    { value: 'newest',     label: t('productsSortNewest') },
+    { value: 'price_asc',  label: t('productsSortPriceAsc') },
+    { value: 'price_desc', label: t('productsSortPriceDesc') },
+    { value: 'rating',     label: t('productsSortRating') },
+  ]
 
   const filters: ProductFilters = {
     search:   searchParams.get('search')   ?? undefined,
@@ -65,20 +67,20 @@ export default function ProductsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-4 sm:pt-6">
+      <main className="min-h-screen pt-4 sm:pt-6" dir={dir}>
         <div className="container-page py-5 sm:py-8">
 
           {/* ── Page Header ──────────────────────────────────── */}
           <div className="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
               <h1 className="truncate font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-                {filters.search ? `Results for "${filters.search}"` :
-                 filters.category ? (categories?.find(c => c.slug === filters.category)?.name ?? 'Products') :
-                 'All Products'}
+                {filters.search ? `${t('productsResultsFor')} "${filters.search}"` :
+                 filters.category ? (categories?.find(c => c.slug === filters.category)?.name ?? t('productsAllProducts')) :
+                 t('productsAllProducts')}
               </h1>
               {data && (
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  {data.pagination.total.toLocaleString()} products found
+                  {data.pagination.total.toLocaleString()} {t('productsProductsFound')}
                 </p>
               )}
             </div>
@@ -123,7 +125,7 @@ export default function ProductsPage() {
                 icon={<SlidersHorizontal size={14} />}
                 onClick={() => setSidebar(true)}
               >
-                Filters
+                {t('productsFilters')}
                 {activeFilterCount > 0 && (
                   <Badge variant="primary" size="sm">{activeFilterCount}</Badge>
                 )}
@@ -139,6 +141,7 @@ export default function ProductsPage() {
                 categories={categories ?? []}
                 onApply={setParams}
                 onClear={() => router.push(pathname)}
+                t={t}
               />
             </aside>
 
@@ -159,10 +162,10 @@ export default function ProductsPage() {
                       onRemove={() => setParams({ minPrice: null, maxPrice: null })}
                     />
                   )}
-                  {filters.onSale && <FilterChip label="On Sale"  onRemove={() => setParams({ onSale: null })} />}
-                  {filters.isNew  && <FilterChip label="New Only" onRemove={() => setParams({ isNew: null })} />}
+                  {filters.onSale && <FilterChip label={t('productsOnSale')}  onRemove={() => setParams({ onSale: null })} />}
+                  {filters.isNew  && <FilterChip label={t('productsNewOnly')} onRemove={() => setParams({ isNew: null })} />}
                   <button onClick={() => router.push(pathname)} className="text-xs text-gray-500 hover:text-red-500 transition-colors">
-                    Clear all
+                    {t('productsClearAll')}
                   </button>
                 </div>
               )}
@@ -179,7 +182,7 @@ export default function ProductsPage() {
                     {Array.from({ length: 12 }).map((_, i) => <ProductCardSkeleton key={i} />)}
                   </motion.div>
                 ) : data?.data.length === 0 ? (
-                  <EmptyState onReset={() => router.push(pathname)} />
+                  <EmptyState onReset={() => router.push(pathname)} t={t} />
                 ) : (
                   <motion.div
                     key="grid"
@@ -202,17 +205,17 @@ export default function ProductsPage() {
                     disabled={!data.pagination.hasPrev}
                     onClick={() => setParams({ page: String((filters.page ?? 1) - 1) })}
                   >
-                    Previous
+                    {t('productsPrevious')}
                   </Button>
                   <span className="flex items-center px-2 text-sm text-gray-600 dark:text-gray-400 sm:px-4">
-                    Page {data.pagination.page} of {data.pagination.pages}
+                    {t('productsPage')} {data.pagination.page} {t('productsOf')} {data.pagination.pages}
                   </span>
                   <Button
                     variant="outline" size="sm"
                     disabled={!data.pagination.hasNext}
                     onClick={() => setParams({ page: String((filters.page ?? 1) + 1) })}
                   >
-                    Next
+                    {t('productsNext')}
                   </Button>
                 </div>
               )}
@@ -224,7 +227,7 @@ export default function ProductsPage() {
       {/* Mobile Drawer */}
       <AnimatePresence>
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 flex lg:hidden">
+          <div className="fixed inset-0 z-50 flex lg:hidden" dir={dir}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -233,14 +236,17 @@ export default function ProductsPage() {
               onClick={() => setSidebar(false)}
             />
             <motion.aside
-              initial={{ x: '-100%' }}
+              initial={{ x: dir === 'rtl' ? '100%' : '-100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
+              exit={{ x: dir === 'rtl' ? '100%' : '-100%' }}
               transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-              className="relative z-10 h-full w-[min(88vw,20rem)] overflow-y-auto bg-surface p-4 dark:bg-surface-raised sm:p-5"
+              className={cn(
+                "relative z-10 h-full w-[min(88vw,20rem)] overflow-y-auto bg-surface p-4 dark:bg-surface-raised sm:p-5",
+                dir === 'rtl' ? 'ml-auto' : ''
+              )}
             >
               <div className="flex items-center justify-between mb-5">
-                <h2 className="font-semibold text-gray-900 dark:text-white">Filters</h2>
+                <h2 className="font-semibold text-gray-900 dark:text-white">{t('productsFilters')}</h2>
                 <button onClick={() => setSidebar(false)} className="text-gray-400 hover:text-gray-600">
                   <X size={20} />
                 </button>
@@ -250,6 +256,7 @@ export default function ProductsPage() {
                 categories={categories ?? []}
                 onApply={(updates) => { setParams(updates); setSidebar(false) }}
                 onClear={() => { router.push(pathname); setSidebar(false) }}
+                t={t}
               />
             </motion.aside>
           </div>
@@ -266,9 +273,11 @@ interface FilterPanelProps {
   categories: Array<{ _id: string; name: string; slug: string }>
   onApply:    (updates: Record<string, string | null>) => void
   onClear:    () => void
+  t:          (key: any) => string
 }
 
-function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps) {
+function FilterPanel({ filters, categories, onApply, onClear, t }: FilterPanelProps) {
+  const { dir } = useTranslation()
   const [localCategory, setLocalCategory] = React.useState<string | null>(filters.category ?? null)
   const [priceMin, setPriceMin] = React.useState(filters.minPrice?.toString() ?? '')
   const [priceMax, setPriceMax] = React.useState(filters.maxPrice?.toString() ?? '')
@@ -297,25 +306,27 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
     <div className="space-y-6">
       {/* Categories */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Category</h3>
+        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{t('productsCategory')}</h3>
         <div className="space-y-1.5">
           <button
             onClick={() => setLocalCategory(null)}
             className={cn(
-              'w-full text-left rounded-lg px-3 py-2 text-sm transition-colors',
+              'w-full rounded-lg px-3 py-2 text-sm transition-colors',
+              dir === 'rtl' ? 'text-right' : 'text-left',
               !localCategory
                 ? 'bg-red-50 font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400'
                 : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
             )}
           >
-            All Categories
+            {t('productsAllCategories')}
           </button>
           {categories.map(cat => (
             <button
               key={cat._id}
               onClick={() => setLocalCategory(cat.slug)}
               className={cn(
-                'w-full text-left rounded-lg px-3 py-2 text-sm transition-colors',
+                'w-full rounded-lg px-3 py-2 text-sm transition-colors',
+                dir === 'rtl' ? 'text-right' : 'text-left',
                 localCategory === cat.slug
                   ? 'bg-red-50 font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400'
                   : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
@@ -329,12 +340,12 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
 
       {/* Price Range */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Price Range</h3>
+        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{t('productsPriceRange')}</h3>
         <div className="flex items-center gap-2">
           <input
             type="number"
             min={0}
-            placeholder="Min"
+            placeholder={t('productsPriceMin')}
             value={priceMin}
             onChange={e => setPriceMin(e.target.value)}
             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:border-red-500"
@@ -343,7 +354,7 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
           <input
             type="number"
             min={0}
-            placeholder="Max"
+            placeholder={t('productsPriceMax')}
             value={priceMax}
             onChange={e => setPriceMax(e.target.value)}
             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:border-red-500"
@@ -353,11 +364,11 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
 
       {/* Quick Filters */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Quick Filters</h3>
+        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{t('productsQuickFilters')}</h3>
         <div className="space-y-2">
           {[
-            { key: 'onSale', label: 'On Sale', state: onSale, setState: setOnSale },
-            { key: 'isNew',  label: 'New Arrivals', state: isNew, setState: setIsNew },
+            { key: 'onSale', label: t('productsOnSale'), state: onSale, setState: setOnSale },
+            { key: 'isNew',  label: t('productsNewArrivals'), state: isNew, setState: setIsNew },
           ].map(({ key, label, state, setState }) => (
             <label key={key} className="flex cursor-pointer items-center gap-2.5">
               <input
@@ -375,13 +386,13 @@ function FilterPanel({ filters, categories, onApply, onClear }: FilterPanelProps
       {/* Actions */}
       <div className="flex flex-col gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
         <Button size="sm" fullWidth onClick={handleApply}>
-          Apply Filters
+          {t('productsApplyFilters')}
         </Button>
         <button
           onClick={onClear}
           className="text-sm py-2 text-gray-500 hover:text-red-500 dark:text-gray-400 transition-colors"
         >
-          Clear all
+          {t('productsClearAll')}
         </button>
       </div>
     </div>
@@ -399,7 +410,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
   )
 }
 
-function EmptyState({ onReset }: { onReset: () => void }) {
+function EmptyState({ onReset, t }: { onReset: () => void; t: (key: any) => string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -407,12 +418,12 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       className="flex flex-col items-center justify-center py-24 text-center"
     >
       <div className="mb-4 text-6xl">🔍</div>
-      <h3 className="font-display text-xl font-semibold text-gray-900 dark:text-white">No products found</h3>
+      <h3 className="font-display text-xl font-semibold text-gray-900 dark:text-white">{t('productsNoProducts')}</h3>
       <p className="mt-2 text-gray-500 dark:text-gray-400 max-w-xs">
-        Try adjusting your filters or search terms to find what you&apos;re looking for.
+        {t('productsNoProductsHint')}
       </p>
       <Button variant="outline" className="mt-6" onClick={onReset}>
-        Clear Filters
+        {t('productsClearFilters')}
       </Button>
     </motion.div>
   )

@@ -64,7 +64,7 @@ function VITRAPROHero() {
             {/* Eyebrow pill */}
             <motion.div variants={stagger.item}>
               <span className="inline-block px-4 py-1.5 text-xs font-semibold bg-red-600/20 text-red-400 rounded-full border border-red-600/30 mb-6">
-                Pure Protein
+                {t('heroPureProtein')}
               </span>
             </motion.div>
 
@@ -73,8 +73,8 @@ function VITRAPROHero() {
               variants={stagger.item}
               className="font-display text-[clamp(36px,5.5vw,56px)] font-extrabold leading-[1.05] text-white tracking-tight mb-4"
             >
-              Everyday Performance<br />
-              Begins With <span className="text-red-500">Protein</span>
+              {t('heroEverydayPerformance')}<br />
+              {t('heroBeginsWith')} <span className="text-red-500">{t('heroProteinWord')}</span>
             </motion.h1>
 
             {/* Subtext */}
@@ -82,14 +82,14 @@ function VITRAPROHero() {
               variants={stagger.item}
               className="text-base text-gray-400 leading-relaxed max-w-[380px] mb-8"
             >
-              Training Or Competing, Protein Plays A Key Role In Powering Performance.
+              {t('heroSubtextDescription')}
             </motion.p>
 
             {/* CTA Button */}
             <motion.div variants={stagger.item} className="flex flex-wrap items-center gap-4">
               <Link href="/shop/products">
                 <button className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-red-600/30 uppercase tracking-wide">
-                  Buy Now
+                  {t('heroBuyNow')}
                 </button>
               </Link>
               <Link href="/shop/products?onSale=true" className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">

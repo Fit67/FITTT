@@ -14,6 +14,7 @@ import { useToast } from '@/components/ui/Toast'
 import { formatPrice, getProductImage, getDeliveryLabel } from '@/lib/utils'
 import { storeConfig } from '@/config/store'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/useTranslation'
 
 /**
  * BUGS FIXED:
@@ -39,6 +40,7 @@ export default function CartPage() {
     items: rawItems, subtotal, discount, deliveryFee, total,
     coupon, updateQty, removeItem, applyCoupon, removeCoupon, clearCart,
   } = useCartStore()
+  const { t } = useTranslation()
 
   // Hydration guard: don't render until client-side store has rehydrated
   const [mounted, setMounted] = React.useState(false)
@@ -84,8 +86,8 @@ export default function CartPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.0, 0.0, 0.2, 1.0] }}
             className="mb-5 font-display text-2xl font-bold text-gray-900 dark:text-white sm:mb-8 sm:text-3xl">
-            Your Cart
-            <Badge variant="primary" className="ml-3 translate-y-[-2px]">{items.length}</Badge>
+            {t('cartYourCart')}
+            <Badge variant="primary" className="ms-3 translate-y-[-2px]">{items.length}</Badge>
           </motion.h1>
 
           <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-3">
@@ -165,13 +167,13 @@ export default function CartPage() {
                             ? (item.variant.inventory ?? 999)
                             : (item.product.inventory?.quantity ?? 999)
                           if (item.quantity >= maxStock && maxStock < 999) {
-                            return <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Max stock reached</p>
+                            return <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">{t('cartMaxStockReached')}</p>
                           }
                           return null
                         })()}
 
                         {/* Price + delete */}
-                        <div className="ml-auto flex items-center gap-3">
+                        <div className="ms-auto flex items-center gap-3">
                           <span className="font-bold text-gray-900 dark:text-gray-100">
                             {formatPrice(((item.variant?.price != null && Number.isFinite(item.variant.price)) ? item.variant.price : item.product.price) * item.quantity)}
                           </span>
@@ -191,7 +193,7 @@ export default function CartPage() {
 
               <div className="flex flex-col gap-2 pt-2 min-[420px]:flex-row min-[420px]:justify-between">
                 <Link href="/shop/products">
-                  <Button variant="ghost" size="sm">Continue Shopping</Button>
+                  <Button variant="ghost" size="sm">{t('cartContinueShopping')}</Button>
                 </Link>
                 <Button
                   variant="ghost"
@@ -199,7 +201,7 @@ export default function CartPage() {
                   onClick={clearCart}
                   className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
-                  <Trash2 size={14} className="mr-1.5" /> Clear Cart
+                  <Trash2 size={14} className="me-1.5" /> {t('cartClearCart')}
                 </Button>
               </div>
             </div>
@@ -213,27 +215,27 @@ export default function CartPage() {
             >
               <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card sm:p-6 dark:border-gray-800 dark:bg-gray-900">
                 <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Order Summary
+                  {t('cartOrderSummary')}
                 </h2>
 
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Subtotal</span>
+                    <span>{t('cartSubtotal')}</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
-                      <span>Discount {coupon && `(${coupon.code})`}</span>
+                      <span>{t('cartDiscount')} {coupon && `(${coupon.code})`}</span>
                       <span>−{formatPrice(discount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Delivery</span>
+                    <span>{t('cartDelivery')}</span>
                     <span>{deliveryFee === 0 ? '🎉 Free' : formatPrice(deliveryFee)}</span>
                   </div>
                   <div className="h-px bg-gray-100 dark:bg-gray-800" />
                   <div className="flex justify-between font-bold text-base text-gray-900 dark:text-gray-100">
-                    <span>Total</span>
+                    <span>{t('cartTotal')}</span>
                     <span>{formatPrice(total)}</span>
                   </div>
                 </div>
@@ -244,7 +246,7 @@ export default function CartPage() {
 
                 <Link href="/shop/checkout" className="mt-5 block">
                   <Button fullWidth size="lg" iconRight={<ArrowRight size={16} />}>
-                    Proceed to Checkout
+                    {t('cartProceedCheckout')}
                   </Button>
                 </Link>
               </div>
@@ -253,7 +255,7 @@ export default function CartPage() {
               {storeConfig.enableCoupons && (
                 <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card sm:p-5 dark:border-gray-800 dark:bg-gray-900">
                   <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                    <Tag size={14} /> Coupon Code
+                    <Tag size={14} /> {t('cartCouponCode')}
                   </h3>
 
                   {coupon ? (
@@ -265,7 +267,7 @@ export default function CartPage() {
                         onClick={removeCoupon}
                         className="text-xs text-gray-400 hover:text-red-500 transition-colors"
                       >
-                        Remove
+                        {t('cartRemove')}
                       </button>
                     </div>
                   ) : (
@@ -276,7 +278,7 @@ export default function CartPage() {
                         onKeyDown={e => e.key === 'Enter' && handleApplyCoupon()}
                         placeholder="ENTER CODE"
                         maxLength={20}
-                        className="flex-1 rounded-l-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-mono uppercase outline-none focus:border-red-500 transition-colors"
+                        className="flex-1 rounded-s-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-mono uppercase outline-none focus:border-red-500 transition-colors"
                       />
                       <Button
                         size="sm"
@@ -284,7 +286,7 @@ export default function CartPage() {
                         loading={validatingCoupon}
                         disabled={!couponCode.trim()}
                       >
-                        Apply
+                        {t('cartApply')}
                       </Button>
                     </div>
                   )}
@@ -301,6 +303,7 @@ export default function CartPage() {
 
 // ─── Empty state ───────────────────────────────────────────────
 function EmptyCart() {
+  const { t } = useTranslation()
   return (
     <>
       <Navbar />
@@ -314,12 +317,12 @@ function EmptyCart() {
           <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20">
             <ShoppingCart size={40} className="text-red-300 dark:text-red-600" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white">Your cart is empty</h2>
+          <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white">{t('cartEmptyTitle')}</h2>
           <p className="mt-2 text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
-            Looks like you haven&apos;t added anything yet. Let&apos;s change that!
+            {t('cartEmptyText')}
           </p>
           <Link href="/shop/products" className="mt-8 inline-flex">
-            <Button size="lg" icon={<ShoppingBag size={18} />}>Start Shopping</Button>
+            <Button size="lg" icon={<ShoppingBag size={18} />}>{t('cartStartShopping')}</Button>
           </Link>
         </motion.div>
       </main>

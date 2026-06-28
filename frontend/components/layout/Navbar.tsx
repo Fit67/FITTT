@@ -50,12 +50,9 @@ export function Navbar() {
   if (isAdmin) return null
 
   const navLinks = [
-    { label: lang === 'en' ? 'Home' : 'الرئيسية',           href: '/' },
-    { label: lang === 'en' ? 'Products' : 'المنتجات',       href: '/shop/products' },
-    { label: lang === 'en' ? 'Whats Included' : 'ماذا تشمل', href: '/shop/products?category=protein' },
-    { label: lang === 'en' ? 'Treatmtent +' : 'العلاجات +',   href: '/shop/products?category=creatine' },
-    { label: lang === 'en' ? 'Lab Tests' : 'التحاليل',       href: '/shop/products?category=vitamins' },
-    { label: lang === 'en' ? 'Contact Us' : 'اتصل بنا',     href: storeConfig.social.whatsapp || '/shop/products' },
+    { label: t('navHome'),          href: '/' },
+    { label: t('navProducts'),      href: '/shop/products' },
+    { label: t('navContactUs'),     href: storeConfig.social.whatsapp || '/shop/products' },
   ]
 
   async function handleMobileLogout() {
@@ -83,7 +80,7 @@ export function Navbar() {
           </div>
           {/* Center: Offer text */}
           <div className="flex-1 text-center italic tracking-wide text-white/95">
-            DoctorFit is your home store for purchases!
+            {t('announcementText')}
           </div>
           {/* Right: Language / Region selector (toggles language on click) */}
           <button
@@ -250,8 +247,8 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.16 }}
-                        className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-white/10 bg-black/95 shadow-xl overflow-hidden z-50 text-gray-200"
-                        style={{ transformOrigin: 'top right' }}
+                        className="absolute ltr:right-0 rtl:left-0 top-full mt-2 w-56 rounded-xl border border-white/10 bg-black/95 shadow-xl overflow-hidden z-50 text-gray-200"
+                        style={{ transformOrigin: lang === 'ar' ? 'top left' : 'top right' }}
                       >
                         <div className="border-b border-white/10 px-4 py-3">
                           <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
@@ -259,7 +256,7 @@ export function Navbar() {
                         </div>
                         {user?.role === 'admin' && (
                           <Link href="/admin/dashboard" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors">
-                            <LayoutDashboard size={15} /> Dashboard
+                            <LayoutDashboard size={15} /> {t('navDashboard')}
                           </Link>
                         )}
                         <Link href="/shop/profile" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors">
@@ -285,7 +282,7 @@ export function Navbar() {
                   href="/auth/login"
                   className="hidden md:inline-flex items-center justify-center px-6 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 uppercase tracking-wider"
                 >
-                  Log In
+                  {t('navLogIn')}
                 </Link>
               )}
 
@@ -325,7 +322,7 @@ export function Navbar() {
                   {navLinks.map((link, i) => (
                     <motion.div
                       key={link.label}
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: lang === 'ar' ? 10 : -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04 }}
                     >
@@ -357,7 +354,7 @@ export function Navbar() {
                           href="/admin/dashboard"
                           className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
                         >
-                          <LayoutDashboard size={16} /> Dashboard
+                          <LayoutDashboard size={16} /> {t('navDashboard')}
                         </Link>
                       )}
                       <Link
@@ -374,7 +371,7 @@ export function Navbar() {
                       </Link>
                       <button
                         onClick={handleMobileLogout}
-                        className="mt-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-semibold text-red-400 transition-colors hover:bg-red-950/30"
+                        className="mt-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-start text-sm font-semibold text-red-400 transition-colors hover:bg-red-950/30"
                       >
                         <LogOut size={16} /> {t('logout')}
                       </button>
@@ -399,7 +396,7 @@ export function Navbar() {
                     {!isAuthenticated && (
                       <Link
                         href="/auth/login"
-                        className="ml-auto text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-full transition-colors uppercase tracking-wider"
+                        className="ms-auto text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-full transition-colors uppercase tracking-wider"
                       >
                         {t('login')}
                       </Link>

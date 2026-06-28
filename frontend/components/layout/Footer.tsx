@@ -20,30 +20,42 @@ const Tiktok = ({ size = 18, className = '' }: any) => (
 )
 
 const footerLinks = {
-  Shop: [
-    { label: 'All Products',   href: '/shop/products'                },
-    { label: 'New Arrivals',   href: '/shop/products?isNew=true'     },
-    { label: 'Best Sellers',   href: '/shop/products?sortBy=popular' },
-    { label: 'Deals & Offers', href: '/shop/products?onSale=true'    },
-  ],
-  Help: [
-    { label: 'Track Order',      href: '/shop/orders'                },
-    { label: 'My Account',       href: '/shop/profile'               },
-    { label: 'My Wishlist',      href: '/shop/wishlist'               },
-    { label: 'Shopping Cart',    href: '/shop/cart'                   },
-  ],
-  Legal: [
-    { label: 'Shipping Policy',       href: '/shipping-policy'       },
-    { label: 'Return & Refund Policy', href: '/return-refund-policy' },
-    { label: 'Privacy Policy',        href: '/privacy-policy'        },
-    { label: 'Terms & Conditions',    href: '/terms'                 },
-  ],
-  Categories: [
-    { label: 'Protein',       href: '/shop/products?category=protein'    },
-    { label: 'Creatine',      href: '/shop/products?category=creatine'   },
-    { label: 'Pre-Workout',   href: '/shop/products?category=pre-workout'},
-    { label: 'Vitamins',      href: '/shop/products?category=vitamins'   },
-  ],
+  Shop: {
+    key: 'shop' as const,
+    links: [
+      { labelKey: 'footerLinkAllProducts' as const,   href: '/shop/products'                },
+      { labelKey: 'footerLinkNewArrivals' as const,   href: '/shop/products?isNew=true'     },
+      { labelKey: 'footerLinkBestSellers' as const,   href: '/shop/products?sortBy=popular' },
+      { labelKey: 'footerLinkDealsOffers' as const, href: '/shop/products?onSale=true'    },
+    ]
+  },
+  Help: {
+    key: 'help' as const,
+    links: [
+      { labelKey: 'footerLinkTrackOrder' as const,      href: '/shop/orders'                },
+      { labelKey: 'footerLinkMyAccount' as const,       href: '/shop/profile'               },
+      { labelKey: 'footerLinkMyWishlist' as const,      href: '/shop/wishlist'               },
+      { labelKey: 'footerLinkShoppingCart' as const,    href: '/shop/cart'                   },
+    ]
+  },
+  Legal: {
+    key: 'legal' as const,
+    links: [
+      { labelKey: 'footerLinkShippingPolicy' as const,       href: '/shipping-policy'       },
+      { labelKey: 'footerLinkReturnPolicy' as const, href: '/return-refund-policy' },
+      { labelKey: 'footerLinkPrivacyPolicy' as const,        href: '/privacy-policy'        },
+      { labelKey: 'footerLinkTerms' as const,    href: '/terms'                 },
+    ]
+  },
+  Categories: {
+    key: 'categories' as const,
+    links: [
+      { labelKey: 'footerLinkProtein' as const,       href: '/shop/products?category=protein'    },
+      { labelKey: 'footerLinkCreatine' as const,      href: '/shop/products?category=creatine'   },
+      { labelKey: 'footerLinkPreWorkout' as const,   href: '/shop/products?category=pre-workout'},
+      { labelKey: 'footerLinkVitamins' as const,      href: '/shop/products?category=vitamins'   },
+    ]
+  },
 }
 
 const socialIcons: Record<string, React.ElementType> = {
@@ -76,13 +88,13 @@ export function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
               <span className="inline-block px-4 py-1.5 text-xs font-medium border border-gray-600 rounded-full text-gray-400 mb-4">
-                Newsletter
+                {t('footerNewsletter')}
               </span>
               <h3 className="font-display text-2xl font-bold text-white leading-tight">
-                Get exclusive deals & fitness tips
+                {t('footerNewsletterTitle')}
               </h3>
               <p className="mt-2 text-sm text-gray-400 leading-relaxed max-w-sm">
-                New products, seasonal offers, and training tips. Unsubscribe anytime.
+                {t('footerNewsletterDesc')}
               </p>
             </div>
 
@@ -93,7 +105,7 @@ export function Footer() {
                 className="flex items-center gap-3 text-sm text-green-400 font-medium"
               >
                 <span className="inline-flex h-8 w-8 items-center justify-center bg-green-900/30 rounded-full text-green-400">✓</span>
-                You&apos;re subscribed — check your inbox.
+                {t('footerSubscribedText')}
               </motion.div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex gap-0">
@@ -102,14 +114,14 @@ export function Footer() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="flex-1 border border-gray-700 bg-gray-800/50 rounded-l-full px-5 py-3.5 text-sm text-white placeholder:text-gray-500 outline-none focus:border-red-500 transition-colors"
+                  className="flex-1 border border-gray-700 bg-gray-800/50 rounded-s-full px-5 py-3.5 text-sm text-white placeholder:text-gray-500 outline-none focus:border-red-500 transition-colors"
                 />
                 <button
                   type="submit"
-                  className="flex h-[50px] px-6 shrink-0 items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-r-full transition-colors font-medium text-sm gap-2"
+                  className="flex h-[50px] px-6 shrink-0 items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-e-full transition-colors font-medium text-sm gap-2"
                 >
                   <Send size={14} />
-                  Subscribe
+                  {t('footerSubscribeBtn')}
                 </button>
               </form>
             )}
@@ -167,19 +179,19 @@ export function Footer() {
           </div>
 
           {/* Link columns */}
-          {Object.entries(footerLinks).map(([section, links]) => (
-            <div key={section}>
+          {Object.entries(footerLinks).map(([sectionName, sectionData]) => (
+            <div key={sectionName}>
               <h4 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
-                {section}
+                {t(sectionData.key)}
               </h4>
               <ul className="space-y-3">
-                {links.map(link => (
+                {sectionData.links.map(link => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
                       className="text-sm text-gray-400 hover:text-red-400 transition-colors"
                     >
-                      {link.label}
+                      {t(link.labelKey)}
                     </Link>
                   </li>
                 ))}
@@ -193,7 +205,7 @@ export function Footer() {
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 px-4 md:px-6 py-6">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} {storeConfig.name}. All rights reserved.
+            © {new Date().getFullYear()} {storeConfig.name}. {t('footerCopyright')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <Link href="/shop/products" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">Products</Link>

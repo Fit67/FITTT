@@ -10,6 +10,7 @@ import { useWishlistStore } from '@/store/slices/uiStore'
 import { useToast } from '@/components/ui/Toast'
 import { storeConfig } from '@/config/store'
 import { scalePop } from '@/lib/motion'
+import { useTranslation } from '@/hooks/useTranslation'
 import type { Product } from '@/types'
 
 interface ProductCardProps {
@@ -28,6 +29,7 @@ export function ProductCard({
   const { addItem, hasItem }   = useCartStore()
   const { toggle, hasItem: inWishlist } = useWishlistStore()
   const toast = useToast()
+  const { t, lang } = useTranslation()
   const [imgLoaded, setImgLoaded] = React.useState(false)
 
   const image        = getProductImage(product.images)
@@ -43,14 +45,14 @@ export function ProductCard({
     e.preventDefault()
     if (outOfStock) return
     addItem(product, undefined, 1)
-    toast.success('Added to cart', product.name)
+    toast.success(t('productCardAddedToCart'), product.name)
   }
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault()
     const added = toggle(product)
     toast[added ? 'success' : 'info'](
-      added ? 'Added to wishlist' : 'Removed from wishlist',
+      added ? t('productCardAddedToWishlist') : t('productCardRemovedFromWishlist'),
       product.name,
     )
   }
@@ -77,7 +79,7 @@ export function ProductCard({
       <Link href={`/shop/products/${product.slug}`} className={cn(
         'relative overflow-hidden bg-gray-100 dark:bg-gray-800',
         'rounded-t-xl',
-        variant === 'featured' ? 'md:w-1/2 h-60 md:h-auto md:rounded-l-xl md:rounded-tr-none' : 'aspect-square',
+        variant === 'featured' ? 'md:w-1/2 h-60 md:h-auto md:rounded-s-xl md:rounded-te-none' : 'aspect-square',
       )}>
         {/* Skeleton */}
         <div className={cn(
@@ -103,22 +105,22 @@ export function ProductCard({
         <div className="absolute left-3 top-3 flex flex-col gap-2">
           {discountPct > 0 && (
             <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-red-600 text-white rounded-full">
-              {discountPct}% Off
+              {lang === 'ar' ? `${t('productCardOff')} ${discountPct}%` : `${discountPct}% ${t('productCardOff')}`}
             </span>
           )}
           {product.isNew && !discountPct && (
             <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
-              New
+              {t('productCardNew')}
             </span>
           )}
           {outOfStock && (
             <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full">
-              Sold Out
+              {t('productCardSoldOut')}
             </span>
           )}
           {lowStock && (
             <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full">
-              {availableStock === 1 ? 'Last piece' : `Only ${availableStock} left`}
+              {availableStock === 1 ? t('productCardLastPiece') : `${t('productCardOnly')} ${availableStock} ${t('productCardOnlyLeft')}`}
             </span>
           )}
         </div>
@@ -168,8 +170,8 @@ export function ProductCard({
         {/* Business metadata */}
         {businessType === 'gym' && product.metadata?.servingSize && (
           <span className="text-xs text-gray-400 dark:text-gray-500">
-            <Zap size={10} className="inline mr-1 text-red-500" />
-            {product.metadata.servingSize} per serving
+            <Zap size={10} className="inline me-1 text-red-500" />
+            {product.metadata.servingSize} {t('productCardPerServing')}
           </span>
         )}
 

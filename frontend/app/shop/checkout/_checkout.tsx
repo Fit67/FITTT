@@ -13,6 +13,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { useTranslation } from '@/hooks/useTranslation'
 import { useCartStore } from '@/store/slices/cartStore'
 import { useAuthStore } from '@/store/slices/authStore'
 import { useCreateOrder } from '@/hooks/useQueries'
@@ -60,6 +61,7 @@ interface CheckoutInnerProps {
 }
 
 function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps) {
+  const { t, lang } = useTranslation()
   const router = useRouter()
   const { items, subtotal, discount, deliveryFee, total, coupon, clearCart } = useCartStore()
   const { user } = useAuthStore()
@@ -213,15 +215,15 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
       <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
         <div className="container-page">
           <nav className="mb-5 flex max-w-full items-center gap-1.5 overflow-x-auto whitespace-nowrap pb-1 text-xs text-gray-500 dark:text-gray-400 sm:mb-6 sm:text-sm">
-            <span>Cart</span>
+            <span>{t('checkoutStepCart')}</span>
             <ChevronRight size={14} />
-            <span className={step === 'address' ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>Address</span>
+            <span className={step === 'address' ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>{t('checkoutStepAddress')}</span>
             <ChevronRight size={14} />
-            <span className={step === 'payment' ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>Payment</span>
+            <span className={step === 'payment' ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>{t('checkoutStepPayment')}</span>
             <ChevronRight size={14} />
-            <span className={step === 'review'  ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>Review</span>
+            <span className={step === 'review'  ? 'font-semibold text-gray-900 dark:text-gray-100' : ''}>{t('checkoutStepReview')}</span>
           </nav>
-
+ 
           <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <AnimatePresence mode="wait">
@@ -229,13 +231,13 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                   <motion.div key="address" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
                     <h2 className="mb-4 flex items-center gap-2 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">
-                      <MapPin size={18} className="text-red-600" /> Delivery Address
+                      <MapPin size={18} className="text-red-600" /> {t('checkoutDeliveryAddress')}
                     </h2>
                     {hasSavedAddresses && (
                       <div className="mb-4 space-y-2">
                         {(user?.addresses ?? []).map((a: AddressForm & { _id?: string }) => (
                           <button key={a._id} onClick={() => { setSelectedAddress(a); setUseNewAddress(false) }}
-                            className={cn('w-full rounded-xl border-2 p-3 text-left text-sm transition-colors',
+                            className={cn('w-full rounded-xl border-2 p-3 text-start text-sm transition-colors',
                               !useNewAddress && (selectedAddress ?? user?.addresses?.[0]) === a
                                 ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                                 : 'border-gray-200 hover:border-gray-300 dark:border-gray-700')}>
@@ -244,10 +246,10 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                           </button>
                         ))}
                         <button onClick={() => setUseNewAddress(true)}
-                          className={cn('w-full rounded-xl border-2 p-3 text-left text-sm transition-colors',
+                          className={cn('w-full rounded-xl border-2 p-3 text-start text-sm transition-colors',
                             useNewAddress ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                                           : 'border-gray-200 hover:border-gray-300 dark:border-gray-700')}>
-                          + Use a new address
+                          {t('checkoutUseNewAddress')}
                         </button>
                       </div>
                     )}
@@ -266,12 +268,13 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                       if (isUsingNewAddress) {
                         handleSubmit(() => setStep('payment'), () => {
                           toast.error('Please fill in all address fields')
+                          toast.error(t('checkoutFillAddressFields'))
                         })()
                       } else {
                         setStep('payment')
                       }
                     }}>
-                      Continue to Payment
+                      {t('checkoutContinuePayment')}
                     </Button>
                   </motion.div>
                 )}
@@ -279,24 +282,24 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                 {step === 'payment' && (
                   <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-2">اختار طريقة الدفع</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">التوصيل بيتم خلال 3 أيام عمل من تأكيد الطلب 🚚</p>
+                    <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('checkoutSelectPaymentMethod')}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{t('checkoutDeliveryTimeNote')}</p>
 
                     <div className="space-y-3">
                       {([
                         { id: 'instapay' as const, icon: Smartphone,
-                          label: 'إنستاباي (الأسهل والأسرع) 🚀',
-                          sub:   'حول المبلغ على 01044461683 وابعت سكرين شوت على الواتساب.' },
+                          label: t('checkoutInstapayLabel'),
+                          sub:   t('checkoutInstapaySub') },
                         ...(storeConfig.delivery.cashOnDelivery ? [{
                           id: 'cash_on_delivery' as const, icon: Banknote,
-                          label: 'كاش عند الاستلام 💵',
-                          sub:   'لتأكيد الأوردر، لازم تحول تمن الشحن الأول، وهتدفع تمن المنتج وقت الاستلام.' }] : []),
+                          label: t('checkoutCodLabel'),
+                          sub:   t('checkoutCodSub') }] : []),
                         ...(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? [{
                           id: 'stripe' as const, icon: CreditCard,
-                          label: 'Credit / Debit Card 💳', sub: 'Secure card payment via Stripe.' }] : []),
+                          label: t('checkoutCardLabel'), sub: t('checkoutCardSub') }] : []),
                       ] as Array<{ id: PaymentMethod; icon: React.ElementType; label: string; sub: string }>).map(m => (
                         <button key={m.id} onClick={() => setPayment(m.id)}
-                          className={cn('flex w-full items-start gap-3 rounded-xl border-2 p-3 text-left transition-colors sm:items-center sm:gap-4 sm:p-4',
+                          className={cn('flex w-full items-start gap-3 rounded-xl border-2 p-3 text-start transition-colors sm:items-center sm:gap-4 sm:p-4',
                             paymentMethod === m.id ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                                                    : 'border-gray-200 hover:border-gray-300 dark:border-gray-700')}>
                           <div className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-10 sm:w-10',
@@ -314,14 +317,14 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
 
                     {paymentMethod === 'cash_on_delivery' && (
                       <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
-                        <p className="font-semibold">{COD_ADVANCE_NOTE_EN}</p>
-                        <p className="mt-1" dir="rtl">{COD_ADVANCE_NOTE_AR}</p>
+                        <p className="font-semibold">{t('checkoutCodAdvanceNoteEn')}</p>
+                        <p className="mt-1" dir={lang === 'ar' ? 'rtl' : 'ltr'}>{t('checkoutCodAdvanceNoteAr')}</p>
                       </div>
                     )}
 
                     {paymentMethod === 'stripe' && (
                       <div className="mt-5 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-                        <p className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Card details</p>
+                        <p className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">{t('checkoutCardDetails')}</p>
                         <CardElement options={{ style: { base: { fontSize: '15px', color: '#111', '::placeholder': { color: '#9ca3af' } }, invalid: { color: '#ef4444' } } }} />
                       </div>
                     )}
@@ -333,19 +336,18 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                           <div className="rounded-lg bg-red-600 px-3 py-2 text-sm font-bold text-white">Vodafone Cash</div>
                           <div className="w-full font-mono text-sm font-bold text-gray-900 dark:text-gray-100 sm:w-auto sm:text-base" dir="ltr">{TRANSFER_NUMBER}</div>
                         </div>
-                        <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100" dir="rtl">كل التحويلات يجب ان تكون علي هذا الرقم</p>
+                        <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100" dir={lang === 'ar' ? 'rtl' : 'ltr'}>{t('checkoutTransferNote')}</p>
                       </div>
                     )}
 
-                    {/* Proof upload — required for ALL payment methods */}
                     <div className="mt-5">
                       <p className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
-                        📎 Upload payment proof screenshot <span className="text-red-500">*</span>
+                        {t('checkoutUploadScreenshot')} <span className="text-red-500">*</span>
                       </p>
                       <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
                         {paymentMethod === 'cash_on_delivery'
-                          ? 'Upload screenshot of the delivery fee transfer before submitting.'
-                          : 'Upload a screenshot confirming your payment transfer.'}
+                          ? t('checkoutUploadScreenshotSubCod')
+                          : t('checkoutUploadScreenshotSubDefault')}
                       </p>
                       <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-4 text-center transition-colors hover:border-red-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-red-700 sm:p-5">
                         <input type="file" accept="image/*" className="sr-only" onChange={handleProofChange} />
@@ -353,28 +355,28 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                           <div className="w-full">
                             <img src={proofPreview} alt="Payment screenshot preview" className="mx-auto max-h-56 rounded-lg object-contain" />
                             <p className="mt-3 break-words text-sm font-medium text-gray-900 dark:text-gray-100">{proofFile?.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Click to replace screenshot</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{lang === 'ar' ? 'انقر لاستبدال لقطة الشاشة' : 'Click to replace screenshot'}</p>
                           </div>
                         ) : (
                           <>
-                            <Upload size={24} className="text-red-600" />
-                            <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">Upload payment screenshot</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, or WebP up to 5MB</p>
+                            <Upload size={24} className="text-red-650" />
+                            <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">{t('checkoutUploadButtonLabel')}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{t('checkoutUploadButtonLimits')}</p>
                           </>
                         )}
                       </label>
                     </div>
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                      <Button variant="outline" onClick={() => setStep('address')}>Back</Button>
-                      <Button fullWidth onClick={() => setStep('review')}>Review Order</Button>
+                      <Button variant="outline" onClick={() => setStep('address')}>{t('checkoutBack')}</Button>
+                      <Button fullWidth onClick={() => setStep('review')}>{t('checkoutReviewOrder')}</Button>
                     </div>
                   </motion.div>
                 )}
-
+ 
                 {step === 'review' && (
                   <motion.div key="review" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="mb-4 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">Review Your Order</h2>
+                    <h2 className="mb-4 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">{t('checkoutReviewYourOrderTitle')}</h2>
                     <div className="space-y-3 mb-6">
                       {safeItems.map(item => (
                         <div key={item.product._id} className="flex gap-3 sm:gap-4">
@@ -382,7 +384,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                           <div className="flex min-w-0 flex-1 flex-col gap-1 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between min-[420px]:gap-3">
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-1">{item.product.name}</p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{t('checkoutQty')}: {item.quantity}</p>
                             </div>
                             <span className="shrink-0 text-sm font-bold text-gray-900 dark:text-gray-100">
                               {formatPrice(((item.variant?.price != null && Number.isFinite(item.variant.price)) ? item.variant.price : item.product.price) * item.quantity)}
@@ -393,17 +395,17 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
                     </div>
                     {paymentMethod === 'instapay' && (
                       <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-3 mb-6">
-                        <ImageIcon size={16} className="text-red-500 shrink-0" />
+                        <ImageIcon size={16} className="text-red-650 shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">Payment screenshot</p>
-                          <p className="truncate text-xs text-gray-500 dark:text-gray-400">{proofFile?.name ?? 'No screenshot uploaded yet'}</p>
+                          <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">{t('checkoutPaymentScreenshotLabel')}</p>
+                          <p className="truncate text-xs text-gray-500 dark:text-gray-400">{proofFile?.name ?? t('checkoutNoScreenshotUploaded')}</p>
                         </div>
                       </div>
                     )}
                     <div className="flex flex-col gap-3 sm:flex-row">
-                      <Button variant="outline" onClick={() => setStep('payment')}>Back</Button>
+                      <Button variant="outline" onClick={() => setStep('payment')}>{t('checkoutBack')}</Button>
                       <Button fullWidth loading={isPending || stripeProcessing} onClick={placeOrder} size="lg" className="px-4">
-                        Place Order — {formatPrice(total)}
+                        {lang === 'ar' ? 'تأكيد الطلب — ' : 'Place Order — '}{formatPrice(total)}
                       </Button>
                     </div>
                   </motion.div>
@@ -413,24 +415,24 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
 
             <div className="h-fit lg:sticky lg:top-24">
               <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">Order Summary</h3>
+                <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">{t('cartOrderSummary')}</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between gap-4 text-gray-600 dark:text-gray-400">
-                    <span>Subtotal ({safeItems.length} items)</span>
+                    <span>{t('cartSubtotal')} ({safeItems.length} {t('items')})</span>
                     <span className="shrink-0">{formatPrice(subtotal)}</span>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
-                      <span>Discount</span><span>−{formatPrice(discount)}</span>
+                      <span>{t('cartDiscount')}</span><span>−{formatPrice(discount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Delivery</span>
-                    <span className="shrink-0">{deliveryFee === 0 ? 'Free' : formatPrice(deliveryFee)}</span>
+                    <span>{t('cartDelivery')}</span>
+                    <span className="shrink-0">{deliveryFee === 0 ? (lang === 'ar' ? 'مجاناً' : 'Free') : formatPrice(deliveryFee)}</span>
                   </div>
                   <div className="h-px bg-gray-100 dark:bg-gray-800" />
                   <div className="flex justify-between gap-4 text-base font-bold text-gray-900 dark:text-gray-100">
-                    <span>Total</span><span className="shrink-0">{formatPrice(total)}</span>
+                    <span>{t('cartTotal')}</span><span className="shrink-0">{formatPrice(total)}</span>
                   </div>
                 </div>
               </div>
@@ -464,6 +466,7 @@ export default function CheckoutPage() {
 }
 
 function OrderSuccess({ orderNumber }: { orderNumber: string }) {
+  const { t } = useTranslation()
   return (
     <>
       <Navbar />
@@ -473,13 +476,13 @@ function OrderSuccess({ orderNumber }: { orderNumber: string }) {
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
             <Check size={30} />
           </div>
-          <h1 className="font-display text-xl font-bold text-gray-900 dark:text-white sm:text-3xl">Thank you for your order</h1>
+          <h1 className="font-display text-xl font-bold text-gray-900 dark:text-white sm:text-3xl">{t('checkoutSuccessTitle')}</h1>
           {orderNumber && (
             <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-              Order <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">{orderNumber}</span> is confirmed.
+              {t('orderLabel')} <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">{orderNumber}</span> {t('checkoutSuccessConfirmed')}
             </p>
           )}
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">We are sending you back to the homepage.</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('checkoutSuccessMessage')}</p>
         </motion.div>
       </main>
       <Footer />
