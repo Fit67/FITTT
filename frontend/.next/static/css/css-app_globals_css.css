@@ -5192,6 +5192,11 @@ html, body {
     font-size: 10px;
   }
 
+  .sm\:drop-shadow-\[0_30px_50px_rgba\(0\2c 0\2c 0\2c 0\.3\)\]{
+    --tw-drop-shadow: drop-shadow(0 30px 50px rgba(0,0,0,0.3));
+    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+  }
+
   .group:hover .sm\:group-hover\:scale-90{
     --tw-scale-x: .9;
     --tw-scale-y: .9;

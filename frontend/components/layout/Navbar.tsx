@@ -45,8 +45,8 @@ export function Navbar() {
       style={{
         zIndex: 100,
         background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%)',
-        backdropFilter: 'blur(32px)',
-        WebkitBackdropFilter: 'blur(32px)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         borderTop: '1px solid rgba(255,255,255,0.4)',
         borderLeft: '1px solid rgba(255,255,255,0.3)',
         borderRight: '1px solid rgba(255,255,255,0.1)',

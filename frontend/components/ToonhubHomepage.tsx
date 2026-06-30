@@ -132,7 +132,7 @@ export function ToonhubHomepage() {
       case 'center':
         return {
           transform: `translateX(-50%) scale(${itemScale})`,
-          filter: 'blur(0px)',
+          filter: 'none',
           opacity: 1,
           zIndex: 20,
           left: '50%',
@@ -142,7 +142,7 @@ export function ToonhubHomepage() {
       case 'left':
         return {
           transform: `translateX(-50%) scale(${itemScale * 0.75})`,
-          filter: 'blur(2px)',
+          filter: isMob ? 'none' : 'blur(2px)',
           opacity: 0.85,
           zIndex: 10,
           left: isMob ? '20%' : '22%',
@@ -152,7 +152,7 @@ export function ToonhubHomepage() {
       case 'right':
         return {
           transform: `translateX(-50%) scale(${itemScale * 0.75})`,
-          filter: 'blur(2px)',
+          filter: isMob ? 'none' : 'blur(2px)',
           opacity: 0.85,
           zIndex: 10,
           left: isMob ? '80%' : '78%',
@@ -162,7 +162,7 @@ export function ToonhubHomepage() {
       case 'back':
         return {
           transform: 'translateX(-50%) scale(1)',
-          filter: 'blur(4px)',
+          filter: isMob ? 'none' : 'blur(4px)',
           opacity: 1,
           zIndex: 5,
           left: '50%',
@@ -198,7 +198,7 @@ export function ToonhubHomepage() {
             opacity: 0.4,
             backgroundSize: '200px 200px',
             backgroundRepeat: 'repeat',
-            zIndex: 50,
+            zIndex: 1,
           }}
         />
 
@@ -269,8 +269,8 @@ export function ToonhubHomepage() {
                   left: roleStyle.left,
                   height: roleStyle.height,
                   bottom: roleStyle.bottom,
-                  transition: 'transform 650ms cubic-bezier(0.4, 0, 0.2, 1), filter 650ms cubic-bezier(0.4, 0, 0.2, 1), opacity 650ms cubic-bezier(0.4, 0, 0.2, 1), left 650ms cubic-bezier(0.4, 0, 0.2, 1), bottom 650ms cubic-bezier(0.4, 0, 0.2, 1), height 650ms cubic-bezier(0.4, 0, 0.2, 1)',
-                  willChange: 'transform, filter, opacity',
+                  transition: 'transform 650ms cubic-bezier(0.4, 0, 0.2, 1), opacity 650ms cubic-bezier(0.4, 0, 0.2, 1), left 650ms cubic-bezier(0.4, 0, 0.2, 1), bottom 650ms cubic-bezier(0.4, 0, 0.2, 1), height 650ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  willChange: 'transform, opacity, left, bottom, height',
                 }}
                 className={`select-none ${role === 'center' ? 'pointer-events-none' : 'pointer-events-auto cursor-pointer group'}`}
                 onClick={(e) => {
@@ -291,7 +291,7 @@ export function ToonhubHomepage() {
                   alt={item.name}
                   draggable={false}
                   referrerPolicy="no-referrer"
-                  className={`w-full h-full object-contain object-bottom select-none drop-shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-transform ${role !== 'center' ? 'group-hover:brightness-110 group-hover:scale-[1.02]' : ''}`}
+                  className={`w-full h-full object-contain object-bottom select-none sm:drop-shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-transform ${role !== 'center' ? 'group-hover:brightness-110 group-hover:scale-[1.02]' : ''}`}
                 />
               </div>
             );
