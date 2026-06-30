@@ -371,12 +371,6 @@ export function ToonhubHomepage() {
                 strokeWidth={2.25}
               />
             </button>
-            <Link
-              href={`/shop/products/${activeItem.slug}`}
-              className="ml-2 sm:ml-4 px-6 py-3 sm:px-8 sm:h-16 flex items-center justify-center bg-white text-black font-bold uppercase tracking-wider rounded-full hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-200 text-xs sm:text-sm shadow-[0_4px_14px_0_rgba(255,255,255,0.25)]"
-            >
-              View Details
-            </Link>
           </div>
         </div>
 
@@ -407,6 +401,25 @@ export function ToonhubHomepage() {
             }}
             strokeWidth={2.25}
           />
+        </Link>
+
+        {/* 7. Floating View Details Button */}
+        <Link
+          href={`/shop/products/${activeItem.slug}`}
+          className="absolute z-[60] flex items-center justify-center bg-white text-black font-bold uppercase tracking-wider rounded-full hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-200 shadow-[0_4px_14px_0_rgba(255,255,255,0.25)]"
+          style={{
+            // On desktop: Left side of the jar. On mobile: Bottom-center right below the jar.
+            left: isMobile ? '50%' : '32%',
+            top: isMobile ? 'auto' : '50%',
+            bottom: isMobile ? '22%' : 'auto',
+            transform: isMobile ? 'translateX(-50%)' : 'translateY(-50%)',
+            opacity: isAnimating ? 0 : 1,
+            pointerEvents: isAnimating ? 'none' : 'auto',
+            padding: isMobile ? '12px 24px' : '16px 32px',
+            fontSize: isMobile ? '12px' : '14px',
+          }}
+        >
+          View Details
         </Link>
 
         {/* Custom Progress Indicators */}
