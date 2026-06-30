@@ -302,7 +302,7 @@ function LoginFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch, onGoog
         <span className="inline-block px-3 py-1 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-full mb-4">
           Account
         </span>
-        <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+        <h1 className="font-anton text-4xl sm:text-5xl uppercase tracking-wide text-gray-900 dark:text-white leading-none">
           {t('welcomeBack')}
         </h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('signInToAccount')}</p>
@@ -380,7 +380,7 @@ function RegisterFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch }: {
         <span className="inline-block px-3 py-1 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-full mb-4">
           New account
         </span>
-        <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+        <h1 className="font-anton text-4xl sm:text-5xl uppercase tracking-wide text-gray-900 dark:text-white leading-none">
           {t('createAccount')}
         </h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('joinUs')}</p>

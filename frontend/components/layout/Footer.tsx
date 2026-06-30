@@ -24,9 +24,6 @@ const footerLinks = {
     key: 'shop' as const,
     links: [
       { labelKey: 'footerLinkAllProducts' as const,   href: '/shop/products'                },
-      { labelKey: 'footerLinkNewArrivals' as const,   href: '/shop/products?isNew=true'     },
-      { labelKey: 'footerLinkBestSellers' as const,   href: '/shop/products?sortBy=popular' },
-      { labelKey: 'footerLinkDealsOffers' as const, href: '/shop/products?onSale=true'    },
     ]
   },
   Help: {
@@ -36,24 +33,6 @@ const footerLinks = {
       { labelKey: 'footerLinkMyAccount' as const,       href: '/shop/profile'               },
       { labelKey: 'footerLinkMyWishlist' as const,      href: '/shop/wishlist'               },
       { labelKey: 'footerLinkShoppingCart' as const,    href: '/shop/cart'                   },
-    ]
-  },
-  Legal: {
-    key: 'legal' as const,
-    links: [
-      { labelKey: 'footerLinkShippingPolicy' as const,       href: '/shipping-policy'       },
-      { labelKey: 'footerLinkReturnPolicy' as const, href: '/return-refund-policy' },
-      { labelKey: 'footerLinkPrivacyPolicy' as const,        href: '/privacy-policy'        },
-      { labelKey: 'footerLinkTerms' as const,    href: '/terms'                 },
-    ]
-  },
-  Categories: {
-    key: 'categories' as const,
-    links: [
-      { labelKey: 'footerLinkProtein' as const,       href: '/shop/products?category=protein'    },
-      { labelKey: 'footerLinkCreatine' as const,      href: '/shop/products?category=creatine'   },
-      { labelKey: 'footerLinkPreWorkout' as const,   href: '/shop/products?category=pre-workout'},
-      { labelKey: 'footerLinkVitamins' as const,      href: '/shop/products?category=vitamins'   },
     ]
   },
 }
@@ -80,20 +59,25 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative mt-0 bg-gray-900 dark:bg-black text-gray-300">
+    <footer 
+      className="relative mt-0 text-gray-900 transition-colors duration-700 font-sans"
+      style={{
+        background: `linear-gradient(rgba(255, 255, 255, 0.90), rgba(255, 255, 255, 0.90)), ${storeConfig.primaryColor}`
+      }}
+    >
 
       {/* ── Newsletter Strip ── */}
-      <div className="border-b border-gray-800">
+      <div className="border-b border-black/10">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-14">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <span className="inline-block px-4 py-1.5 text-xs font-medium border border-gray-600 rounded-full text-gray-400 mb-4">
+              <span className="inline-block px-4 py-1.5 text-xs font-semibold border border-black/20 rounded-full text-black/70 tracking-wider mb-4">
                 {t('footerNewsletter')}
               </span>
-              <h3 className="font-display text-2xl font-bold text-white leading-tight">
+              <h3 className="font-anton uppercase tracking-wide text-3xl font-bold text-black leading-tight">
                 {t('footerNewsletterTitle')}
               </h3>
-              <p className="mt-2 text-sm text-gray-400 leading-relaxed max-w-sm">
+              <p className="mt-2 text-sm text-gray-600 font-medium leading-relaxed max-w-sm">
                 {t('footerNewsletterDesc')}
               </p>
             </div>
@@ -102,23 +86,23 @@ export function Footer() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-3 text-sm text-green-400 font-medium"
+                className="flex items-center gap-3 text-sm text-green-700 font-medium"
               >
-                <span className="inline-flex h-8 w-8 items-center justify-center bg-green-900/30 rounded-full text-green-400">✓</span>
+                <span className="inline-flex h-8 w-8 items-center justify-center bg-green-100 rounded-full text-green-700">✓</span>
                 {t('footerSubscribedText')}
               </motion.div>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex gap-0">
+              <form onSubmit={handleSubscribe} className="flex gap-0 relative">
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="flex-1 border border-gray-700 bg-gray-800/50 rounded-s-full px-5 py-3.5 text-sm text-white placeholder:text-gray-500 outline-none focus:border-red-500 transition-colors"
+                  className="flex-1 border border-black/10 bg-white/60 rounded-full px-6 py-4 text-sm text-gray-900 placeholder:text-gray-500 outline-none focus:border-black/30 focus:bg-white transition-colors"
                 />
                 <button
                   type="submit"
-                  className="flex h-[50px] px-6 shrink-0 items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-e-full transition-colors font-medium text-sm gap-2"
+                  className="absolute right-1 top-1 bottom-1 px-6 flex shrink-0 items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors font-medium text-sm gap-2 shadow-md"
                 >
                   <Send size={14} />
                   {t('footerSubscribeBtn')}
@@ -131,7 +115,7 @@ export function Footer() {
 
       {/* ── Main Footer Grid ── */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-14 md:py-16">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-6 lg:gap-12">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-2">
@@ -139,27 +123,27 @@ export function Footer() {
               <BrandLogo imageClassName="h-20 max-w-[190px]" />
             </Link>
 
-            <p className="text-sm text-gray-400 leading-relaxed max-w-[240px] mb-6">
+            <p className="text-sm text-gray-600 font-medium leading-relaxed max-w-[240px] mb-6">
               {storeConfig.tagline}
             </p>
 
             {/* Contact */}
-            <ul className="space-y-3 mb-6">
+            <ul className="space-y-3 mb-6 text-sm text-gray-600 font-medium">
               {[
                 { icon: MapPin, text: `${contact.address}, ${contact.city}` },
                 { icon: Phone,  text: contact.phone                         },
                 { icon: Mail,   text: contact.email                         },
                 { icon: Clock,  text: contact.workingHours                  },
               ].map(({ icon: Icon, text }) => (
-                <li key={text} className="flex items-start gap-3 text-sm text-gray-400">
-                  <Icon size={14} className="mt-0.5 shrink-0 text-red-400" />
+                <li key={text} className="flex items-start gap-3">
+                  <Icon size={14} className="mt-0.5 shrink-0 text-gray-500" />
                   {text}
                 </li>
               ))}
             </ul>
 
             {/* Social */}
-            <div className="flex gap-3">
+            <div className="flex gap-3 mt-8">
               {Object.entries(social).map(([platform, url]) => {
                 const Icon = socialIcons[platform]
                 if (!Icon || !url) return null
@@ -169,7 +153,7 @@ export function Footer() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center bg-gray-800 hover:bg-red-600 text-gray-400 hover:text-white rounded-full transition-all duration-200"
+                    className="flex h-10 w-10 items-center justify-center bg-white/80 border border-black/5 hover:bg-black hover:text-white rounded-full transition-all duration-200 shadow-sm text-gray-800"
                   >
                     <Icon size={16} />
                   </a>
@@ -181,15 +165,15 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([sectionName, sectionData]) => (
             <div key={sectionName}>
-              <h4 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-black">
                 {t(sectionData.key)}
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-4 text-sm text-gray-600 font-medium">
                 {sectionData.links.map(link => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+                      className="hover:text-black transition-colors"
                     >
                       {t(link.labelKey)}
                     </Link>
@@ -202,16 +186,14 @@ export function Footer() {
       </div>
 
       {/* ── Bottom Bar ── */}
-      <div className="border-t border-gray-800">
+      <div className="border-t border-black/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 px-4 md:px-6 py-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-gray-500 font-medium">
             © {new Date().getFullYear()} {storeConfig.name}. {t('footerCopyright')}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <Link href="/shop/products" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">Products</Link>
-            <Link href="/shop/orders" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">Orders</Link>
-            <Link href="/privacy-policy" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">Privacy</Link>
-            <Link href="/terms" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">Terms</Link>
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium">
+            <Link href="/shop/products" className="text-gray-500 hover:text-black transition-colors">Products</Link>
+            <Link href="/shop/orders" className="text-gray-500 hover:text-black transition-colors">Orders</Link>
           </div>
         </div>
       </div>

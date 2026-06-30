@@ -39,6 +39,7 @@ const config: Config = {
         display: ['var(--font-display)', 'Outfit', 'Inter', 'system-ui', 'sans-serif'],
         body:    ['var(--font-body)', 'Inter', 'system-ui', 'sans-serif'],
         mono:    ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
+        anton:   ['Anton', 'sans-serif'],
       },
       borderRadius: {
         card:   'var(--radius-card)',

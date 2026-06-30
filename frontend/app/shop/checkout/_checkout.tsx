@@ -212,7 +212,7 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
+      <main className="min-h-screen pb-20 pt-32 sm:pb-32 sm:pt-40">
         <div className="container-page">
           <nav className="mb-5 flex max-w-full items-center gap-1.5 overflow-x-auto whitespace-nowrap pb-1 text-xs text-gray-500 dark:text-gray-400 sm:mb-6 sm:text-sm">
             <span>{t('checkoutStepCart')}</span>
@@ -229,9 +229,9 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
               <AnimatePresence mode="wait">
                 {step === 'address' && (
                   <motion.div key="address" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                    className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="mb-4 flex items-center gap-2 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">
-                      <MapPin size={18} className="text-red-600" /> {t('checkoutDeliveryAddress')}
+                    className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8">
+                    <h2 className="mb-6 flex items-center gap-2 font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white sm:mb-8 sm:text-3xl">
+                      <MapPin size={24} className="text-red-600" /> {t('checkoutDeliveryAddress')}
                     </h2>
                     {hasSavedAddresses && (
                       <div className="mb-4 space-y-2">
@@ -281,8 +281,8 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
 
                 {step === 'payment' && (
                   <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                    className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('checkoutSelectPaymentMethod')}</h2>
+                    className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8">
+                    <h2 className="font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white mb-4">{t('checkoutSelectPaymentMethod')}</h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{t('checkoutDeliveryTimeNote')}</p>
 
                     <div className="space-y-3">
@@ -375,8 +375,8 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
  
                 {step === 'review' && (
                   <motion.div key="review" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                    className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                    <h2 className="mb-4 font-display text-base font-semibold text-gray-900 dark:text-white sm:mb-5 sm:text-lg">{t('checkoutReviewYourOrderTitle')}</h2>
+                    className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8">
+                    <h2 className="mb-6 font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white">{t('checkoutReviewYourOrderTitle')}</h2>
                     <div className="space-y-3 mb-6">
                       {safeItems.map(item => (
                         <div key={item.product._id} className="flex gap-3 sm:gap-4">
@@ -414,8 +414,8 @@ function CheckoutInner({ stripeInstance, elementsInstance }: CheckoutInnerProps)
             </div>
 
             <div className="h-fit lg:sticky lg:top-24">
-              <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-6">
-                <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">{t('cartOrderSummary')}</h3>
+              <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8">
+                <h3 className="font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white mb-6">{t('cartOrderSummary')}</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between gap-4 text-gray-600 dark:text-gray-400">
                     <span>{t('cartSubtotal')} ({safeItems.length} {t('items')})</span>
@@ -472,11 +472,11 @@ function OrderSuccess({ orderNumber }: { orderNumber: string }) {
       <Navbar />
       <main className="flex min-h-screen items-center justify-center px-3 pb-10 pt-4 sm:px-4 sm:pb-16 sm:pt-6">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
-          className="w-full max-w-md rounded-xl border border-gray-100 bg-white p-6 text-center shadow-card dark:border-gray-800 dark:bg-gray-900 sm:p-8">
+          className="w-full max-w-md rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
             <Check size={30} />
           </div>
-          <h1 className="font-display text-xl font-bold text-gray-900 dark:text-white sm:text-3xl">{t('checkoutSuccessTitle')}</h1>
+          <h1 className="font-anton text-3xl sm:text-4xl uppercase tracking-wide text-gray-900 dark:text-white">{t('checkoutSuccessTitle')}</h1>
           {orderNumber && (
             <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
               {t('orderLabel')} <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">{orderNumber}</span> {t('checkoutSuccessConfirmed')}
@@ -494,7 +494,7 @@ function CheckoutSkeleton() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
+      <main className="min-h-screen pb-20 pt-32 sm:pb-32 sm:pt-40">
         <div className="container-page">
           <div className="mb-5 h-8 w-36 skeleton rounded-full sm:mb-8 sm:w-40" />
           <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-3">

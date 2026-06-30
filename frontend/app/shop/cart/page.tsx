@@ -79,13 +79,13 @@ export default function CartPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pb-10 pt-4 sm:pb-16 sm:pt-6">
+      <main className="min-h-screen pb-20 pt-32 sm:pb-32 sm:pt-40">
         <div className="container-page">
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.0, 0.0, 0.2, 1.0] }}
-            className="mb-5 font-display text-2xl font-bold text-gray-900 dark:text-white sm:mb-8 sm:text-3xl">
+            className="mb-8 font-anton text-4xl sm:text-6xl uppercase tracking-wider text-gray-900 dark:text-white">
             {t('cartYourCart')}
             <Badge variant="primary" className="ms-3 translate-y-[-2px]">{items.length}</Badge>
           </motion.h1>
@@ -103,14 +103,14 @@ export default function CartPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -80, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                    className="flex flex-col gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-card transition-all hover:shadow-card-hover min-[420px]:flex-row sm:gap-4 sm:p-4 dark:border-gray-800 dark:bg-gray-900"
+                    className="flex flex-col gap-4 rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-4 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] hover:scale-[1.02] min-[420px]:flex-row sm:gap-6 sm:p-6"
                   >
                     {/* Image */}
                     <Link href={`/shop/products/${item.product.slug}`} className="shrink-0">
                       <img
                         src={getProductImage(item.product.images ?? [])}
                         alt={item.product.name}
-                        className="h-24 w-full rounded-lg object-cover transition-transform duration-300 hover:scale-105 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24"
+                        className="h-28 w-full rounded-2xl object-cover drop-shadow-[0_10px_15px_rgba(0,0,0,0.15)] transition-transform duration-300 hover:scale-[1.08] min-[420px]:h-24 min-[420px]:w-24 sm:h-28 sm:w-28"
                         onError={(e) => { ;(e.target as HTMLImageElement).src = '/images/placeholder.png' }}
                       />
                     </Link>
@@ -119,7 +119,7 @@ export default function CartPage() {
                     <div className="flex flex-1 flex-col gap-1 min-w-0">
                       <Link
                         href={`/shop/products/${item.product.slug}`}
-                        className="font-medium text-gray-900 dark:text-gray-100 hover:text-red-600 dark:hover:text-red-400 transition-colors line-clamp-2"
+                        className="text-lg font-anton uppercase tracking-wide text-gray-900 dark:text-gray-100 hover:text-red-600 dark:hover:text-red-400 transition-colors line-clamp-2"
                       >
                         {item.product.name}
                       </Link>
@@ -213,8 +213,8 @@ export default function CartPage() {
               transition={{ duration: 0.38, ease: [0.0, 0.0, 0.2, 1.0], delay: 0.08 }}
               className="space-y-4"
             >
-              <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card sm:p-6 dark:border-gray-800 dark:bg-gray-900">
-                <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8">
+                <h2 className="font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white mb-6">
                   {t('cartOrderSummary')}
                 </h2>
 
@@ -253,7 +253,7 @@ export default function CartPage() {
 
               {/* Coupon — no <form> tag to avoid hydration mismatch */}
               {storeConfig.enableCoupons && (
-                <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-card sm:p-5 dark:border-gray-800 dark:bg-gray-900">
+                <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] mt-4">
                   <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
                     <Tag size={14} /> {t('cartCouponCode')}
                   </h3>
@@ -307,7 +307,7 @@ function EmptyCart() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16 flex items-center justify-center">
+      <main className="min-h-screen pt-40 pb-20 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -317,7 +317,7 @@ function EmptyCart() {
           <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20">
             <ShoppingCart size={40} className="text-red-300 dark:text-red-600" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white">{t('cartEmptyTitle')}</h2>
+          <h2 className="font-anton text-4xl uppercase tracking-wide text-gray-900 dark:text-white">{t('cartEmptyTitle')}</h2>
           <p className="mt-2 text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
             {t('cartEmptyText')}
           </p>
@@ -336,7 +336,7 @@ function CartSkeleton() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16">
+      <main className="min-h-screen pt-32 sm:pt-40 pb-20">
         <div className="container-page">
           <div className="h-9 w-40 skeleton rounded-full mb-8" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

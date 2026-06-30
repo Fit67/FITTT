@@ -7,19 +7,22 @@ interface BrandLogoProps {
   imageClassName?: string
 }
 
-export function BrandLogo({ variant = 'full', className, imageClassName }: BrandLogoProps) {
+export function BrandLogo({ variant = 'full', className }: BrandLogoProps) {
   const isMark = variant === 'mark'
+
+  if (isMark) {
+    return (
+      <span className={cn('inline-flex items-center justify-center font-bold tracking-[0.1em]', className)}>
+        <span className="text-black dark:text-white">D</span><span className="text-red-600">F</span>
+      </span>
+    )
+  }
 
   return (
     <span className={cn('inline-flex items-center', className)}>
-      <img
-        src={isMark ? '/images/doctorfit-mark.png' : storeConfig.logo}
-        alt={`${storeConfig.name} logo`}
-        className={cn(
-          isMark ? 'h-9 w-9 object-contain' : 'h-10 w-auto object-contain',
-          imageClassName,
-        )}
-      />
+      <span className="text-xl md:text-2xl uppercase tracking-[0.2em] font-bold flex items-center whitespace-nowrap">
+        <span className="text-black dark:text-white">DOCTOR</span><span className="text-red-600">FIT</span>
+      </span>
     </span>
   )
 }

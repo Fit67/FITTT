@@ -121,15 +121,15 @@ export default function AdminOrdersPage() {
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2.5">
                           <Avatar
-                            name={(order.user as { name: string }).name}
+                            name={(order.user as { name: string })?.name || 'Unknown User'}
                             size="xs"
                           />
                           <div className="min-w-0">
                             <p className="font-medium text-gray-900 dark:text-gray-100 truncate max-w-[120px]">
-                              {(order.user as { name: string }).name}
+                              {(order.user as { name: string })?.name || 'Unknown User'}
                             </p>
                             <p className="text-[10px] text-gray-400 truncate">
-                              {(order.user as { email: string }).email}
+                              {(order.user as { email: string })?.email || 'N/A'}
                             </p>
                           </div>
                         </div>
@@ -219,8 +219,8 @@ export default function AdminOrdersPage() {
             {/* Customer */}
             <div className="rounded-xl bg-surface-raised dark:bg-surface-overlay p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">Customer</p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{(selected.user as { name: string }).name}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{(selected.user as { email: string }).email}</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{(selected.user as { name: string })?.name || 'Unknown User'}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{(selected.user as { email: string })?.email || 'N/A'}</p>
             </div>
 
             {/* Shipping */}

@@ -17,9 +17,9 @@ export default function OrdersPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pb-16 pt-6">
+      <main className="min-h-screen pb-20 pt-32 sm:pb-32 sm:pt-40">
         <div className="container-page max-w-3xl">
-          <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-8">My Orders</h1>
+          <h1 className="font-anton text-4xl sm:text-6xl uppercase tracking-wide text-gray-900 dark:text-white mb-8 leading-none">My Orders</h1>
 
           {isLoading ? (
             <div className="space-y-4">
@@ -34,7 +34,7 @@ export default function OrdersPage() {
               className="flex flex-col items-center py-24 text-center"
             >
               <Package size={56} className="text-gray-200 dark:text-gray-700 mb-4" />
-              <h3 className="font-display text-xl font-semibold text-gray-900 dark:text-white">No orders yet</h3>
+              <h3 className="font-anton text-3xl uppercase tracking-wide text-gray-900 dark:text-white">No orders yet</h3>
               <p className="mt-2 text-gray-500 dark:text-gray-400">When you place an order, it will appear here.</p>
               <Link href="/shop/products" className="mt-6 text-sm font-medium text-red-600 dark:text-red-400 hover:underline">
                 Start Shopping →
@@ -51,7 +51,7 @@ export default function OrdersPage() {
                 >
                   <Link
                     href={`/shop/orders/${order._id}`}
-                    className="flex items-center gap-4 rounded-xl border border-gray-100 bg-white p-5 shadow-card hover:shadow-card-hover dark:border-gray-800 dark:bg-gray-900 transition-shadow group"
+                    className="flex items-center gap-4 rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] hover:scale-[1.02] transition-all group"
                   >
                     {/* Order image preview */}
                     <div className="flex -space-x-2 shrink-0">

@@ -163,7 +163,7 @@ export default function ProductPage({ params }: Props) {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-4 sm:pt-20">
+      <main className="min-h-screen pt-32 sm:pt-40 pb-20">
         <div className="container-page py-5 sm:py-10">
 
           {/* Breadcrumb */}
@@ -189,11 +189,15 @@ export default function ProductPage({ params }: Props) {
           </nav>
 
           {/* Product Layout */}
-          <div className="grid grid-cols-1 gap-6 sm:gap-10 lg:grid-cols-2 xl:gap-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 gap-6 sm:gap-10 lg:grid-cols-2 xl:gap-16"
+          >
 
             {/* Image Gallery */}
             <div className="flex flex-col gap-4">
-              <div className="relative aspect-square overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+              <div className="relative aspect-square overflow-hidden rounded-3xl bg-white/40 dark:bg-black/20 backdrop-blur-md border border-white/60 dark:border-white/10 flex items-center justify-center p-8">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={selectedImg}
@@ -203,7 +207,7 @@ export default function ProductPage({ params }: Props) {
                     animate={{ opacity: 1, scale: 1    }}
                     exit={{    opacity: 0, scale: 0.96  }}
                     transition={{ duration: 0.25 }}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
                     onError={(e) => {
                       // BUG FIXED: broken image src crashing the render
                       ;(e.target as HTMLImageElement).src = '/images/placeholder.png'
@@ -271,7 +275,7 @@ export default function ProductPage({ params }: Props) {
                     {product.category.name}
                   </Link>
                 )}
-                <h1 className="mt-1 font-display text-2xl font-bold leading-tight text-gray-900 sm:text-3xl dark:text-white">
+                <h1 className="mt-1 font-anton text-4xl sm:text-6xl uppercase tracking-wide leading-none text-gray-900 dark:text-white">
                   {product.name}
                 </h1>
               </div>
@@ -289,7 +293,7 @@ export default function ProductPage({ params }: Props) {
               )}
 
               <div className="flex flex-wrap items-end gap-2 sm:gap-3">
-                <span className="font-display text-3xl font-bold text-gray-900 sm:text-4xl dark:text-white">
+                <span className="font-mono text-4xl font-black text-gray-900 sm:text-5xl dark:text-white">
                   {formatPrice(effectivePrice)}
                 </span>
                 {product.comparePrice && product.comparePrice > effectivePrice && (
@@ -359,7 +363,7 @@ export default function ProductPage({ params }: Props) {
               )}
 
               {/* Quantity + CTA */}
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-4 mt-4 p-4 sm:p-6 bg-white/40 dark:bg-black/20 backdrop-blur-md border border-white/60 dark:border-white/10 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.05)]">
                 <div className="flex items-center rounded-full border border-gray-200 dark:border-gray-700">
                   <button
                     onClick={() => setQty(q => Math.max(1, q - 1))}
@@ -435,7 +439,7 @@ export default function ProductPage({ params }: Props) {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Tabs */}
           <div className="mt-16">

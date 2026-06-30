@@ -202,7 +202,7 @@ export default function DashboardPage() {
                 { label: 'Delivered',  value: stats?.orders.byStatus?.delivered   ?? 0, color: 'bg-emerald-400' },
                 { label: 'Cancelled',  value: stats?.orders.byStatus?.cancelled   ?? 0, color: 'bg-red-400' },
               ].map(item => {
-                const pct = stats ? (item.value / stats.orders.total) * 100 : 0
+                const pct = (stats && stats.orders.total > 0) ? (item.value / stats.orders.total) * 100 : 0
                 return (
                   <div key={item.label}>
                     <div className="mb-1 flex justify-between text-xs">
@@ -276,10 +276,10 @@ export default function DashboardPage() {
                       <td className="px-6 py-4">
                         <div>
                           <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {(order.user as { name: string }).name}
+                            {(order.user as { name: string })?.name || 'Unknown User'}
                           </p>
                           <p className="text-xs text-gray-400">
-                            {(order.user as { email: string }).email}
+                            {(order.user as { email: string })?.email || 'N/A'}
                           </p>
                         </div>
                       </td>

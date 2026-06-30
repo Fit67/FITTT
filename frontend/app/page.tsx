@@ -1,14 +1,7 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
-import { Navbar }               from '@/components/layout/Navbar'
-import { Footer }               from '@/components/layout/Footer'
-import { HeroSection }          from '@/modules/hero/HeroSection'
-import { CategoriesGrid }       from '@/modules/categories/CategoriesGrid'
-import { FeaturedProducts }     from '@/modules/product-card/FeaturedProducts'
-import { PromoBanners, PremiumExperience, FlashDealBanner } from '@/modules/banners/PromoBanners'
-import { DeliveryStripeBanner } from '@/modules/banners/DeliveryStripeBanner'
-import { ThemeApplier }         from '@/components/providers/ThemeApplier'
-import { storeConfig }          from '@/config/store'
+import { ThemeApplier } from '@/components/providers/ThemeApplier'
+import { storeConfig } from '@/config/store'
+import { ToonhubHomepage } from '@/components/ToonhubHomepage'
 
 export const metadata: Metadata = {
   title:       storeConfig.seo.title,
@@ -19,23 +12,9 @@ export default function HomePage() {
   return (
     <>
       <ThemeApplier />
-      <Navbar />
       <main>
-        <HeroSection />
-        <DeliveryStripeBanner />
-        <Suspense fallback={null}>
-          <CategoriesGrid />
-        </Suspense>
-        <Suspense fallback={null}>
-          <FeaturedProducts />
-        </Suspense>
-        <PremiumExperience />
-        <FlashDealBanner />
-        <Suspense fallback={null}>
-          <PromoBanners />
-        </Suspense>
+        <ToonhubHomepage />
       </main>
-      <Footer />
     </>
   )
 }

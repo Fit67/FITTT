@@ -60,14 +60,14 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pb-16 pt-6">
+      <main className="min-h-screen pb-20 pt-32 sm:pb-32 sm:pt-40">
         <div className="container-page max-w-4xl">
 
           {/* ── Profile header ───────────────────────────────── */}
           <div className="mb-8 flex items-center gap-5">
             <Avatar src={user?.avatar} name={user?.name} size="xl" />
             <div>
-              <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white">{user?.name}</h1>
+              <h1 className="font-anton text-4xl sm:text-5xl uppercase tracking-wide text-gray-900 dark:text-white leading-none">{user?.name}</h1>
               <p className="text-gray-500 dark:text-gray-400">{user?.email}</p>
               <div className="mt-1.5 flex gap-2">
                 <Badge variant="primary" size="sm">{user?.role}</Badge>
@@ -108,12 +108,12 @@ export default function ProfilePage() {
                 key={tab}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-xl border border-gray-100 bg-white p-6 shadow-card dark:border-gray-800 dark:bg-gray-900"
+                className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-8"
               >
                 {/* Profile Tab */}
                 {tab === 'profile' && (
                   <form onSubmit={handleSubmit(onProfileSave)} className="space-y-5">
-                    <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                    <h2 className="font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white mb-4">
                       Personal Information
                     </h2>
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                 {tab === 'addresses' && (
                   <div>
                     <div className="flex items-center justify-between mb-5">
-                      <h2 className="font-display text-lg font-semibold text-gray-900 dark:text-white">
+                      <h2 className="font-anton text-2xl uppercase tracking-wide text-gray-900 dark:text-white">
                         Saved Addresses
                       </h2>
                       <Button

@@ -116,7 +116,7 @@ export default function AdminProductsPage() {
                       <td className="px-5 py-4"><Skeleton className="h-4 w-16 ml-auto" /></td>
                     </tr>
                   ))
-                : data?.data.map(product => (
+                : (Array.isArray(data?.data) ? data.data : Array.isArray((data as any)?.data?.data) ? (data as any).data.data : []).map((product: Product) => (
                     <motion.tr
                       key={product._id}
                       initial={{ opacity: 0 }}
@@ -161,13 +161,13 @@ export default function AdminProductsPage() {
                       <td className="px-5 py-4">
                         <span className={cn(
                           'text-sm font-medium',
-                          product.inventory.quantity <= 0 ? 'text-red-500' :
-                          product.inventory.quantity <= product.inventory.lowStockThreshold ? 'text-amber-500' :
+                          (product.inventory?.quantity || 0) <= 0 ? 'text-red-500' :
+                          (product.inventory?.quantity || 0) <= (product.inventory?.lowStockThreshold || 5) ? 'text-amber-500' :
                           'text-gray-700 dark:text-gray-300',
                         )}>
-                          {product.inventory.quantity <= 0
+                          {(product.inventory?.quantity || 0) <= 0
                             ? <span className="flex items-center gap-1"><AlertCircle size={13} /> Out</span>
-                            : product.inventory.quantity}
+                            : product.inventory?.quantity || 0}
                         </span>
                       </td>
 
@@ -183,7 +183,7 @@ export default function AdminProductsPage() {
 
                       {/* Rating */}
                       <td className="px-5 py-4">
-                        {product.ratings.count > 0 ? (
+                        {product.ratings?.count > 0 ? (
                           <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
                             ⭐ {product.ratings.average.toFixed(1)} ({product.ratings.count})
                           </span>

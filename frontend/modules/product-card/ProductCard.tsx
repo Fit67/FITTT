@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Heart, ShoppingCart, Star, Clock, Flame, Zap, Plus } from 'lucide-react'
+import { Heart, ShoppingBag, Star, Flame } from 'lucide-react'
 import { cn, formatPrice, calcDiscountPercent, getProductImage } from '@/lib/utils'
 import { useCartStore } from '@/store/slices/cartStore'
 import { useWishlistStore } from '@/store/slices/uiStore'
@@ -12,6 +12,7 @@ import { storeConfig } from '@/config/store'
 import { scalePop } from '@/lib/motion'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { Product } from '@/types'
+import { useRouter } from 'next/navigation'
 
 interface ProductCardProps {
   product:   Product
@@ -26,23 +27,25 @@ export function ProductCard({
   className,
   priority  = false,
 }: ProductCardProps) {
+  const router = useRouter()
   const { addItem, hasItem }   = useCartStore()
   const { toggle, hasItem: inWishlist } = useWishlistStore()
   const toast = useToast()
   const { t, lang } = useTranslation()
-  const [imgLoaded, setImgLoaded] = React.useState(false)
 
   const image        = getProductImage(product.images)
-  const inCart       = hasItem(product._id)
   const wishlisted   = inWishlist(product._id)
-  const discountPct  = calcDiscountPercent(product.price, product.comparePrice ?? 0)
   const availableStock = Math.max(0, (product.inventory?.quantity ?? 0) - (product.inventory?.reserved ?? 0))
   const outOfStock   = availableStock === 0
-  const lowStock     = !outOfStock && availableStock <= (product.inventory?.lowStockThreshold ?? 5)
-  const businessType = storeConfig.businessType
+
+  const brand = product.metadata?.brand || 'DOCTORFIT'
+  const flavor = product.metadata?.flavorOptions?.[0] || 'Premium'
+  const rating = product.ratings?.average || 5.0
+  const isPopular = product.isTopSeller || product.isFeatured
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault()
+    e.stopPropagation()
     if (outOfStock) return
     addItem(product, undefined, 1)
     toast.success(t('productCardAddedToCart'), product.name)
@@ -50,6 +53,7 @@ export function ProductCard({
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault()
+    e.stopPropagation()
     const added = toggle(product)
     toast[added ? 'success' : 'info'](
       added ? t('productCardAddedToWishlist') : t('productCardRemovedFromWishlist'),
@@ -62,163 +66,78 @@ export function ProductCard({
   return (
     <motion.article
       variants={scalePop}
+      onClick={() => router.push(`/shop/products/${product.slug}`)}
       className={cn(
-        'group relative flex flex-col overflow-hidden cursor-pointer',
-        'bg-gray-50 dark:bg-gray-900',
-        'rounded-xl',
-        'border border-gray-100 dark:border-gray-800',
-        'hover:border-red-200 dark:hover:border-red-900/50',
-        'transition-all duration-300',
-        'hover:shadow-lg hover:-translate-y-1',
-        variant === 'compact' && 'text-sm',
-        variant === 'featured' && 'md:col-span-2 md:flex-row',
-        className,
+        'group bg-white border border-neutral-200 rounded-[20px] p-4 flex flex-col justify-between hover:border-[#B91C1C] hover:shadow-md transition-all duration-300 cursor-pointer relative overflow-hidden text-left h-full',
+        variant === 'compact' && 'p-3 rounded-2xl',
+        className
       )}
     >
-      {/* ── Image ── */}
-      <Link href={`/shop/products/${product.slug}`} className={cn(
-        'relative overflow-hidden bg-gray-100 dark:bg-gray-800',
-        'rounded-t-xl',
-        variant === 'featured' ? 'md:w-1/2 h-60 md:h-auto md:rounded-s-xl md:rounded-te-none' : 'aspect-square',
+      {isPopular && (
+        <div className="absolute top-3 left-3 bg-[#B91C1C] text-white text-[8px] font-black tracking-widest px-2 py-0.5 rounded-full uppercase z-10 flex items-center gap-1">
+          <Flame size={10} />
+          <span className="hidden xs:inline">POPULAR</span>
+        </div>
+      )}
+
+      <button
+        onClick={handleWishlist}
+        className={cn(
+          'absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 z-10 bg-neutral-50 border',
+          wishlisted ? 'border-[#B91C1C] text-[#B91C1C] bg-[#B91C1C]/10' : 'border-neutral-200 text-gray-400 hover:text-[#B91C1C]'
+        )}
+      >
+        <Heart size={12} fill={wishlisted ? 'currentColor' : 'none'} />
+      </button>
+
+      <div className={cn(
+        'w-full flex justify-center bg-white group-hover:scale-110 transition-transform duration-300',
+        variant === 'compact' ? 'p-1 h-36' : 'p-1 sm:p-2 h-52'
       )}>
-        {/* Skeleton */}
-        <div className={cn(
-          'absolute inset-0 transition-opacity duration-500',
-          imgLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100',
-          'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800',
-          'bg-[length:200%_100%]',
-          !imgLoaded && 'animate-[shimmer_1.6s_ease-in-out_infinite]',
-        )} />
+        <img src={image} alt={product.name} className="w-full h-full object-contain drop-shadow-lg" loading={priority ? 'eager' : 'lazy'} />
+      </div>
 
-        <img
-          src={image}
-          alt={product.name}
-          loading={priority ? 'eager' : 'lazy'}
-          onLoad={() => setImgLoaded(true)}
-          className={cn(
-            'h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]',
-            imgLoaded ? 'opacity-100' : 'opacity-0',
-          )}
-        />
-
-        {/* Badges — VITRAPRO rounded pill style */}
-        <div className="absolute left-3 top-3 flex flex-col gap-2">
-          {discountPct > 0 && (
-            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-red-600 text-white rounded-full">
-              {lang === 'ar' ? `${t('productCardOff')} ${discountPct}%` : `${discountPct}% ${t('productCardOff')}`}
+      <div className="mt-3 flex-1 flex flex-col justify-between">
+        <div>
+          <span className="font-mono text-[8px] font-black text-[#B91C1C] tracking-wider uppercase line-clamp-1">
+            {brand}
+          </span>
+          <h3 className={cn(
+            'font-sans font-black text-black group-hover:text-[#B91C1C] transition-colors mt-0.5 uppercase leading-snug line-clamp-2',
+            variant === 'compact' ? 'text-xs' : 'text-xs sm:text-sm'
+          )}>
+            {product.name}
+          </h3>
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-2 gap-1.5">
+            <span className="bg-neutral-50 text-black/80 text-[8px] font-bold px-2 py-0.5 rounded-full border border-neutral-200 truncate uppercase w-fit max-w-full">
+              {flavor}
             </span>
-          )}
-          {product.isNew && !discountPct && (
-            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
-              {t('productCardNew')}
-            </span>
-          )}
-          {outOfStock && (
-            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full">
-              {t('productCardSoldOut')}
-            </span>
-          )}
-          {lowStock && (
-            <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full">
-              {availableStock === 1 ? t('productCardLastPiece') : `${t('productCardOnly')} ${availableStock} ${t('productCardOnlyLeft')}`}
-            </span>
-          )}
+            <div className="flex items-center gap-0.5 text-[#B91C1C] font-bold text-[10px]">
+              <Star size={10} fill="currentColor" />
+              <span>{rating}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Wishlist */}
-        {storeConfig.enableWishlist && (
-          <motion.button
-            onClick={handleWishlist}
-            initial={false}
-            animate={wishlisted ? { opacity: 1 } : { opacity: 0 }}
-            className={cn(
-              'absolute right-3 top-3 p-2',
-              'bg-white/90 dark:bg-black/70 backdrop-blur-sm',
-              'rounded-full shadow-sm',
-              !wishlisted && 'group-hover:opacity-100',
-            )}
-            style={{ willChange: 'opacity' }}
-          >
-            <Heart
-              size={16}
-              className={cn(
-                'transition-colors duration-200',
-                wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500 dark:text-gray-400',
-              )}
-            />
-          </motion.button>
-        )}
-      </Link>
-
-      {/* ── Content ── */}
-      <div className={cn('flex flex-1 flex-col gap-1.5 p-4', variant === 'featured' && 'md:p-6')}>
-        {/* Category */}
-        {product.category?.name && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-            {product.category.name}
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200">
+          <span className={cn(
+            'font-sans font-black text-black',
+            variant === 'compact' ? 'text-sm' : 'text-xs sm:text-base'
+          )}>
+            {formatPrice(product.price)}
           </span>
-        )}
-
-        {/* Product name */}
-        <Link
-          href={`/shop/products/${product.slug}`}
-          className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2 hover:text-red-600 dark:hover:text-red-400 transition-colors leading-snug"
-        >
-          {product.name}
-        </Link>
-
-        {/* Business metadata */}
-        {businessType === 'gym' && product.metadata?.servingSize && (
-          <span className="text-xs text-gray-400 dark:text-gray-500">
-            <Zap size={10} className="inline me-1 text-red-500" />
-            {product.metadata.servingSize} {t('productCardPerServing')}
-          </span>
-        )}
-
-        {/* Rating */}
-        {storeConfig.enableReviews && product.ratings.count > 0 && (
-          <div className="flex items-center gap-1">
-            <Star size={12} className="fill-amber-400 text-amber-400" />
-            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
-              {product.ratings.average.toFixed(1)}
-            </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500">({product.ratings.count})</span>
-          </div>
-        )}
-
-        <div className="flex-1" />
-
-        {/* Price + CTA */}
-        <div className="flex items-end justify-between gap-2 pt-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-gray-900 dark:text-white">
-              {formatPrice(product.price)}
-            </span>
-            {product.comparePrice && product.comparePrice > product.price && (
-              <span className="text-xs text-gray-400 dark:text-gray-500 line-through">
-                {formatPrice(product.comparePrice)}
-              </span>
-            )}
-          </div>
-
-          <motion.button
-            onClick={handleAddToCart}
-            disabled={outOfStock}
-            whileTap={outOfStock ? undefined : { scale: 0.88 }}
-            whileHover={outOfStock ? undefined : { scale: 1.06 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 28 }}
-            className={cn(
-              'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
-              'transition-all duration-200',
-              'disabled:opacity-40 disabled:cursor-not-allowed',
-              inCart
-                ? 'bg-red-600 dark:bg-red-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-500',
-            )}
-            aria-label="Add to cart"
-          >
-            <Plus size={16} />
-          </motion.button>
+          
+          {!outOfStock ? (
+            <button
+              onClick={handleAddToCart}
+              className="bg-black text-white p-2 sm:p-2.5 rounded-full hover:bg-[#B91C1C] transition-colors duration-200 flex items-center justify-center shadow-sm active:scale-90 cursor-pointer"
+            >
+              <ShoppingBag size={12} />
+            </button>
+          ) : (
+            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">SOLD OUT</span>
+          )}
         </div>
       </div>
     </motion.article>
@@ -228,27 +147,33 @@ export function ProductCard({
 // ─── Horizontal variant ────────────────────────────────────────
 function HorizontalCard({ product }: { product: Product }) {
   const image = getProductImage(product.images)
+  const router = useRouter()
 
   return (
     <motion.div
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-      className="flex gap-4 border border-gray-100 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 rounded-xl"
+      onClick={() => router.push(`/shop/products/${product.slug}`)}
+      className="flex gap-4 border border-neutral-200 hover:border-[#B91C1C] transition-colors p-4 bg-white rounded-[20px] cursor-pointer group shadow-sm"
     >
-      <Link href={`/shop/products/${product.slug}`} className="shrink-0">
+      <div className="shrink-0 bg-neutral-50 p-1 rounded-xl flex items-center justify-center border border-neutral-100 group-hover:scale-110 transition-transform">
         <img
           src={image}
           alt={product.name}
-          className="h-16 w-16 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+          className="h-20 w-20 object-contain drop-shadow-md"
         />
-      </Link>
-      <div className="flex flex-1 flex-col justify-between">
-        <Link href={`/shop/products/${product.slug}`}
-          className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-1 hover:text-red-600 dark:hover:text-red-400 transition-colors">
-          {product.name}
-        </Link>
-        <span className="text-base font-bold text-gray-900 dark:text-white">
+      </div>
+      <div className="flex flex-1 flex-col justify-between py-1 min-w-0">
+        <div>
+          <span className="font-mono text-[8px] font-black text-[#B91C1C] tracking-wider uppercase">
+            {product.metadata?.brand || 'DOCTORFIT'}
+          </span>
+          <h4 className="text-sm font-sans font-black uppercase text-black group-hover:text-[#B91C1C] transition-colors line-clamp-2 leading-tight">
+            {product.name}
+          </h4>
+        </div>
+        <span className="text-sm font-black text-black">
           {formatPrice(product.price)}
         </span>
       </div>
@@ -260,17 +185,19 @@ function HorizontalCard({ product }: { product: Product }) {
 export function ProductCardSkeleton({ index = 0 }: { index?: number }) {
   return (
     <div
-      className="flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-xl"
+      className="flex flex-col h-full border border-neutral-200 bg-white rounded-[20px] p-4"
       style={{ animationDelay: `${index * 0.06}s` }}
     >
-      <div className="aspect-square skeleton rounded-t-xl" />
-      <div className="p-4 space-y-2.5">
-        <div className="h-2.5 w-14 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.1}s` }} />
-        <div className="h-3.5 w-full skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.15}s` }} />
-        <div className="h-3.5 w-3/4 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.2}s` }} />
-        <div className="flex justify-between pt-1">
-          <div className="h-5 w-14 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.25}s` }} />
-          <div className="h-9 w-9 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.3}s` }} />
+      <div className="h-48 w-full skeleton rounded-xl mb-4" />
+      <div className="space-y-3 flex-1 flex flex-col">
+        <div>
+          <div className="h-2 w-16 skeleton rounded-full mb-2" style={{ animationDelay: `${index * 0.06 + 0.1}s` }} />
+          <div className="h-4 w-full skeleton rounded-full mb-1" style={{ animationDelay: `${index * 0.06 + 0.15}s` }} />
+          <div className="h-4 w-3/4 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.2}s` }} />
+        </div>
+        <div className="mt-auto pt-3 border-t border-neutral-100 flex justify-between items-center">
+          <div className="h-5 w-16 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.25}s` }} />
+          <div className="h-8 w-8 skeleton rounded-full" style={{ animationDelay: `${index * 0.06 + 0.3}s` }} />
         </div>
       </div>
     </div>

@@ -153,7 +153,7 @@ export const ar = {
 
   // --- Category Grid ---
   categoriesCollection: "المجموعة الأساسية",
-  categoriesLivingJourney: "ابدأ رحلة الحياة الصحية",
+  categoriesLivingJourney: "اختار اللي يناسب هدفك",
 
   // --- Premium Experience Section ---
   premiumDailyGains: "مكاسب يومية",

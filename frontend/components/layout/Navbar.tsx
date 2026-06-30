@@ -2,416 +2,150 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
-import {
-  ShoppingCart, Heart, Search, Menu, User, LogOut,
-  Sun, Moon, Package, ChevronDown, LayoutDashboard, X,
-  Globe, Facebook, Instagram, Youtube, Twitter, Bell,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { usePathname, useRouter } from 'next/navigation'
+import { ShoppingCart, Heart, User, LogOut, Settings, LayoutDashboard, ShoppingBag } from 'lucide-react'
 import { useCartStore } from '@/store/slices/cartStore'
+import { useWishlistStore } from '@/store/slices/uiStore'
 import { useAuthStore } from '@/store/slices/authStore'
-import { useWishlistStore, useUIStore } from '@/store/slices/uiStore'
-import { Avatar } from '@/components/ui/primitives'
-import { storeConfig } from '@/config/store'
-import { useTheme } from 'next-themes'
-import { useTranslation } from '@/hooks/useTranslation'
-import { BrandLogo } from '@/components/brand/BrandLogo'
-
-const SPRING = { type: 'spring' as const, stiffness: 400, damping: 30, mass: 0.7 }
 
 export function Navbar() {
-  const { t, lang, setLang } = useTranslation()
-  const pathname             = usePathname()
-  const { itemCount }        = useCartStore()
-  const { user, isAuthenticated, logout } = useAuthStore()
-  const { items: wishlist }  = useWishlistStore()
-  const { openSearch }       = useUIStore()
-  const { resolvedTheme, setTheme } = useTheme()
+  const pathname = usePathname()
+  const router = useRouter()
+  const { itemCount } = useCartStore()
+  const { items: wishlist } = useWishlistStore()
+  const { isAuthenticated, user, logout } = useAuthStore()
   const [mounted, setMounted] = React.useState(false)
-  const [scrolled, setScrolled] = React.useState(false)
-  const [menuOpen, setMenuOpen] = React.useState(false)
-  const [userOpen, setUserOpen] = React.useState(false)
-  const { scrollY } = useScroll()
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
+  const dropdownRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
     setMounted(true)
   }, [])
 
-  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 20))
-
   React.useEffect(() => {
-    setMenuOpen(false)
-    setUserOpen(false)
-  }, [pathname])
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const isAdmin = pathname.startsWith('/admin')
   if (isAdmin) return null
-
-  const navLinks = [
-    { label: t('navHome'),          href: '/' },
-    { label: t('navProducts'),      href: '/shop/products' },
-    { label: t('navContactUs'),     href: storeConfig.social.whatsapp || '/shop/products' },
-  ]
-
-  async function handleMobileLogout() {
-    setMenuOpen(false)
-    await logout()
-  }
+  
+  const isHome = pathname === '/'
+  const textColor = isHome ? 'text-white' : 'text-gray-900 dark:text-white'
+  const textShadow = isHome ? '0 2px 10px rgba(0,0,0,0.3)' : 'none'
 
   return (
-    <>
-      {/* ── Announcement Bar ── */}
-      <div className="bg-[#C0392B] text-white text-[11px] h-9 flex items-center relative z-[51] font-sans">
-        <div className="max-w-7xl mx-auto w-full px-4 md:px-6 flex items-center justify-between">
-          {/* Left: Social Media Icons */}
-          <div className="hidden md:flex items-center gap-3 text-white/90">
-            <a href={storeConfig.social.facebook || 'https://facebook.com'} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Facebook">
-              <Facebook size={12} strokeWidth={2} />
-            </a>
-            <a href={storeConfig.social.instagram || 'https://instagram.com'} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Instagram">
-              <Instagram size={12} strokeWidth={2} />
-            </a>
-           
-            <a href={storeConfig.social.whatsapp || 'https://whatsapp.com'} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Notifications">
-              <Bell size={12} strokeWidth={2} />
-            </a>
-          </div>
-          {/* Center: Offer text */}
-          <div className="flex-1 text-center italic tracking-wide text-white/95">
-            {t('announcementText')}
-          </div>
-          {/* Right: Language / Region selector (toggles language on click) */}
-          <button
-            onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
-            className="hidden md:flex items-center gap-1.5 text-white/90 hover:text-white transition-colors cursor-pointer"
-          >
-            <span>{lang === 'en' ? 'English' : 'العربية'}</span>
-            <ChevronDown size={10} />
-          </button>
-        </div>
+    <nav
+      className="fixed top-6 left-4 right-4 sm:left-10 sm:right-10 h-16 sm:h-20 flex items-center justify-between px-6 sm:px-8 pointer-events-auto rounded-[2.5rem]"
+      style={{
+        zIndex: 100,
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%)',
+        backdropFilter: 'blur(32px)',
+        WebkitBackdropFilter: 'blur(32px)',
+        borderTop: '1px solid rgba(255,255,255,0.4)',
+        borderLeft: '1px solid rgba(255,255,255,0.3)',
+        borderRight: '1px solid rgba(255,255,255,0.1)',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 10px 40px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.3)',
+      }}
+    >
+      {/* Left: Cart & Favorites */}
+      <div className="flex items-center space-x-3 sm:space-x-4">
+        <Link href="/shop/cart" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
+          <ShoppingCart size={18} strokeWidth={2} />
+          {mounted && itemCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              {itemCount}
+            </span>
+          )}
+        </Link>
+        <Link href="/shop/wishlist" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
+          <Heart size={18} strokeWidth={2} />
+          {mounted && wishlist?.length > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              {wishlist.length}
+            </span>
+          )}
+        </Link>
       </div>
 
-      {/* ── Main Header (Sticky/Absolute Overlay to remove gap) ── */}
-      <motion.header
-        className={cn(
-          'left-0 right-0 z-50 bg-transparent transition-all duration-300',
-          scrolled
-            ? 'fixed top-0'
-            : pathname === '/'
-              ? 'absolute top-9'
-              : 'relative'
-        )}
-      >
-        {/* Floating pill container wrapper */}
-        <div className="mx-auto max-w-7xl px-2 pt-2 sm:px-4 md:px-6 md:pt-4">
-          <div className="flex h-14 items-center justify-between rounded-full border border-white/10 bg-black/90 px-3 shadow-[0_4px_30px_rgba(0,0,0,0.3)] backdrop-blur-md sm:h-[72px] sm:px-6 dark:bg-black/90">
+      {/* Center: DoctorFit */}
+      <div className="absolute left-1/2 -translate-x-1/2">
+        <Link href="/" className="inline-block group cursor-pointer">
+          <h1 
+            className="text-base sm:text-lg uppercase tracking-[0.25em] font-bold transition-all duration-300 group-hover:scale-105 flex items-center"
+            style={{ textShadow }}
+          >
+            <span className="text-black">DOCTOR</span><span className={isHome ? "text-white" : "text-red-600"}>FIT</span>
+          </h1>
+        </Link>
+      </div>
+
+      {/* Right: Log In / Profile */}
+      <div className="flex items-center relative" ref={dropdownRef}>
+        {!isAuthenticated || !mounted ? (
+          <Link href="/auth/login" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
+            <User size={18} strokeWidth={2} />
+          </Link>
+        ) : (
+          <div className="relative">
+            <button 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+            >
+              <User size={18} strokeWidth={2} />
+            </button>
             
-            {/* Logo */}
-            <Link href="/" className="flex shrink-0 items-center">
-              <BrandLogo imageClassName="h-11 max-w-[94px] sm:h-14 sm:max-w-[150px]" />
-            </Link>
-
-            {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-              {navLinks.map(link => {
-                const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href.split('?')[0])
-                return (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className={cn(
-                      'relative text-xs font-semibold uppercase tracking-wider py-1 transition-colors duration-200',
-                      isActive
-                        ? 'text-white'
-                        : 'text-gray-400 hover:text-white',
-                    )}
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] py-2 z-50 border border-gray-100 flex flex-col text-black font-sans">
+                <Link 
+                  href="/shop/profile" 
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="px-4 py-2.5 text-sm font-medium hover:bg-gray-50 flex items-center gap-3 transition-colors"
+                >
+                  <Settings size={16} className="text-gray-500" /> View Profile
+                </Link>
+                
+                {user?.role === 'admin' && (
+                  <Link 
+                    href="/admin" 
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="px-4 py-2.5 text-sm font-medium hover:bg-gray-50 flex items-center gap-3 transition-colors"
                   >
-                    {link.label}
-                    {isActive && (
-                      <motion.span
-                        layoutId="nav-underline"
-                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-red-600 rounded-full"
-                        transition={SPRING}
-                      />
-                    )}
+                    <LayoutDashboard size={16} className="text-gray-500" /> Admin Panel
                   </Link>
-                )
-              })}
-            </nav>
-
-            {/* Actions Block */}
-            <div className="flex items-center gap-1 text-white">
-
-              {/* Search */}
-              <motion.button
-                whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} transition={SPRING}
-                onClick={openSearch}
-                className="flex h-9 w-9 items-center justify-center text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/10"
-                aria-label="Search"
-              >
-                <Search size={16} />
-              </motion.button>
-
-              {/* Wishlist */}
-              {storeConfig.enableWishlist && (
-                <Link href="/shop/wishlist">
-                  <motion.div
-                    whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} transition={SPRING}
-                    className="relative hidden h-9 w-9 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-white/10 hover:text-white min-[380px]:flex"
-                  >
-                    <Heart size={16} />
-                    <AnimatePresence>
-                      {wishlist.length > 0 && (
-                        <motion.span
-                          key="wb"
-                          initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                          transition={SPRING}
-                          className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-650 text-[9px] font-bold text-white"
-                        >
-                          {wishlist.length > 9 ? '9+' : wishlist.length}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                )}
+                
+                <Link 
+                  href="/shop/orders" 
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="px-4 py-2.5 text-sm font-medium hover:bg-gray-50 flex items-center gap-3 transition-colors"
+                >
+                  <ShoppingBag size={16} className="text-gray-500" /> Check Orders
                 </Link>
-              )}
-
-              {/* Cart */}
-              <Link href="/shop/cart">
-                <motion.div
-                  whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} transition={SPRING}
-                  className="relative flex h-9 w-9 items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer rounded-full hover:bg-white/10"
+                
+                <hr className="my-1 border-gray-100" />
+                
+                <button 
+                  onClick={async () => {
+                    setIsDropdownOpen(false)
+                    await logout()
+                    router.push('/auth/login')
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors"
                 >
-                  <ShoppingCart size={16} />
-                  <AnimatePresence>
-                    {itemCount > 0 && (
-                      <motion.span
-                        key="cb"
-                        initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                        transition={SPRING}
-                        className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-red-650 text-[9px] font-bold text-white"
-                      >
-                        {itemCount > 99 ? '99+' : itemCount}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              </Link>
-
-              {/* Theme toggle */}
-              {mounted && (
-                <motion.button
-                  whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} transition={SPRING}
-                  onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                  className="hidden md:flex h-9 w-9 items-center justify-center text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/10"
-                  aria-label="Toggle theme"
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {resolvedTheme === 'dark' ? (
-                      <motion.div key="sun" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.18 }}>
-                        <Sun size={16} />
-                      </motion.div>
-                    ) : (
-                      <motion.div key="moon" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }}>
-                        <Moon size={16} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              )}
-
-              {/* User menu / Login button */}
-              {isAuthenticated ? (
-                <div className="relative hidden md:block">
-                  <motion.button
-                    whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} transition={SPRING}
-                    onClick={() => setUserOpen(v => !v)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/10"
-                  >
-                    {user ? (
-                      <Avatar src={user.avatar} name={user.name} size="xs" />
-                    ) : (
-                      <User size={16} />
-                    )}
-                    <motion.div animate={{ rotate: userOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                      <ChevronDown size={12} />
-                    </motion.div>
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {userOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 4, scale: 0.97 }}
-                        transition={{ duration: 0.16 }}
-                        className="absolute ltr:right-0 rtl:left-0 top-full mt-2 w-56 rounded-xl border border-white/10 bg-black/95 shadow-xl overflow-hidden z-50 text-gray-200"
-                        style={{ transformOrigin: lang === 'ar' ? 'top left' : 'top right' }}
-                      >
-                        <div className="border-b border-white/10 px-4 py-3">
-                          <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-                          <p className="text-xs text-gray-400 truncate mt-0.5">{user?.email}</p>
-                        </div>
-                        {user?.role === 'admin' && (
-                          <Link href="/admin/dashboard" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors">
-                            <LayoutDashboard size={15} /> {t('navDashboard')}
-                          </Link>
-                        )}
-                        <Link href="/shop/profile" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors">
-                          <User size={15} /> {t('profile')}
-                        </Link>
-                        <Link href="/shop/orders" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors">
-                          <Package size={15} /> {t('myOrders')}
-                        </Link>
-                        <div className="border-t border-white/10 mt-1">
-                          <button
-                            onClick={logout}
-                            className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-950/20 transition-colors"
-                          >
-                            <LogOut size={15} /> {t('logout')}
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <Link
-                  href="/auth/login"
-                  className="hidden md:inline-flex items-center justify-center px-6 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 uppercase tracking-wider"
-                >
-                  {t('navLogIn')}
-                </Link>
-              )}
-
-              {/* Mobile menu button */}
-              <motion.button
-                whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.92 }} transition={SPRING}
-                onClick={() => setMenuOpen(v => !v)}
-                className="flex md:hidden h-9 w-9 items-center justify-center text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/10"
-                aria-label="Toggle menu"
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {menuOpen ? (
-                    <motion.div key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
-                      <X size={18} />
-                    </motion.div>
-                  ) : (
-                    <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
-                      <Menu size={18} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            </div>
-          </div>
-
-          {/* ── Mobile drawer ── */}
-          <AnimatePresence>
-            {menuOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.24, ease: [0.0, 0.0, 0.2, 1.0] }}
-                className="mt-2 max-h-[calc(100dvh-112px)] overflow-y-auto rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl md:hidden"
-              >
-                <div className="flex flex-col gap-1 px-3 py-3">
-                  {navLinks.map((link, i) => (
-                    <motion.div
-                      key={link.label}
-                      initial={{ opacity: 0, x: lang === 'ar' ? 10 : -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04 }}
-                    >
-                      <Link
-                        href={link.href}
-                        className={cn(
-                          'flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors',
-                          pathname === link.href
-                            ? 'text-red-500 bg-white/10'
-                            : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                        )}
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  ))}
-
-                  {isAuthenticated ? (
-                    <div className="mt-3 border-t border-white/10 pt-3">
-                      <div className="mb-2 flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3">
-                        <Avatar src={user?.avatar} name={user?.name ?? storeConfig.name} size="sm" />
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-white">{user?.name ?? 'Account'}</p>
-                          <p className="truncate text-xs text-gray-400">{user?.email ?? 'Signed in'}</p>
-                        </div>
-                      </div>
-                      {user?.role === 'admin' && (
-                        <Link
-                          href="/admin/dashboard"
-                          className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
-                        >
-                          <LayoutDashboard size={16} /> {t('navDashboard')}
-                        </Link>
-                      )}
-                      <Link
-                        href="/shop/profile"
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
-                      >
-                        <User size={16} /> {t('profile')}
-                      </Link>
-                      <Link
-                        href="/shop/orders"
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
-                      >
-                        <Package size={16} /> {t('myOrders')}
-                      </Link>
-                      <button
-                        onClick={handleMobileLogout}
-                        className="mt-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-start text-sm font-semibold text-red-400 transition-colors hover:bg-red-950/30"
-                      >
-                        <LogOut size={16} /> {t('logout')}
-                      </button>
-                    </div>
-                  ) : null}
-
-                  <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
-                    {mounted && (
-                      <button
-                        onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                        className="flex h-9 w-9 items-center justify-center text-gray-400 hover:text-white transition-colors rounded-full hover:bg-white/10"
-                      >
-                        {resolvedTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
-                      className="flex h-9 w-9 items-center justify-center text-gray-400 hover:text-white transition-colors rounded-full hover:bg-white/10"
-                    >
-                      <Globe size={16} />
-                    </button>
-                    {!isAuthenticated && (
-                      <Link
-                        href="/auth/login"
-                        className="ms-auto text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-full transition-colors uppercase tracking-wider"
-                      >
-                        {t('login')}
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
             )}
-          </AnimatePresence>
-        </div>
-      </motion.header>
-
-      {userOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setUserOpen(false)} />
-      )}
-    </>
+          </div>
+        )}
+      </div>
+    </nav>
   )
 }
