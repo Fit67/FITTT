@@ -301,7 +301,7 @@ export function ToonhubHomepage() {
         {/* 5. Bottom-left text + nav buttons */}
         <div
           id="content-controls-container"
-          className="absolute bottom-6 left-4 sm:bottom-20 sm:left-24 flex flex-col items-start select-none"
+          className="absolute bottom-24 left-4 sm:bottom-20 sm:left-24 flex flex-col items-start select-none"
           style={{ zIndex: 60, maxWidth: '480px' }}
         >
           {/* Active Figurine Custom Name Tag */}
@@ -387,7 +387,7 @@ export function ToonhubHomepage() {
           className="absolute bottom-6 right-4 sm:bottom-20 sm:right-10 flex items-center gap-1 sm:gap-3 text-white no-underline transition-all duration-200 select-none font-anton"
           style={{
             zIndex: 60,
-            fontSize: isMobile ? '36px' : 'clamp(32px, 4vw, 56px)',
+            fontSize: isMobile ? '24px' : 'clamp(32px, 4vw, 56px)',
             fontWeight: 400,
             opacity: isDiscoverHovered ? 1 : 0.95,
             letterSpacing: '-0.02em',
@@ -401,8 +401,8 @@ export function ToonhubHomepage() {
             id="discover-arrow"
             className="transition-transform duration-300"
             style={{
-              width: isMobile ? '28px' : '32px',
-              height: isMobile ? '28px' : '32px',
+              width: isMobile ? '24px' : '32px',
+              height: isMobile ? '24px' : '32px',
               transform: isDiscoverHovered ? 'translateX(6px)' : 'translateX(0px)',
             }}
             strokeWidth={2.25}

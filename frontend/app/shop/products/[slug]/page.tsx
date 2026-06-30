@@ -163,8 +163,8 @@ export default function ProductPage({ params }: Props) {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-32 sm:pt-40 pb-20">
-        <div className="container-page py-5 sm:py-10">
+      <main className="min-h-screen pt-24 sm:pt-40 pb-20">
+        <div className="container-page py-4 sm:py-10">
 
           {/* Breadcrumb */}
           <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400 sm:mb-8 sm:text-sm">
@@ -197,7 +197,7 @@ export default function ProductPage({ params }: Props) {
 
             {/* Image Gallery */}
             <div className="flex flex-col gap-4">
-              <div className="relative aspect-square overflow-hidden rounded-3xl bg-white/40 dark:bg-black/20 backdrop-blur-md border border-white/60 dark:border-white/10 flex items-center justify-center p-8">
+              <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden rounded-2xl sm:rounded-3xl bg-white/40 dark:bg-black/20 backdrop-blur-md border border-white/60 dark:border-white/10 flex items-center justify-center p-4 sm:p-8">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={selectedImg}
@@ -207,7 +207,7 @@ export default function ProductPage({ params }: Props) {
                     animate={{ opacity: 1, scale: 1    }}
                     exit={{    opacity: 0, scale: 0.96  }}
                     transition={{ duration: 0.25 }}
-                    className="h-full w-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
+                    className="h-full w-full object-contain sm:drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)] sm:dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
                     onError={(e) => {
                       // BUG FIXED: broken image src crashing the render
                       ;(e.target as HTMLImageElement).src = '/images/placeholder.png'
@@ -275,7 +275,7 @@ export default function ProductPage({ params }: Props) {
                     {product.category.name}
                   </Link>
                 )}
-                <h1 className="mt-1 font-anton text-4xl sm:text-6xl uppercase tracking-wide leading-none text-gray-900 dark:text-white">
+                <h1 className="mt-1 font-anton text-3xl sm:text-6xl uppercase tracking-wide leading-none text-gray-900 dark:text-white">
                   {product.name}
                 </h1>
               </div>
