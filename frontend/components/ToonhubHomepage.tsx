@@ -301,7 +301,7 @@ export function ToonhubHomepage() {
         {/* 5. Bottom-left text + nav buttons */}
         <div
           id="content-controls-container"
-          className="absolute bottom-24 left-4 sm:bottom-20 sm:left-24 flex flex-col items-start select-none"
+          className="absolute bottom-24 left-4 sm:bottom-20 sm:left-24 flex flex-col items-start select-none bg-black/15 backdrop-blur-md p-4 rounded-2xl sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:rounded-none"
           style={{ zIndex: 60, maxWidth: '480px' }}
         >
           {/* Active Figurine Custom Name Tag */}
@@ -408,14 +408,14 @@ export function ToonhubHomepage() {
           href={`/shop/products/${activeItem.slug}`}
           className="absolute z-[60] flex items-center justify-center bg-white text-black font-bold uppercase tracking-wider rounded-full hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-200 shadow-[0_4px_14px_0_rgba(255,255,255,0.25)]"
           style={{
-            // On desktop: Left side of the jar. On mobile: Bottom-center right below the jar.
-            left: isMobile ? '50%' : '32%',
-            top: isMobile ? 'auto' : '50%',
-            bottom: isMobile ? '22%' : 'auto',
-            transform: isMobile ? 'translateX(-50%)' : 'translateY(-50%)',
+            // On desktop: Left side of the jar. On mobile: Upper-left side of the jar.
+            left: isMobile ? '4%' : '32%',
+            top: isMobile ? '42%' : '50%',
+            bottom: 'auto',
+            transform: isMobile ? 'translateY(-50%) scale(0.85)' : 'translateY(-50%) scale(1)',
             opacity: isAnimating ? 0 : 1,
             pointerEvents: isAnimating ? 'none' : 'auto',
-            padding: isMobile ? '12px 24px' : '16px 32px',
+            padding: isMobile ? '10px 20px' : '16px 32px',
             fontSize: isMobile ? '12px' : '14px',
           }}
         >
