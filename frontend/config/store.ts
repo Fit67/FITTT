@@ -50,9 +50,9 @@ export const storeConfig: StoreConfig = {
 
   // ─── Social ────────────────────────────────────────────────
   social: {
-    facebook: 'https://facebook.com/doctorfit',
-    tiktok: 'https://tiktok.com/@doctorfit',
-    whatsapp: 'https://wa.me/201030409766', // WhatsApp link
+    facebook: '#',
+    tiktok: '#',
+    whatsapp: '#', // WhatsApp link
   },
 
   // ─── Contact ───────────────────────────────────────────────

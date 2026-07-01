@@ -1,0 +1,16 @@
+[
+  {
+    "projectId": "b77778c3-b95f-4e5d-ba2d-9a9f5db6bb7c",
+    "testId": "d2dd2ab5-6fce-4b9e-bf2a-d4592eea7f67",
+    "userId": "34786478-1021-700e-9a15-8cfd19b17a79",
+    "title": "TC001-get products success response",
+    "description": "Verify that a GET request to /api/products returns a 200 status code with an array of product objects when products exist in the database.",
+    "code": "import requests\n\ndef test_get_products_success_response():\n    base_url = \"http://localhost:5050\"\n    endpoint = \"/api/products\"\n    url = f\"{base_url}{endpoint}\"\n    timeout = 30\n\n    try:\n        response = requests.get(url, timeout=timeout)\n    except requests.RequestException as e:\n        assert False, f\"Request failed: {e}\"\n\n    assert response.status_code == 200, f\"Expected status code 200, got {response.status_code}\"\n\n    try:\n        products = response.json()\n    except ValueError:\n        assert False, \"Response is not valid JSON\"\n\n    assert isinstance(products, list), \"Response is not an array\"\n\n    # Optionally, check that items in the array are objects (dict)\n    for product in products:\n        assert isinstance(product, dict), \"Product item is not an object\"\n\ntest_get_products_success_response()",
+    "testStatus": "FAILED",
+    "testError": "Traceback (most recent call last):\n  File \"/var/task/handler.py\", line 258, in run_with_retry\n    exec(code, exec_env)\n  File \"<string>\", line 27, in <module>\n  File \"<string>\", line 21, in test_get_products_success_response\nAssertionError: Response is not an array\n",
+    "testType": "BACKEND",
+    "createFrom": "mcp",
+    "created": "2026-07-01T14:22:44.118Z",
+    "modified": "2026-07-01T14:22:59.174Z"
+  }
+]

@@ -1,0 +1,38 @@
+version: "2"
+type: frontend
+tech_stack:
+  - typescript
+  - nextjs
+  - react
+  - tailwindcss
+routes:
+  - path: /
+    file: app/page.tsx
+    auth_required: false
+    description: Home page
+  - path: /admin
+    file: app/admin/page.tsx
+    auth_required: true
+    description: Admin dashboard
+  - path: /auth
+    file: app/auth/page.tsx
+    auth_required: false
+    description: Auth page
+  - path: /shop
+    file: app/shop/page.tsx
+    auth_required: false
+    description: Shop page
+features:
+  - name: Authentication
+    description: User authentication
+    files:
+      - app/auth/page.tsx
+    entry_route: /auth
+    user_interactions:
+      - Fill login details
+      - Click login button
+    api_calls:
+      - method: POST
+        endpoint: /api/auth/login
+    auth_required: false
+known_limitations: []

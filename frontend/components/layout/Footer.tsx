@@ -155,7 +155,7 @@ export function Footer() {
                 return (
                   <a
                     key={platform}
-                    href={url}
+                    href="#"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex h-10 w-10 items-center justify-center bg-white/80 border border-black/5 hover:bg-black hover:text-white rounded-full transition-all duration-200 shadow-sm text-gray-800"

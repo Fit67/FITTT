@@ -96,7 +96,7 @@ export function Footer({ activeColor }: FooterProps) {
           </ul>
 
           <div className="flex items-center gap-5 mt-8">
-            <a href="https://facebook.com/doctorfit" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform shadow-sm rounded-full">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform shadow-sm rounded-full">
               <Facebook size={36} />
             </a>
             <a href="https://tiktok.com/@doctorfit" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-black flex items-center justify-center hover:scale-110 transition-transform shadow-sm rounded-full">

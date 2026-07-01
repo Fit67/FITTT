@@ -1,0 +1,29 @@
+version: "2"
+type: backend
+tech_stack:
+  - typescript
+  - express
+  - nodejs
+  - mongodb
+features:
+  - name: Products API
+    description: Products CRUD operations
+    files:
+      - src/routes/products.ts
+    endpoints:
+      - method: GET
+        path: /api/products
+        description: Get products
+        auth_required: false
+        response_schema:
+          "200":
+            type: object
+            properties:
+              success:
+                type: boolean
+              data:
+                type: array
+              pagination:
+                type: object
+    depends_on: []
+known_limitations: []

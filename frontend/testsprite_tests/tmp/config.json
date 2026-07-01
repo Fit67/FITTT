@@ -1,0 +1,19 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000/f:\\\\NEWWW\\\\frontend",
+  "loginUser": "fukumenna@gmail.com",
+  "loginPassword": "Qazqaz123$Q",
+  "executionArgs": {
+    "projectName": "NEWWW",
+    "projectPath": "f:\\NEWWW\\frontend",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-fPYD5Gihvrobenav2xXofgHcjEaAPvlD0C3eQ72CdKcXyKsrojQKKIaTpLv6AuOioneR5nccFv1I3CMeYuVcELcfPmHvWtrm5kkyuLNEPfjk8-Q75fJvyAUFEXVNqZ7-S3Q"
+    }
+  },
+  "serverPort": 55809
+}

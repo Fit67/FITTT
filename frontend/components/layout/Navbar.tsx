@@ -56,6 +56,13 @@ export function Navbar() {
     >
       {/* Left: Cart & Favorites */}
       <div className="flex items-center space-x-3 sm:space-x-4">
+        <Link 
+          href="/shop/products" 
+          className="text-sm font-bold uppercase tracking-wider hover:text-red-600 transition-colors hidden sm:block me-2"
+          style={{ textShadow }}
+        >
+          Shop
+        </Link>
         <Link href="/shop/cart" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-blue-900 hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
           <ShoppingCart size={18} strokeWidth={2} fill="currentColor" />
           {mounted && itemCount > 0 && (

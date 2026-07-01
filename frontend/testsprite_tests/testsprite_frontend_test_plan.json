@@ -1,0 +1,462 @@
+[
+  {
+    "id": "TC001",
+    "title": "Signed-out visitor is blocked from the admin dashboard",
+    "description": "A signed-out visitor who opens the admin route is restricted from viewing the protected dashboard and is redirected or shown an access restriction.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to the admin area is restricted"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify authentication is required to continue"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Open the public home page",
+    "description": "This verifies that a visitor can load the public landing page and see the app entry point.",
+    "category": "Home Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the home page content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify links to authentication and shopping are available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Sign in successfully from the authentication page",
+    "description": "This verifies that a user can submit valid login details and reach an authenticated success state.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authenticated success state is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify post-login access is granted"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Public home page loads and offers entry points",
+    "description": "A visitor can open the home page and see navigation to the authentication and shop areas.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the home page content is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify navigation to the authentication and shop areas is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Block direct admin access while signed out",
+    "description": "This verifies that an unauthenticated visitor is restricted from the admin dashboard and is redirected or blocked from viewing protected content.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to protected admin content is restricted"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a sign-in prompt or redirect is shown"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Authenticated user can sign in and reach the admin dashboard",
+    "description": "A user can sign in on the authentication page and then access the admin dashboard successfully.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard content is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify authenticated admin access is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Access the admin dashboard after signing in",
+    "description": "This verifies that a signed-in user can navigate to the protected admin dashboard and view it successfully.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify protected admin access is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Browse the shop page as a visitor",
+    "description": "This verifies that an unauthenticated visitor can open the shop page and see the public shopping experience.",
+    "category": "Shop Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /shop"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the shop page content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify shopping content is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Authenticated user can move from auth to shop and back to admin",
+    "description": "A signed-in user can navigate between the auth, shop, and admin areas and return to the protected dashboard without losing access.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the shop page"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard content is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify authenticated access is still available after navigation"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Stay signed in while moving from auth to admin",
+    "description": "This verifies that after a successful login, the user can continue to the protected admin area without losing authenticated access.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the admin dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the home page"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard remains accessible after navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify signed-in access is preserved"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Move between the public pages and auth entry point",
+    "description": "This verifies that a visitor can navigate between home, auth, and shop routes and each page renders correctly.",
+    "category": "Home Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the authentication page"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the home page"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to the shop page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the shop page content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page-to-page navigation works across public routes"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC012",
+    "title": "Auth page handles empty login submission",
+    "description": "A visitor who submits the sign-in form without credentials sees validation feedback instead of an authenticated session.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard is not visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC013",
+    "title": "Handle an invalid login attempt",
+    "description": "This verifies that submitting incorrect login details keeps the user signed out and shows a login validation error state.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login field with invalid credentials"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with invalid credentials"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify authenticated access is not granted"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC014",
+    "title": "Auth page handles repeated invalid login attempts",
+    "description": "A visitor who repeatedly submits invalid credentials continues to see a failed sign-in state and does not gain admin access.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with invalid-user"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with invalid-password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard is not visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC015",
+    "title": "Show a fallback page for an unmatched route",
+    "description": "This verifies that an invalid route displays a not-found or fallback state instead of application content.",
+    "category": "Home Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /does-not-exist"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a not-found or fallback page is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC016",
+    "title": "Unknown route shows a not found state",
+    "description": "A visitor who opens an unmatched route sees the app's not found handling instead of a normal page.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /unknown-route"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a not found state is visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]

@@ -1,8 +1,9 @@
 'use client'
 
 import * as React from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { User, MapPin, Lock, Bell, Plus, Pencil, Trash2, Check } from 'lucide-react'
+import { User, MapPin, Lock, Bell, Plus, Pencil, Trash2, Check, LayoutDashboard } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -99,6 +100,17 @@ export default function ProfilePage() {
                     </button>
                   </li>
                 ))}
+                {user?.role === 'admin' && (
+                  <li>
+                    <Link
+                      href="/admin"
+                      className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30"
+                    >
+                      <LayoutDashboard size={16} className="shrink-0" />
+                      Admin Dashboard
+                    </Link>
+                  </li>
+                )}
               </ul>
             </nav>
 
