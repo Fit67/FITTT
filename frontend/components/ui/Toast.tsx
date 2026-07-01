@@ -13,25 +13,46 @@ const icons = {
   info:    Info,
 }
 
-const colors: Record<ToastOptions['type'], string> = {
-  success: 'bg-emerald-50  dark:bg-emerald-950/60',
-  error:   'bg-red-50      dark:bg-red-950/60',
-  warning: 'bg-amber-50    dark:bg-amber-950/60',
-  info:    'bg-blue-50     dark:bg-blue-950/60',
-}
-
-const indicatorColors: Record<ToastOptions['type'], string> = {
-  success: 'bg-emerald-500',
-  error:   'bg-red-500',
-  warning: 'bg-amber-500',
-  info:    'bg-blue-500',
+const containerStyles: Record<ToastOptions['type'], string> = {
+  success: 'bg-gray-900 border-gray-800 shadow-[0_20px_40px_-8px_rgba(0,0,0,0.3)] dark:bg-black dark:border-gray-800',
+  error:   'bg-red-600 border-red-500 shadow-lg',
+  warning: 'bg-amber-400 border-amber-300 shadow-lg',
+  info:    'bg-gray-900 border-gray-800 shadow-lg dark:bg-black dark:border-gray-800',
 }
 
 const iconColors: Record<ToastOptions['type'], string> = {
-  success: 'text-emerald-500',
-  error:   'text-red-500',
-  warning: 'text-amber-500',
-  info:    'text-blue-500',
+  success: 'text-red-500',
+  error:   'text-white',
+  warning: 'text-amber-950',
+  info:    'text-white',
+}
+
+const titleColors: Record<ToastOptions['type'], string> = {
+  success: 'text-white',
+  error:   'text-white',
+  warning: 'text-amber-950',
+  info:    'text-white',
+}
+
+const msgColors: Record<ToastOptions['type'], string> = {
+  success: 'text-gray-400',
+  error:   'text-red-100',
+  warning: 'text-amber-900',
+  info:    'text-gray-400',
+}
+
+const actionColors: Record<ToastOptions['type'], string> = {
+  success: 'text-red-400 hover:text-red-300',
+  error:   'text-white hover:underline',
+  warning: 'text-amber-900 hover:underline',
+  info:    'text-white hover:underline',
+}
+
+const closeColors: Record<ToastOptions['type'], string> = {
+  success: 'text-gray-500 hover:text-white',
+  error:   'text-red-200 hover:text-white',
+  warning: 'text-amber-700 hover:text-amber-950',
+  info:    'text-gray-500 hover:text-white',
 }
 
 function Toast({ toast }: { toast: ToastOptions }) {
@@ -47,28 +68,25 @@ function Toast({ toast }: { toast: ToastOptions }) {
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className={cn(
         'relative flex w-[360px] items-start gap-3.5 overflow-hidden',
-        'rounded-2xl p-4 pl-5',
-        'shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-sm',
-        colors[toast.type],
+        'rounded-2xl border p-4 pl-5 backdrop-blur-md',
+        containerStyles[toast.type],
       )}
     >
-      <div className={cn('absolute left-0 top-0 bottom-0 w-[4px]', indicatorColors[toast.type])} />
-
-      <Icon size={20} strokeWidth={1.5} className={cn('shrink-0 mt-0.5', iconColors[toast.type])} />
+      <Icon size={22} strokeWidth={2} className={cn('shrink-0 mt-0.5', iconColors[toast.type])} />
 
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <p className="font-body text-[15px] font-medium text-gray-900 dark:text-gray-100 tracking-tight">
+        <p className={cn("font-body text-[15px] font-semibold tracking-tight", titleColors[toast.type])}>
           {toast.title}
         </p>
         {toast.message && (
-          <p className="mt-0.5 text-[14px] text-gray-500 dark:text-gray-400 leading-relaxed">
+          <p className={cn("mt-0.5 text-[14px] leading-relaxed", msgColors[toast.type])}>
             {toast.message}
           </p>
         )}
         {toast.action && (
           <button
             onClick={toast.action.onClick}
-            className="mt-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline text-left w-fit"
+            className={cn("mt-2 text-sm font-medium text-left w-fit transition-colors", actionColors[toast.type])}
           >
             {toast.action.label}
           </button>
@@ -77,7 +95,7 @@ function Toast({ toast }: { toast: ToastOptions }) {
 
       <button
         onClick={() => remove(toast.id!)}
-        className="shrink-0 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mt-0.5"
+        className={cn("shrink-0 p-1 transition-colors mt-0.5 rounded-full", closeColors[toast.type])}
       >
         <X size={16} strokeWidth={2} />
       </button>
