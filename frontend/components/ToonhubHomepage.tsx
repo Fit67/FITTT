@@ -21,7 +21,7 @@ const IMAGES = [
     tagline: 'BIG WHEY',
     accent: '#FCA5A5',
     itemScale: 1.05,
-    slug: 'red-rex-whey',
+    slug: 'red-rex-premium-protein',
   },
   {
     src: '/images/product-2.png',
