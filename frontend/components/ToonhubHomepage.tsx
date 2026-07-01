@@ -190,18 +190,7 @@ export function ToonhubHomepage() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* 1. Grain overlay */}
-        <div
-          id="grain-overlay"
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: `url("${grainDataUri}")`,
-            opacity: 0.4,
-            backgroundSize: '200px 200px',
-            backgroundRepeat: 'repeat',
-            zIndex: 1,
-          }}
-        />
+
 
         {/* Showroom/pedestal floor using the panel color */}
         <div
