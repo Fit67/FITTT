@@ -14,10 +14,17 @@ const icons = {
 }
 
 const colors: Record<ToastOptions['type'], string> = {
-  success: 'border-l-emerald-500 bg-emerald-50  dark:bg-emerald-950/60',
-  error:   'border-l-red-500    bg-red-50      dark:bg-red-950/60',
-  warning: 'border-l-amber-500  bg-amber-50    dark:bg-amber-950/60',
-  info:    'border-l-blue-500   bg-blue-50     dark:bg-blue-950/60',
+  success: 'bg-emerald-50  dark:bg-emerald-950/60',
+  error:   'bg-red-50      dark:bg-red-950/60',
+  warning: 'bg-amber-50    dark:bg-amber-950/60',
+  info:    'bg-blue-50     dark:bg-blue-950/60',
+}
+
+const indicatorColors: Record<ToastOptions['type'], string> = {
+  success: 'bg-emerald-500',
+  error:   'bg-red-500',
+  warning: 'bg-amber-500',
+  info:    'bg-blue-500',
 }
 
 const iconColors: Record<ToastOptions['type'], string> = {
@@ -39,28 +46,29 @@ function Toast({ toast }: { toast: ToastOptions }) {
       exit={{    opacity: 0, x: 80, scale: 0.95, transition: { duration: 0.2 } }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className={cn(
-        'relative flex w-[360px] items-start gap-3 overflow-hidden',
-        'rounded-card border border-gray-100 border-l-4 p-4',
-        'shadow-modal backdrop-blur-sm',
-        'dark:border-gray-800',
+        'relative flex w-[360px] items-start gap-3.5 overflow-hidden',
+        'rounded-2xl p-4 pl-5',
+        'shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-sm',
         colors[toast.type],
       )}
     >
-      <Icon size={18} className={cn('mt-0.5 shrink-0', iconColors[toast.type])} />
+      <div className={cn('absolute left-0 top-0 bottom-0 w-[4px]', indicatorColors[toast.type])} />
 
-      <div className="flex-1 min-w-0">
-        <p className="font-body text-sm font-semibold text-gray-900 dark:text-gray-100">
+      <Icon size={20} strokeWidth={1.5} className={cn('shrink-0 mt-0.5', iconColors[toast.type])} />
+
+      <div className="flex-1 min-w-0 flex flex-col justify-center">
+        <p className="font-body text-[15px] font-medium text-gray-900 dark:text-gray-100 tracking-tight">
           {toast.title}
         </p>
         {toast.message && (
-          <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p className="mt-0.5 text-[14px] text-gray-500 dark:text-gray-400 leading-relaxed">
             {toast.message}
           </p>
         )}
         {toast.action && (
           <button
             onClick={toast.action.onClick}
-            className="mt-2 text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline"
+            className="mt-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline text-left w-fit"
           >
             {toast.action.label}
           </button>
@@ -69,9 +77,9 @@ function Toast({ toast }: { toast: ToastOptions }) {
 
       <button
         onClick={() => remove(toast.id!)}
-        className="shrink-0 rounded-full p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-700 transition-colors"
+        className="shrink-0 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mt-0.5"
       >
-        <X size={14} />
+        <X size={16} strokeWidth={2} />
       </button>
     </motion.div>
   )
