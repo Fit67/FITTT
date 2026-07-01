@@ -41,7 +41,7 @@ export function Navbar() {
 
   return (
     <nav
-      className="fixed top-6 left-4 right-4 sm:left-10 sm:right-10 h-16 sm:h-20 flex items-center justify-between px-6 sm:px-8 pointer-events-auto rounded-[2.5rem]"
+      className="fixed top-6 left-4 right-4 sm:left-10 sm:right-10 h-16 sm:h-20 grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-8 pointer-events-auto rounded-[2.5rem]"
       style={{
         zIndex: 100,
         background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%)',
@@ -55,7 +55,7 @@ export function Navbar() {
       }}
     >
       {/* Left: Cart & Favorites */}
-      <div className="flex items-center space-x-3 sm:space-x-4">
+      <div className="flex items-center justify-start space-x-2 sm:space-x-4">
         <Link 
           href="/shop/products" 
           className="text-sm font-bold uppercase tracking-wider hover:text-red-600 transition-colors hidden sm:block me-2"
@@ -82,10 +82,10 @@ export function Navbar() {
       </div>
 
       {/* Center: DoctorFit */}
-      <div className="absolute left-1/2 -translate-x-1/2">
+      <div className="flex items-center justify-center whitespace-nowrap">
         <Link href="/" className="inline-block group cursor-pointer">
           <h1 
-            className="text-base sm:text-lg uppercase tracking-[0.25em] font-bold transition-all duration-300 group-hover:scale-105 flex items-center"
+            className="text-sm sm:text-lg uppercase tracking-widest sm:tracking-[0.25em] font-bold transition-all duration-300 group-hover:scale-105 flex items-center"
             style={{ textShadow }}
           >
             <span className="text-black">DOCTOR</span><span className={isHome ? "text-white" : "text-red-600"}>FIT</span>
@@ -94,7 +94,7 @@ export function Navbar() {
       </div>
 
       {/* Right: Log In / Profile */}
-      <div className="flex items-center relative" ref={dropdownRef}>
+      <div className="flex items-center justify-end relative" ref={dropdownRef}>
         {!isAuthenticated || !mounted ? (
           <Link href="/auth/login" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
             <User size={18} strokeWidth={2} fill="currentColor" />
