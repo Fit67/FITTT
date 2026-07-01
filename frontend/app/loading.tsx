@@ -7,62 +7,52 @@
 
 export default function Loading() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface">
-      {/* Ambient glow behind loader */}
+    <div className="flex min-h-[100dvh] w-full flex-col items-center justify-center bg-white dark:bg-[#0a0a0a]">
+      {/* Subtle crimson ambient glow */}
       <div
-        className="absolute rounded-full blur-[80px] opacity-20 dark:opacity-15 pointer-events-none"
+        className="absolute rounded-full blur-[120px] opacity-15 dark:opacity-20 pointer-events-none"
         style={{
-          width: 300,
-          height: 300,
-          background: 'radial-gradient(circle, rgb(251,191,36), rgb(217,119,6), transparent)',
+          width: 400,
+          height: 400,
+          background: 'radial-gradient(circle, #B91C1C, transparent 70%)',
+          animation: 'customPulse 4s ease-in-out infinite',
         }}
       />
 
-      <div className="relative flex flex-col items-center gap-5">
-        {/* Spinner */}
-        <div className="relative flex h-16 w-16 items-center justify-center">
-          {/* Outer track */}
-          <div className="absolute inset-0 rounded-full border-[3px] border-gray-100 dark:border-gray-800" />
-
-          {/* Spinning arc — gold */}
-          <div
-            className="absolute inset-0 rounded-full border-[3px] border-transparent"
-            style={{
-              borderTopColor: 'rgb(217,119,6)',
-              borderRightColor: 'rgba(245,158,11,0.4)',
-              animation: 'spin 0.8s cubic-bezier(0.4, 0.0, 0.6, 1.0) infinite',
-            }}
-          />
-
-          {/* Inner pulse ring */}
-          <div
-            className="absolute inset-2 rounded-full"
-            style={{
-              background: 'radial-gradient(circle, rgba(245,158,11,0.15), transparent)',
-              animation: 'pulse 1.4s ease-in-out infinite',
-            }}
-          />
-
-          {/* Brand letter */}
-          <span className="relative font-display text-lg font-bold text-primary-600 dark:text-primary-400 select-none">
-            {/* Replace with your store's initial */}
-            ✦
+      <div className="relative flex flex-col items-center gap-8">
+        {/* Brand Logo */}
+        <div 
+          className="flex flex-col items-center"
+          style={{ animation: 'float 3s ease-in-out infinite' }}
+        >
+          <span className="font-display font-black text-4xl sm:text-5xl tracking-tight text-black dark:text-white drop-shadow-sm">
+            DOCTOR <span className="text-[#B91C1C]">FIT</span>
           </span>
         </div>
 
-        {/* Loading dots */}
-        <div className="flex items-center gap-1.5">
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              className="block h-1.5 w-1.5 rounded-full bg-primary-400/60 dark:bg-primary-500/50"
-              style={{
-                animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
-              }}
-            />
-          ))}
+        {/* Smooth minimal progress track */}
+        <div className="relative h-1 w-40 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 shadow-inner">
+          <div 
+            className="absolute top-0 bottom-0 left-0 w-1/2 rounded-full bg-[#B91C1C]"
+            style={{ animation: 'sweep 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite' }}
+          />
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes sweep {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+        @keyframes customPulse {
+          0%, 100% { opacity: 0.15; transform: scale(1); }
+          50% { opacity: 0.25; transform: scale(1.1); }
+        }
+      `}} />
     </div>
   )
 }
