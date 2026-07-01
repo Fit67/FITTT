@@ -142,7 +142,7 @@ export function ToonhubHomepage() {
       case 'left':
         return {
           transform: `translateX(-50%) scale(${itemScale * 0.75})`,
-          filter: isMob ? 'none' : 'blur(2px)',
+          filter: 'blur(2px)',
           opacity: 0.85,
           zIndex: 10,
           left: isMob ? '20%' : '22%',
@@ -152,7 +152,7 @@ export function ToonhubHomepage() {
       case 'right':
         return {
           transform: `translateX(-50%) scale(${itemScale * 0.75})`,
-          filter: isMob ? 'none' : 'blur(2px)',
+          filter: 'blur(2px)',
           opacity: 0.85,
           zIndex: 10,
           left: isMob ? '80%' : '78%',
@@ -162,7 +162,7 @@ export function ToonhubHomepage() {
       case 'back':
         return {
           transform: 'translateX(-50%) scale(1)',
-          filter: isMob ? 'none' : 'blur(4px)',
+          filter: 'blur(4px)',
           opacity: 1,
           zIndex: 5,
           left: '50%',
@@ -186,6 +186,7 @@ export function ToonhubHomepage() {
       <div
         id="toonhub-viewport"
         className="relative w-full h-screen shrink-0 overflow-hidden"
+        style={{ touchAction: 'pan-y' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >

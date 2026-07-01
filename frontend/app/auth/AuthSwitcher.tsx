@@ -178,7 +178,7 @@ export function AuthSwitcher({ initialMode }: { initialMode: AuthMode }) {
           <div className="relative z-10 flex flex-col justify-between h-full px-12 py-16">
             {/* Logo */}
             <div className="flex items-center">
-              <BrandLogo imageClassName="h-24 max-w-[230px]" />
+              <BrandLogo className="text-white" />
             </div>
 
             {/* Centre copy */}
@@ -422,7 +422,7 @@ function RegisterFormPanel({ t, form, showPw, setShowPw, onSubmit, onSwitch }: {
 function MobileLogo() {
   return (
     <div className="mb-10 flex justify-center lg:hidden">
-      <BrandLogo imageClassName="h-20 max-w-[200px]" />
+      <BrandLogo />
     </div>
   )
 }

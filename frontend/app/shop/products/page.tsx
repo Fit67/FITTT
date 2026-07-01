@@ -16,7 +16,7 @@ export default function ProductsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-32 sm:pt-40 pb-20 bg-white" dir={dir}>
+      <main className="min-h-screen pt-24 pb-20 bg-white" dir={dir}>
         {isLoading ? (
           <div className="flex flex-col items-center justify-center min-h-[50vh]">
             <Dumbbell className="w-12 h-12 text-gray-300 animate-bounce mb-4" />

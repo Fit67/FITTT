@@ -59,7 +59,7 @@ export function ProductsView({ products }: { products: Product[] }) {
       })
   }, [products, searchQuery, selectedCategory, sortBy, onlyInStock])
 
-  const featuredProducts = useMemo(() => filteredProducts.slice(0, 4), [filteredProducts])
+  const featuredProducts = useMemo(() => filteredProducts.filter((p) => p.isFeatured).slice(0, 4), [filteredProducts])
 
   function handleAddToCart(p: Product, qty = 1) {
     addItem(p, undefined, qty)
@@ -163,9 +163,7 @@ export function ProductsView({ products }: { products: Product[] }) {
         <div className="mb-16">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 text-left border-b border-neutral-100 pb-4">
             <div>
-              <span className="font-mono text-xs font-black text-[#B91C1C] tracking-widest uppercase">
-                HAND-PICKED ELITE STAPLES
-              </span>
+
               <h2 className="font-sans font-black text-2xl md:text-3xl text-black uppercase mt-1 tracking-tight">
                 FEATURED SUPREME ITEMS
               </h2>
@@ -207,7 +205,7 @@ export function ProductsView({ products }: { products: Product[] }) {
                       <span className="bg-white/25 text-white text-[10px] font-black tracking-widest px-3 py-1 rounded-full uppercase border border-white/10 w-fit">
                         ★ TOP FEATURED HERO
                       </span>
-                      <h3 className="font-sans font-black text-2xl md:text-3xl lg:text-4xl text-white mt-4 uppercase leading-tight line-clamp-2">
+                      <h3 className="font-sans font-black text-2xl md:text-3xl lg:text-4xl text-white mt-4 uppercase leading-tight">
                         {heroProd.name}
                       </h3>
                       <p className="font-mono text-xs text-red-200 mt-2 uppercase tracking-wider font-extrabold">
@@ -227,7 +225,7 @@ export function ProductsView({ products }: { products: Product[] }) {
                       {p.inStock ? (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleAddToCart(heroProd); }}
-                          className="bg-white text-black hover:bg-black hover:text-white px-6 py-3 rounded-full font-sans font-black text-xs tracking-widest uppercase transition-all duration-200 shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
+                          className="bg-white text-black hover:bg-black hover:text-white px-6 py-3 rounded-full font-sans font-black text-xs tracking-widest uppercase transition-all duration-200 shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
                         >
                           <ShoppingBag size={14} />
                           <span>ADD TO CART</span>

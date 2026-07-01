@@ -341,13 +341,11 @@ export async function updateProduct(req: Request, res: Response, next: NextFunct
   } catch (err) { next(err) }
 }
 
-// ─── Admin: Archive product ────────────────────────────────────
+// ─── Admin: Delete product ────────────────────────────────────
 export async function deleteProduct(req: Request, res: Response, next: NextFunction) {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id, { status: 'archived' }, { new: true },
-    )
+    const product = await Product.findByIdAndDelete(req.params.id)
     if (!product) return next(new AppError('Product not found', 404))
-    res.json({ success: true, message: 'Product archived' })
+    res.json({ success: true, message: 'Product deleted' })
   } catch (err) { next(err) }
 }

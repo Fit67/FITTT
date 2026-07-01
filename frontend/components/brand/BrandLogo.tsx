@@ -20,8 +20,8 @@ export function BrandLogo({ variant = 'full', className }: BrandLogoProps) {
 
   return (
     <span className={cn('inline-flex items-center', className)}>
-      <span className="text-xl md:text-2xl uppercase tracking-[0.2em] font-bold flex items-center whitespace-nowrap">
-        <span className="text-black dark:text-white">DOCTOR</span><span className="text-red-600">FIT</span>
+      <span className="text-xl md:text-2xl tracking-[0.1em] font-bold flex items-center whitespace-nowrap">
+        <span className={cn("text-black dark:text-white", className?.includes('text-white') && "text-white dark:text-white")}>Doctor</span><span className="text-red-600">Fit</span>
       </span>
     </span>
   )

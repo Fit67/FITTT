@@ -56,16 +56,16 @@ export function Navbar() {
     >
       {/* Left: Cart & Favorites */}
       <div className="flex items-center space-x-3 sm:space-x-4">
-        <Link href="/shop/cart" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
-          <ShoppingCart size={18} strokeWidth={2} />
+        <Link href="/shop/cart" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-blue-900 hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
+          <ShoppingCart size={18} strokeWidth={2} fill="currentColor" />
           {mounted && itemCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
               {itemCount}
             </span>
           )}
         </Link>
-        <Link href="/shop/wishlist" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
-          <Heart size={18} strokeWidth={2} />
+        <Link href="/shop/wishlist" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-red-600 hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)] relative">
+          <Heart size={18} strokeWidth={2} fill="currentColor" />
           {mounted && wishlist?.length > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
               {wishlist.length}
@@ -90,7 +90,7 @@ export function Navbar() {
       <div className="flex items-center relative" ref={dropdownRef}>
         {!isAuthenticated || !mounted ? (
           <Link href="/auth/login" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
-            <User size={18} strokeWidth={2} />
+            <User size={18} strokeWidth={2} fill="currentColor" />
           </Link>
         ) : (
           <div className="relative">
@@ -98,7 +98,7 @@ export function Navbar() {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
             >
-              <User size={18} strokeWidth={2} />
+              <User size={18} strokeWidth={2} fill="currentColor" />
             </button>
             
             {isDropdownOpen && (
